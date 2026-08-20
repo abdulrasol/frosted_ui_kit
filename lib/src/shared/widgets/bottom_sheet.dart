@@ -59,13 +59,20 @@ class AppBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveRadius = borderRadius ?? const BorderRadius.vertical(top: Radius.circular(28));
-    final defaultColor = glassColor ?? theme.colorScheme.surface.withValues(alpha: 0.85);
+    final effectiveRadius =
+        borderRadius ?? const BorderRadius.vertical(top: Radius.circular(28));
+    final defaultColor =
+        glassColor ?? theme.colorScheme.surface.withValues(alpha: 0.85);
 
     return BlurredCard(
       height: height,
       margin: margin,
-      padding: padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: context.horizontalPadding),
+      padding:
+          padding ??
+          EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: context.horizontalPadding,
+          ),
       borderRadius: effectiveRadius,
       sigmaX: sigmaX,
       sigmaY: sigmaY,
@@ -83,15 +90,28 @@ class AppBottomSheet extends StatelessWidget {
               width: 40,
               height: 4,
               margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(2)),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.4,
+                ),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
           if (title != null) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title!, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(context)),
+                Text(
+                  title!,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () => Navigator.pop(context),
+                ),
               ],
             ),
             const SizedBox(height: 12),

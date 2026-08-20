@@ -47,7 +47,10 @@ class _TabsCatalogState extends State<TabsCatalog> with Tabs, Buttons, Cards {
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.accents[(index + 5) % Colors.accents.length], Colors.accents[(index + 6) % Colors.accents.length]],
+                      colors: [
+                        Colors.accents[(index + 5) % Colors.accents.length],
+                        Colors.accents[(index + 6) % Colors.accents.length],
+                      ],
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -92,7 +95,11 @@ class _TabsCatalogState extends State<TabsCatalog> with Tabs, Buttons, Cards {
             left: 0,
             right: 0,
             bottom: 0,
-            child: PlaygroundControls(state: _state, showBorderRadius: false, onChanged: (s) => setState(() => _state = s)),
+            child: PlaygroundControls(
+              state: _state,
+              showBorderRadius: false,
+              onChanged: (s) => setState(() => _state = s),
+            ),
           ),
         ],
       ),

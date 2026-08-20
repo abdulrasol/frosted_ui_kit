@@ -3,7 +3,9 @@ import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 
 /// A modern, glassmorphic primary application bar with auto-fitting title and end-aligned actions.
-class FrostedAppBar extends StatelessWidget with Buttons, Cards implements PreferredSizeWidget {
+class FrostedAppBar extends StatelessWidget
+    with Buttons, Cards
+    implements PreferredSizeWidget {
   /// Creates a [FrostedAppBar] with optional title string, custom title widget, leading widget, and actions.
   const FrostedAppBar({
     super.key,
@@ -78,7 +80,12 @@ class FrostedAppBar extends StatelessWidget with Buttons, Cards implements Prefe
             Row(
               spacing: 8,
               children: [
-                if (leading != null) leading! else if (canPop) backButton(context, onTap: backAction) else const SizedBox.shrink(),
+                if (leading != null)
+                  leading!
+                else if (canPop)
+                  backButton(context, onTap: backAction)
+                else
+                  const SizedBox.shrink(),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,7 +97,9 @@ class FrostedAppBar extends StatelessWidget with Buttons, Cards implements Prefe
                         Flexible(
                           fit: FlexFit.loose,
                           child: bluredCard(
-                            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+                            padding:
+                                padding ??
+                                const EdgeInsets.symmetric(horizontal: 16),
                             margin: margin,
                             borderRadius: borderRadius,
                             border: border,
@@ -106,14 +115,21 @@ class FrostedAppBar extends StatelessWidget with Buttons, Cards implements Prefe
                                 title!,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
                         )
                       else
                         const SizedBox.shrink(),
-                      if (actions != null && actions!.isNotEmpty) Row(mainAxisSize: MainAxisSize.min, spacing: 8, children: actions!),
+                      if (actions != null && actions!.isNotEmpty)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: actions!,
+                        ),
                     ],
                   ),
                 ),

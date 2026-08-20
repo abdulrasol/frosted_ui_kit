@@ -12,7 +12,8 @@ import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 ///
 /// Designed to be completely reusable across apps. Supports optional callbacks for success
 /// handling and custom navigation flows.
-class LoginFormWidget extends StatefulWidget with BottomSheets, Buttons, Inputs {
+class LoginFormWidget extends StatefulWidget
+    with BottomSheets, Buttons, Inputs {
   /// Auth controller instance.
   final AuthController controller;
 
@@ -71,13 +72,17 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           const SizedBox(height: 16),
           Text(
             l10n.welcomeBack,
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 6),
           Text(
             l10n.signInSubtitle,
-            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -87,7 +92,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             placeholder: l10n.emailPlaceholder,
             controller: _emailController,
             validator: (value) {
-              if (value == null || value.trim().isEmpty) return l10n.pleaseEnterEmail;
+              if (value == null || value.trim().isEmpty) {
+                return l10n.pleaseEnterEmail;
+              }
               if (!value.contains('@')) return l10n.pleaseEnterValidEmail;
               return null;
             },
@@ -99,7 +106,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             placeholder: l10n.passwordPlaceholder,
             controller: _passwordController,
             validator: (value) {
-              if (value == null || value.isEmpty) return l10n.pleaseEnterPassword;
+              if (value == null || value.isEmpty) {
+                return l10n.pleaseEnterPassword;
+              }
               return null;
             },
           ),
@@ -115,7 +124,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 widget.showAppBottomSheet(
                   context: context,
                   title: l10n.forgotPassword,
-                  child: ForgotPasswordFormWidget(controller: widget.controller),
+                  child: ForgotPasswordFormWidget(
+                    controller: widget.controller,
+                  ),
                 );
               },
             ),
@@ -163,7 +174,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                   widget.showAppBottomSheet(
                     context: context,
                     title: l10n.resetPassword,
-                    child: ResetPasswordFormWidget(controller: widget.controller),
+                    child: ResetPasswordFormWidget(
+                      controller: widget.controller,
+                    ),
                   );
                 },
               ),
@@ -187,4 +200,3 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 }
-

@@ -20,7 +20,8 @@ class CatalogHomeScreen extends StatefulWidget {
   State<CatalogHomeScreen> createState() => _CatalogHomeScreenState();
 }
 
-class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Buttons {
+class _CatalogHomeScreenState extends State<CatalogHomeScreen>
+    with Cards, Buttons {
   final FrostedNavbarController _navController = FrostedNavbarController();
 
   @override
@@ -35,14 +36,32 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
 
     return BaseWidget(
       title: 'Frosted UI Kit Catalog',
-      actions: [circleButton(context: context, icon: isDark ? Icons.light_mode : Icons.dark_mode, onPressed: () => MySandboxApp.of(context).toggleTheme())],
+      actions: [
+        circleButton(
+          context: context,
+          icon: isDark ? Icons.light_mode : Icons.dark_mode,
+          onPressed: () => MySandboxApp.of(context).toggleTheme(),
+        ),
+      ],
       bottomNavigationBar: FrostedNavigationButtomBar(
         controller: _navController,
         items: [
-          FrostedNavbarItem(icon: Icons.home, activeIcon: Icons.home_filled, title: 'Home'),
+          FrostedNavbarItem(
+            icon: Icons.home,
+            activeIcon: Icons.home_filled,
+            title: 'Home',
+          ),
           FrostedNavbarItem(icon: Icons.search, title: 'Search'),
-          FrostedNavbarItem(icon: Icons.notifications_none, activeIcon: Icons.notifications, title: 'Notifications'),
-          FrostedNavbarItem(icon: Icons.settings_outlined, activeIcon: Icons.settings, title: 'Settings'),
+          FrostedNavbarItem(
+            icon: Icons.notifications_none,
+            activeIcon: Icons.notifications,
+            title: 'Notifications',
+          ),
+          FrostedNavbarItem(
+            icon: Icons.settings_outlined,
+            activeIcon: Icons.settings,
+            title: 'Settings',
+          ),
         ],
         action: appFab(context: context, icon: Icons.add, onPressed: () {}),
       ),
@@ -55,7 +74,9 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: isDark ? const [Color(0xFF1F1C2C), Color(0xFF928DAB)] : const [Color(0xFFE2E2E2), Color(0xFFC9D6FF)],
+                  colors: isDark
+                      ? const [Color(0xFF1F1C2C), Color(0xFF928DAB)]
+                      : const [Color(0xFFE2E2E2), Color(0xFFC9D6FF)],
                 ),
               ),
             ),
@@ -67,15 +88,42 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
                 left: 16,
                 right: 16,
                 top: 16,
-                bottom: 16, //+ (_navType == FrostedNavigationBarType.circular ? 80 : 56), // Padding for nav bar
+                bottom:
+                    16, //+ (_navType == FrostedNavigationBarType.circular ? 80 : 56), // Padding for nav bar
               ),
               children: [
                 SizedBox(height: context.appBarHeight),
-                _buildCatalogTile(context: context, title: 'Cards', icon: Icons.rectangle_outlined, onTap: () => _navigateTo(context, const CardsCatalog())),
-                _buildCatalogTile(context: context, title: 'Buttons', icon: Icons.smart_button, onTap: () => _navigateTo(context, const ButtonsCatalog())),
-                _buildCatalogTile(context: context, title: 'Loading Buttons', icon: Icons.animation, onTap: () => _navigateTo(context, const LoadingButtonCatalog())),
-                _buildCatalogTile(context: context, title: 'Inputs', icon: Icons.text_fields, onTap: () => _navigateTo(context, const InputsCatalog())),
-                _buildCatalogTile(context: context, title: 'Tabs', icon: Icons.tab, onTap: () => _navigateTo(context, const TabsCatalog())),
+                _buildCatalogTile(
+                  context: context,
+                  title: 'Cards',
+                  icon: Icons.rectangle_outlined,
+                  onTap: () => _navigateTo(context, const CardsCatalog()),
+                ),
+                _buildCatalogTile(
+                  context: context,
+                  title: 'Buttons',
+                  icon: Icons.smart_button,
+                  onTap: () => _navigateTo(context, const ButtonsCatalog()),
+                ),
+                _buildCatalogTile(
+                  context: context,
+                  title: 'Loading Buttons',
+                  icon: Icons.animation,
+                  onTap: () =>
+                      _navigateTo(context, const LoadingButtonCatalog()),
+                ),
+                _buildCatalogTile(
+                  context: context,
+                  title: 'Inputs',
+                  icon: Icons.text_fields,
+                  onTap: () => _navigateTo(context, const InputsCatalog()),
+                ),
+                _buildCatalogTile(
+                  context: context,
+                  title: 'Tabs',
+                  icon: Icons.tab,
+                  onTap: () => _navigateTo(context, const TabsCatalog()),
+                ),
                 _buildCatalogTile(
                   context: context,
                   title: 'Bottom Sheets',
@@ -100,7 +148,12 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
                   icon: Icons.format_list_bulleted,
                   onTap: () => _navigateTo(context, const ListTileCatalog()),
                 ),
-                _buildCatalogTile(context: context, title: 'App Bars', icon: Icons.view_headline, onTap: () => _navigateTo(context, const AppBarCatalog())),
+                _buildCatalogTile(
+                  context: context,
+                  title: 'App Bars',
+                  icon: Icons.view_headline,
+                  onTap: () => _navigateTo(context, const AppBarCatalog()),
+                ),
                 SizedBox(height: MediaQuery.of(context).padding.bottom + 35),
               ],
             ),
@@ -114,7 +167,12 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 
-  Widget _buildCatalogTile({required BuildContext context, required String title, required IconData icon, required VoidCallback onTap}) {
+  Widget _buildCatalogTile({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: bluredCard(
@@ -128,15 +186,30 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
             padding: const EdgeInsets.all(20),
             child: Row(
               children: [
-                Icon(icon, size: 32, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
+                Icon(
+                  icon,
+                  size: 32,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                 ),
-                Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
+                Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
               ],
             ),
           ),

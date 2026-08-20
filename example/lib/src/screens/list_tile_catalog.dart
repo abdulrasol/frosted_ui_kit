@@ -41,7 +41,7 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
               },
             ),
           ),
-          
+
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 400),
@@ -51,7 +51,11 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
                   FrostedListSection(
                     header: const Text(
                       'Settings',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
                     ),
                     sigmaX: _state.sigmaX,
                     sigmaY: _state.sigmaY,
@@ -87,12 +91,13 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
                             color: Colors.redAccent,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+                          child: const Icon(
+                            Icons.notifications,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                        trailing: Switch(
-                          value: true,
-                          onChanged: (val) {},
-                        ),
+                        trailing: Switch(value: true, onChanged: (val) {}),
                       ),
                       FrostedListTile(
                         title: const Text('Sounds'),
@@ -102,7 +107,11 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
                             color: Colors.pinkAccent,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(Icons.volume_up, color: Colors.white, size: 20),
+                          child: const Icon(
+                            Icons.volume_up,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {},
@@ -113,7 +122,7 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
               ),
             ),
           ),
-          
+
           Positioned(
             left: 0,
             right: 0,

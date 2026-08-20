@@ -10,7 +10,8 @@ class BottomSheetCatalog extends StatefulWidget {
   State<BottomSheetCatalog> createState() => _BottomSheetCatalogState();
 }
 
-class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomSheets, Buttons, Cards {
+class _BottomSheetCatalogState extends State<BottomSheetCatalog>
+    with BottomSheets, Buttons, Cards {
   PlaygroundState _state = const PlaygroundState();
 
   @override
@@ -41,7 +42,7 @@ class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomShee
               },
             ),
           ),
-          
+
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 400),
@@ -65,7 +66,10 @@ class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomShee
                             children: [
                               const Text(
                                 'Glassmorphic Bottom Sheet',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 16),
@@ -90,7 +94,7 @@ class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomShee
               ),
             ),
           ),
-          
+
           Positioned(
             left: 0,
             right: 0,

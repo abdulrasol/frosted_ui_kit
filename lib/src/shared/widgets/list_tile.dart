@@ -38,7 +38,8 @@ class FrostedListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveSeparatorColor = separatorColor ?? theme.dividerColor.withValues(alpha: 0.1);
+    final effectiveSeparatorColor =
+        separatorColor ?? theme.dividerColor.withValues(alpha: 0.1);
 
     return Padding(
       padding: margin,
@@ -47,7 +48,11 @@ class FrostedListSection extends StatelessWidget {
         children: [
           if (header != null)
             Padding(
-              padding: const EdgeInsets.only(bottom: 8.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(
+                bottom: 8.0,
+                left: 16.0,
+                right: 16.0,
+              ),
               child: header,
             ),
           BlurredCard(
@@ -152,8 +157,11 @@ class FrostedListTile extends StatelessWidget {
                 if (subtitle != null) ...[
                   const SizedBox(height: 4),
                   DefaultTextStyle(
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                    style:
+                        theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ),
                         ) ??
                         const TextStyle(),
                     child: subtitle!,
@@ -165,26 +173,23 @@ class FrostedListTile extends StatelessWidget {
           if (additionalInfo != null) ...[
             const SizedBox(width: 8),
             DefaultTextStyle(
-              style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+              style:
+                  theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withValues(
+                      alpha: 0.7,
+                    ),
                   ) ??
                   const TextStyle(),
               child: additionalInfo!,
             ),
           ],
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ],
+          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
         ],
       ),
     );
 
     if (backgroundColor != null) {
-      content = ColoredBox(
-        color: backgroundColor!,
-        child: content,
-      );
+      content = ColoredBox(color: backgroundColor!, child: content);
     }
 
     if (onTap != null) {

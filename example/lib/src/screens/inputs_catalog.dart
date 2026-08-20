@@ -10,7 +10,8 @@ class InputsCatalog extends StatefulWidget {
   State<InputsCatalog> createState() => _InputsCatalogState();
 }
 
-class _InputsCatalogState extends State<InputsCatalog> with Inputs, Buttons, Cards {
+class _InputsCatalogState extends State<InputsCatalog>
+    with Inputs, Buttons, Cards {
   PlaygroundState _state = const PlaygroundState();
 
   @override
@@ -30,7 +31,10 @@ class _InputsCatalogState extends State<InputsCatalog> with Inputs, Buttons, Car
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.accents[(index + 3) % Colors.accents.length], Colors.accents[(index + 4) % Colors.accents.length]],
+                      colors: [
+                        Colors.accents[(index + 3) % Colors.accents.length],
+                        Colors.accents[(index + 4) % Colors.accents.length],
+                      ],
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -47,13 +51,31 @@ class _InputsCatalogState extends State<InputsCatalog> with Inputs, Buttons, Car
                 children: [
                   SizedBox(height: context.appBarHeight + 10),
 
-                  emailField(context: context, sigmaX: _state.sigmaX, sigmaY: _state.sigmaY, fillColor: _state.glassColor, border: _state.border),
+                  emailField(
+                    context: context,
+                    sigmaX: _state.sigmaX,
+                    sigmaY: _state.sigmaY,
+                    fillColor: _state.glassColor,
+                    border: _state.border,
+                  ),
                   const SizedBox(height: 16),
 
-                  passwordField(context: context, sigmaX: _state.sigmaX, sigmaY: _state.sigmaY, fillColor: _state.glassColor, border: _state.border),
+                  passwordField(
+                    context: context,
+                    sigmaX: _state.sigmaX,
+                    sigmaY: _state.sigmaY,
+                    fillColor: _state.glassColor,
+                    border: _state.border,
+                  ),
                   const SizedBox(height: 16),
 
-                  nameField(context: context, sigmaX: _state.sigmaX, sigmaY: _state.sigmaY, fillColor: _state.glassColor, border: _state.border),
+                  nameField(
+                    context: context,
+                    sigmaX: _state.sigmaX,
+                    sigmaY: _state.sigmaY,
+                    fillColor: _state.glassColor,
+                    border: _state.border,
+                  ),
                   const SizedBox(height: 16),
 
                   textField(
@@ -75,7 +97,11 @@ class _InputsCatalogState extends State<InputsCatalog> with Inputs, Buttons, Car
             left: 0,
             right: 0,
             bottom: 0,
-            child: PlaygroundControls(state: _state, showBorderRadius: false, onChanged: (s) => setState(() => _state = s)),
+            child: PlaygroundControls(
+              state: _state,
+              showBorderRadius: false,
+              onChanged: (s) => setState(() => _state = s),
+            ),
           ),
         ],
       ),

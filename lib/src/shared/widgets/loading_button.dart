@@ -18,7 +18,8 @@ enum FrostLoadingButtonState {
 }
 
 /// Controller to manage the state of an [FrostLoadingButton].
-class FrostLoadingButtonController extends ValueNotifier<FrostLoadingButtonState> {
+class FrostLoadingButtonController
+    extends ValueNotifier<FrostLoadingButtonState> {
   /// Creates a controller with the initial state set to [FrostLoadingButtonState.idle].
   FrostLoadingButtonController() : super(FrostLoadingButtonState.idle);
 
@@ -128,7 +129,9 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxWidth = constraints.maxWidth.isFinite ? constraints.maxWidth : null;
+        final maxWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : null;
 
         return ValueListenableBuilder<FrostLoadingButtonState>(
           valueListenable: controller,
@@ -142,7 +145,8 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
             }
 
             // Determine if the button should be disabled (non-clickable).
-            final isDisabled = state != FrostLoadingButtonState.idle || onPressed == null;
+            final isDisabled =
+                state != FrostLoadingButtonState.idle || onPressed == null;
 
             // Build the inner content based on the state.
             Widget content;
@@ -155,18 +159,37 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
                   spacing: 8,
                   children: [
                     if (icon != null) Icon(icon, size: 20),
-                    Flexible(child: Text(title, overflow: TextOverflow.ellipsis, maxLines: 1)),
+                    Flexible(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
                   ],
                 );
                 break;
               case FrostLoadingButtonState.loading:
-                content = const AppLoadingIndicator(key: ValueKey('loading'), size: 48);
+                content = const AppLoadingIndicator(
+                  key: ValueKey('loading'),
+                  size: 48,
+                );
                 break;
               case FrostLoadingButtonState.success:
-                content = Icon(successIcon, key: const ValueKey('success'), size: 24, color: Colors.white);
+                content = Icon(
+                  successIcon,
+                  key: const ValueKey('success'),
+                  size: 24,
+                  color: Colors.white,
+                );
                 break;
               case FrostLoadingButtonState.error:
-                content = Icon(errorIcon, key: const ValueKey('error'), size: 24, color: Colors.white);
+                content = Icon(
+                  errorIcon,
+                  key: const ValueKey('error'),
+                  size: 24,
+                  color: Colors.white,
+                );
                 break;
             }
 
@@ -182,10 +205,14 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
                 isDisabled: isDisabled,
                 onPressed: onPressed,
                 height: height,
-                width: state == FrostLoadingButtonState.loading ? (height ?? 48) : (isFullWidth ? (maxWidth ?? width) : width),
+                width: state == FrostLoadingButtonState.loading
+                    ? (height ?? 48)
+                    : (isFullWidth ? (maxWidth ?? width) : width),
                 borderRadius: borderRadius,
                 margin: margin,
-                padding: state == FrostLoadingButtonState.loading ? EdgeInsets.zero : padding,
+                padding: state == FrostLoadingButtonState.loading
+                    ? EdgeInsets.zero
+                    : padding,
                 textStyle: textStyle,
                 iconColor: iconColor,
                 // Override the standard button content with our AnimatedSwitcher

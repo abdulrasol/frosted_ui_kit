@@ -29,7 +29,12 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                   height: 60,
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [Colors.accents[index % Colors.accents.length], Colors.accents[(index + 1) % Colors.accents.length]]),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.accents[index % Colors.accents.length],
+                        Colors.accents[(index + 1) % Colors.accents.length],
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 );
@@ -55,7 +60,10 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                     child: const Text(
                       'This is a Glass Card\nNotice the background blur!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -70,7 +78,10 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                     child: const Text(
                       'Circle',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -82,7 +93,10 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
             left: 0,
             right: 0,
             bottom: 0,
-            child: PlaygroundControls(state: _state, onChanged: (s) => setState(() => _state = s)),
+            child: PlaygroundControls(
+              state: _state,
+              onChanged: (s) => setState(() => _state = s),
+            ),
           ),
         ],
       ),

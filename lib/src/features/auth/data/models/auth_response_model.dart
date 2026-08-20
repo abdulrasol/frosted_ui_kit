@@ -11,7 +11,9 @@ class AuthResponseModel extends AuthResponseEntity {
 
   /// Constructs an [AuthResponseModel] from server JSON response.
   factory AuthResponseModel.fromJson(Map<String, dynamic> json) {
-    final userJson = (json['record'] ?? json['user'] ?? <String, dynamic>{}) as Map<String, dynamic>;
+    final userJson =
+        (json['record'] ?? json['user'] ?? <String, dynamic>{})
+            as Map<String, dynamic>;
     return AuthResponseModel(
       token: json['token'] as String? ?? '',
       user: UserModel.fromJson(userJson),
@@ -20,9 +22,6 @@ class AuthResponseModel extends AuthResponseEntity {
 
   /// Converts model to pure [AuthResponseEntity].
   AuthResponseEntity toEntity() {
-    return AuthResponseEntity(
-      token: token,
-      user: user,
-    );
+    return AuthResponseEntity(token: token, user: user);
   }
 }

@@ -13,7 +13,8 @@ import 'package:frosted_ui_kit/src/shared/widgets/tabs.dart';
 /// Clean Authentication Screen with top sliding glassmorphic tabs and localized strings.
 ///
 /// Designed to be reusable across apps with customizable callbacks and controllers.
-class AuthScreen extends StatefulWidget with BottomSheets, Buttons, Cards, Tabs {
+class AuthScreen extends StatefulWidget
+    with BottomSheets, Buttons, Cards, Tabs {
   /// Optional pre-configured [AuthController] instance. If null, created via [AuthController.create].
   final AuthController? controller;
 
@@ -66,7 +67,9 @@ class _AuthScreenState extends State<AuthScreen> {
     final success = _controller.successMessage;
     final error = _controller.errorMessage;
 
-    final targetIndex = _controller.currentMode == AuthViewMode.register ? 1 : 0;
+    final targetIndex = _controller.currentMode == AuthViewMode.register
+        ? 1
+        : 0;
     if (_selectedTabIndex != targetIndex) {
       setState(() {
         _selectedTabIndex = targetIndex;
@@ -75,10 +78,14 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (success != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(success), backgroundColor: Colors.green));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(success), backgroundColor: Colors.green),
+      );
     } else if (error != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error), backgroundColor: Colors.red),
+      );
     }
   }
 
@@ -86,7 +93,9 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() {
       _selectedTabIndex = index;
     });
-    _controller.switchMode(index == 0 ? AuthViewMode.login : AuthViewMode.register);
+    _controller.switchMode(
+      index == 0 ? AuthViewMode.login : AuthViewMode.register,
+    );
   }
 
   @override
@@ -101,17 +110,32 @@ class _AuthScreenState extends State<AuthScreen> {
         return BaseWidget(
           title: isLogin ? l10n.signIn : l10n.register,
           child: Padding(
-            padding: EdgeInsets.only(top: context.topPadding + 4, right: context.horizontalPadding, left: context.horizontalPadding),
+            padding: EdgeInsets.only(
+              top: context.topPadding + 4,
+              right: context.horizontalPadding,
+              left: context.horizontalPadding,
+            ),
             child: Column(
               children: [
-                widget.appSlidingTabs(context: context, tabs: authTabs, selectedIndex: _selectedTabIndex, onTabChanged: _onTabSelected),
+                widget.appSlidingTabs(
+                  context: context,
+                  tabs: authTabs,
+                  selectedIndex: _selectedTabIndex,
+                  onTabChanged: _onTabSelected,
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.only(top: context.horizontalPadding + 4, left: 16, right: 16),
+                      padding: EdgeInsets.only(
+                        top: context.horizontalPadding + 4,
+                        left: 16,
+                        right: 16,
+                      ),
                       child: AnimatedCrossFade(
                         duration: const Duration(milliseconds: 300),
-                        crossFadeState: isLogin ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                        crossFadeState: isLogin
+                            ? CrossFadeState.showFirst
+                            : CrossFadeState.showSecond,
                         firstChild: LoginFormWidget(
                           controller: _controller,
                           onLoginSuccess: widget.onLoginSuccess,
@@ -132,4 +156,3 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 }
-

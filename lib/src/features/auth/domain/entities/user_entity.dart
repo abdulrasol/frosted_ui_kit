@@ -30,5 +30,3 @@ class UserEntity {
     this.updated = '',
   });
 }
-
-

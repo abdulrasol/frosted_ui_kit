@@ -80,7 +80,9 @@ class AppSlidingTabs extends StatelessWidget with Cards {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     // Calculate x alignment for AnimatedAlign (-1.0 to 1.0) and invert for RTL
-    final double rawAlignX = count > 1 ? -1.0 + (2.0 * selectedIndex / (count - 1)) : 0.0;
+    final double rawAlignX = count > 1
+        ? -1.0 + (2.0 * selectedIndex / (count - 1))
+        : 0.0;
     final double alignX = isRtl ? -rawAlignX : rawAlignX;
 
     return bluredCard(
@@ -109,7 +111,13 @@ class AppSlidingTabs extends StatelessWidget with Cards {
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))],
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -128,11 +136,22 @@ class AppSlidingTabs extends StatelessWidget with Cards {
                       duration: const Duration(milliseconds: 200),
                       style:
                           (isSelected
-                              ? (activeTextStyle ?? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.onPrimary))
+                              ? (activeTextStyle ??
+                                    theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.onPrimary,
+                                    ))
                               : (inactiveTextStyle ??
-                                    theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onSurfaceVariant))) ??
+                                    theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ))) ??
                           const TextStyle(),
-                      child: Text(tabs[index], maxLines: 1, overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        tabs[index],
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ),

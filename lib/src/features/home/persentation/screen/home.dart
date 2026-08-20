@@ -15,7 +15,10 @@ class Home extends StatelessWidget with Buttons {
           context: context,
           icon: Icons.login,
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute<void>(builder: (context) => AuthScreen()));
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (context) => AuthScreen()),
+            );
           },
         ),
       ],

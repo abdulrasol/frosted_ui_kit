@@ -68,7 +68,11 @@ class BaseWidget extends StatelessWidget {
               top: 0,
               right: 0,
               left: 0,
-              child: FrostedAppBar(title: title, actions: actions, backAction: backAction),
+              child: FrostedAppBar(
+                title: title,
+                actions: actions,
+                backAction: backAction,
+              ),
             ),
         ],
       ),

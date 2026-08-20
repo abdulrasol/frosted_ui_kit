@@ -7,17 +7,11 @@ class LoginRequestModel {
   final String password;
 
   /// Creates a [LoginRequestModel].
-  const LoginRequestModel({
-    required this.identity,
-    required this.password,
-  });
+  const LoginRequestModel({required this.identity, required this.password});
 
   /// Converts login credentials to JSON map.
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'identity': identity,
-      'password': password,
-    };
+    return <String, dynamic>{'identity': identity, 'password': password};
   }
 
   /// Creates a [LoginRequestModel] from JSON map.

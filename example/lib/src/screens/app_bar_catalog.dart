@@ -18,7 +18,9 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
     return BaseWidget(
       title: 'App Bar Playground',
 
-      actions: [circleButton(context: context, icon: Icons.settings, onPressed: () {})],
+      actions: [
+        circleButton(context: context, icon: Icons.settings, onPressed: () {}),
+      ],
 
       child: Stack(
         children: [
@@ -30,10 +32,16 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
               itemBuilder: (context, index) {
                 return Container(
                   height: 60,
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.accents[(index + 9) % Colors.accents.length], Colors.accents[(index + 10) % Colors.accents.length]],
+                      colors: [
+                        Colors.accents[(index + 9) % Colors.accents.length],
+                        Colors.accents[(index + 10) % Colors.accents.length],
+                      ],
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -46,7 +54,10 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
             left: 0,
             right: 0,
             bottom: 0,
-            child: PlaygroundControls(state: _state, onChanged: (s) => setState(() => _state = s)),
+            child: PlaygroundControls(
+              state: _state,
+              onChanged: (s) => setState(() => _state = s),
+            ),
           ),
         ],
       ),

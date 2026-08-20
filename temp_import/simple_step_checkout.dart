@@ -108,7 +108,11 @@ class SimpleCheckoutStepper extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: _wdSteps(index, isVertical, hroizatalPadding ?? width),
+                    children: _wdSteps(
+                      index,
+                      isVertical,
+                      hroizatalPadding ?? width,
+                    ),
                   );
                 },
               )
@@ -146,10 +150,24 @@ class SimpleCheckoutStepper extends StatelessWidget {
 
   Widget _wdStep(int index, bool isVertical, double hroizatalPadding) {
     final stepWidget = Container(
-      padding: EdgeInsets.symmetric(vertical: isVertical ? stepRadiusVertical : 10, horizontal: isVertical ? stepRadiusHorizontal : 10),
-      decoration: BoxDecoration(color: index <= controller.index ? doneColor : unDoneColor, shape: BoxShape.circle),
-      child: stepBuilder?.call(index, index <= controller.index, index == controller.index) ??
-          Text((index + 1).toString(), style: stepNumberStyle?.copyWith(color: stepIndexColor)),
+      padding: EdgeInsets.symmetric(
+        vertical: isVertical ? stepRadiusVertical : 10,
+        horizontal: isVertical ? stepRadiusHorizontal : 10,
+      ),
+      decoration: BoxDecoration(
+        color: index <= controller.index ? doneColor : unDoneColor,
+        shape: BoxShape.circle,
+      ),
+      child:
+          stepBuilder?.call(
+            index,
+            index <= controller.index,
+            index == controller.index,
+          ) ??
+          Text(
+            (index + 1).toString(),
+            style: stepNumberStyle?.copyWith(color: stepIndexColor),
+          ),
     );
 
     final titleWidget = SizedBox(
@@ -161,14 +179,27 @@ class SimpleCheckoutStepper extends StatelessWidget {
         maxWidth: double.infinity,
         child: Container(
           alignment: Alignment.centerRight,
-          margin: isVertical ? EdgeInsets.only(right: hroizatalPadding - gapBetweenStepAndTitle) : EdgeInsets.only(top: titlePaddingTop),
+          margin: isVertical
+              ? EdgeInsets.only(
+                  right: hroizatalPadding - gapBetweenStepAndTitle,
+                )
+              : EdgeInsets.only(top: titlePaddingTop),
           child: SizedBox(
             width: isVertical ? hroizatalPadding : null,
-            child: stepTitleBuilder?.call(index, index <= controller.index, index == controller.index) ??
+            child:
+                stepTitleBuilder?.call(
+                  index,
+                  index <= controller.index,
+                  index == controller.index,
+                ) ??
                 Text(
-                  controller.stepsList != null ? controller.stepsList![index] : "",
+                  controller.stepsList != null
+                      ? controller.stepsList![index]
+                      : "",
                   maxLines: 1,
-                  style: stepTitleStyle?.copyWith(color: index <= controller.index ? doneColor : unDoneColor),
+                  style: stepTitleStyle?.copyWith(
+                    color: index <= controller.index ? doneColor : unDoneColor,
+                  ),
                 ),
           ),
         ),
@@ -178,10 +209,18 @@ class SimpleCheckoutStepper extends StatelessWidget {
     final children = [stepWidget, if (controller.showTitles) titleWidget];
 
     if (isVertical) {
-      return Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.end, crossAxisAlignment: CrossAxisAlignment.center, children: children);
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: children,
+      );
       //return Stack(clipBehavior: Clip.none, fit: StackFit.passthrough, alignment: Alignment.centerRight, children: children);
     } else {
-      return Column(mainAxisAlignment: MainAxisAlignment.center, children: children);
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: children,
+      );
     }
   }
 
@@ -195,7 +234,10 @@ class SimpleCheckoutStepper extends StatelessWidget {
             stepLineWidget ??
                 Container(
                   width: lineSize,
-                  decoration: BoxDecoration(color: index < controller.index ? doneColor : unDoneColor, borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(
+                    color: index < controller.index ? doneColor : unDoneColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
           ],
         ),
@@ -211,7 +253,10 @@ class SimpleCheckoutStepper extends StatelessWidget {
               stepLineWidget ??
                   Container(
                     height: lineSize,
-                    decoration: BoxDecoration(color: index < controller.index ? doneColor : unDoneColor, borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                      color: index < controller.index ? doneColor : unDoneColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
             ],
           ),
@@ -226,7 +271,10 @@ class SimpleCheckoutStepper extends StatelessWidget {
               stepLineWidget ??
                   Container(
                     height: lineSize,
-                    decoration: BoxDecoration(color: index < controller.index ? doneColor : unDoneColor, borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                      color: index < controller.index ? doneColor : unDoneColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
             ],
           ),
@@ -253,9 +301,15 @@ class SimpleCheckoutStepperController extends ChangeNotifier {
   final bool showTitles;
 
   /// create a new instance of CheckoutStepperController
-  SimpleCheckoutStepperController({required this.steps, this.stepsList, this.showTitles = true})
-      : assert(steps > 0, 'steps must be greater than 0'),
-        assert(stepsList == null || stepsList.length == steps, 'steps title List length must be equal to the number of steps');
+  SimpleCheckoutStepperController({
+    required this.steps,
+    this.stepsList,
+    this.showTitles = true,
+  }) : assert(steps > 0, 'steps must be greater than 0'),
+       assert(
+         stepsList == null || stepsList.length == steps,
+         'steps title List length must be equal to the number of steps',
+       );
 
   /// current step index
   int get index => _index;
@@ -296,4 +350,5 @@ enum SimpleCheckoutStepperDirection {
   horizontal,
 }
 
-typedef StepWidgetBuilder = Widget Function(int index, bool isDone, bool isActive);
+typedef StepWidgetBuilder =
+    Widget Function(int index, bool isDone, bool isActive);

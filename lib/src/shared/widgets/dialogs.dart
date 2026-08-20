@@ -6,7 +6,11 @@ import 'package:frosted_ui_kit/src/shared/widgets/loading.dart';
 
 /// A base glassmorphic dialog widget.
 class AppDialog extends StatelessWidget with Cards {
-  const AppDialog({super.key, required this.child, this.padding = const EdgeInsets.all(24.0)});
+  const AppDialog({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(24.0),
+  });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -17,7 +21,12 @@ class AppDialog extends StatelessWidget with Cards {
       backgroundColor: Colors.transparent,
       elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),
-      child: blurredCard(context: context, radius: 24, padding: padding, child: child),
+      child: blurredCard(
+        context: context,
+        radius: 24,
+        padding: padding,
+        child: child,
+      ),
     );
   }
 }
@@ -55,7 +64,8 @@ class _InputDialogContent extends StatefulWidget {
   State<_InputDialogContent> createState() => _InputDialogContentState();
 }
 
-class _InputDialogContentState extends State<_InputDialogContent> with Buttons, Inputs {
+class _InputDialogContentState extends State<_InputDialogContent>
+    with Buttons, Inputs {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -77,7 +87,10 @@ class _InputDialogContentState extends State<_InputDialogContent> with Buttons, 
           if (widget.title != null) ...[
             Text(
               widget.title!,
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: widget.titleColor),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: widget.titleColor,
+              ),
               textAlign: TextAlign.center,
             ),
             if (widget.description != null) const SizedBox(height: 8),
@@ -85,11 +98,21 @@ class _InputDialogContentState extends State<_InputDialogContent> with Buttons, 
           if (widget.description != null)
             Text(
               widget.description!,
-              style: theme.textTheme.bodyMedium?.copyWith(color: widget.descriptionColor ?? theme.colorScheme.onSurfaceVariant),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color:
+                    widget.descriptionColor ??
+                    theme.colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
           const SizedBox(height: 24),
-          textField(context: context, controller: _controller, placeholder: widget.hintText, validator: widget.validator, type: AppTextFieldType.text),
+          textField(
+            context: context,
+            controller: _controller,
+            placeholder: widget.hintText,
+            validator: widget.validator,
+            type: AppTextFieldType.text,
+          ),
           const SizedBox(height: 24),
           Row(
             children: [
@@ -99,7 +122,9 @@ class _InputDialogContentState extends State<_InputDialogContent> with Buttons, 
                   title: widget.cancelText,
                   style: AppButtonStyle.text,
                   backgroundColor: widget.cancelButtonColor,
-                  textStyle: widget.cancelTextColor != null ? TextStyle(color: widget.cancelTextColor) : null,
+                  textStyle: widget.cancelTextColor != null
+                      ? TextStyle(color: widget.cancelTextColor)
+                      : null,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
@@ -110,7 +135,9 @@ class _InputDialogContentState extends State<_InputDialogContent> with Buttons, 
                   title: widget.confirmText,
                   style: AppButtonStyle.colored,
                   backgroundColor: widget.confirmButtonColor,
-                  textStyle: widget.confirmTextColor != null ? TextStyle(color: widget.confirmTextColor) : null,
+                  textStyle: widget.confirmTextColor != null
+                      ? TextStyle(color: widget.confirmTextColor)
+                      : null,
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? true) {
                       Navigator.of(context).pop(_controller.text);
@@ -162,20 +189,28 @@ mixin Dialogs {
               if (icon != null) ...[
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
                   child: Icon(icon, color: color, size: 32),
                 ),
                 const SizedBox(height: 16),
               ],
               Text(
                 title,
-                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: titleColor),
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: titleColor,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
                 description,
-                style: theme.textTheme.bodyMedium?.copyWith(color: descriptionColor ?? theme.colorScheme.onSurfaceVariant),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: descriptionColor ?? theme.colorScheme.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -189,7 +224,9 @@ mixin Dialogs {
                           title: cancelText,
                           style: AppButtonStyle.text,
                           backgroundColor: cancelButtonColor,
-                          textStyle: cancelTextColor != null ? TextStyle(color: cancelTextColor) : null,
+                          textStyle: cancelTextColor != null
+                              ? TextStyle(color: cancelTextColor)
+                              : null,
                           onPressed: () => Navigator.of(context).pop(false),
                         );
                       },
@@ -204,7 +241,9 @@ mixin Dialogs {
                           title: confirmText,
                           style: AppButtonStyle.colored,
                           backgroundColor: confirmButtonColor ?? color,
-                          textStyle: confirmTextColor != null ? TextStyle(color: confirmTextColor) : null,
+                          textStyle: confirmTextColor != null
+                              ? TextStyle(color: confirmTextColor)
+                              : null,
                           onPressed: () => Navigator.of(context).pop(true),
                         );
                       },
@@ -246,7 +285,10 @@ mixin Dialogs {
               if (icon != null) ...[
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
                   child: Icon(icon, color: color, size: 32),
                 ),
                 const SizedBox(height: 16),
@@ -254,7 +296,10 @@ mixin Dialogs {
               if (title != null) ...[
                 Text(
                   title,
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: titleColor),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 if (description != null) const SizedBox(height: 8),
@@ -262,7 +307,10 @@ mixin Dialogs {
               if (description != null)
                 Text(
                   description,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: descriptionColor ?? theme.colorScheme.onSurfaceVariant),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color:
+                        descriptionColor ?? theme.colorScheme.onSurfaceVariant,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               const SizedBox(height: 24),
@@ -273,7 +321,9 @@ mixin Dialogs {
                     title: confirmText,
                     style: AppButtonStyle.colored,
                     backgroundColor: confirmButtonColor ?? color,
-                    textStyle: confirmTextColor != null ? TextStyle(color: confirmTextColor) : null,
+                    textStyle: confirmTextColor != null
+                        ? TextStyle(color: confirmTextColor)
+                        : null,
                     onPressed: () => Navigator.of(context).pop(),
                   );
                 },
@@ -327,7 +377,13 @@ mixin Dialogs {
 
   /// Shows a glassmorphic loading dialog that uses [AppLoadingIndicator].
   /// Returns a Future that completes when the dialog is dismissed.
-  Future<void> showAppLoadingDialog({double? size, required BuildContext context, String? message, bool barrierDismissible = false, Color? color}) {
+  Future<void> showAppLoadingDialog({
+    double? size,
+    required BuildContext context,
+    String? message,
+    bool barrierDismissible = false,
+    Color? color,
+  }) {
     final theme = Theme.of(context);
 
     return showDialog<void>(
@@ -342,7 +398,10 @@ mixin Dialogs {
               const SizedBox(height: 16),
               Text(
                 message,
-                style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600, color: color ?? theme.colorScheme.onSurface),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: color ?? theme.colorScheme.onSurface,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -366,10 +425,7 @@ mixin Dialogs {
           dialogContent = AppDialog(child: content);
         }
 
-        return PopScope(
-          canPop: barrierDismissible,
-          child: dialogContent,
-        );
+        return PopScope(canPop: barrierDismissible, child: dialogContent);
       },
     );
   }

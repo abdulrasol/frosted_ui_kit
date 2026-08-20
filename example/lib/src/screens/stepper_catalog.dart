@@ -8,13 +8,17 @@ class StepperCatalog extends StatefulWidget {
   State<StepperCatalog> createState() => _StepperCatalogState();
 }
 
-class _StepperCatalogState extends State<StepperCatalog> with Buttons, Steppers {
+class _StepperCatalogState extends State<StepperCatalog>
+    with Buttons, Steppers {
   late FrostedStepperController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = FrostedStepperController(steps: 4, stepsList: ['Cart', 'Address', 'Payment', 'Review']);
+    _controller = FrostedStepperController(
+      steps: 4,
+      stepsList: ['Cart', 'Address', 'Payment', 'Review'],
+    );
   }
 
   @override
@@ -41,20 +45,35 @@ class _StepperCatalogState extends State<StepperCatalog> with Buttons, Steppers 
           // ),
           SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: context.appBarHeight, horizontal: context.horizontalPadding),
+              padding: EdgeInsets.symmetric(
+                vertical: context.appBarHeight,
+                horizontal: context.horizontalPadding,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text('Horizontal Stepper', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Horizontal Stepper',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 24),
-                  appStepper(controller: _controller, direction: FrostedStepperDirection.horizontal),
+                  appStepper(
+                    controller: _controller,
+                    direction: FrostedStepperDirection.horizontal,
+                  ),
 
                   const SizedBox(height: 48),
 
-                  const Text('Vertical Stepper', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Vertical Stepper',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 24),
                   Center(
-                    child: appStepper(controller: _controller, direction: FrostedStepperDirection.vertical),
+                    child: appStepper(
+                      controller: _controller,
+                      direction: FrostedStepperDirection.vertical,
+                    ),
                   ),
 
                   const SizedBox(height: 48),
@@ -63,13 +82,28 @@ class _StepperCatalogState extends State<StepperCatalog> with Buttons, Steppers 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      appButton(context: context, title: 'Back', style: AppButtonStyle.glass, onPressed: () => _controller.previous()),
-                      appButton(context: context, title: 'Next', style: AppButtonStyle.colored, onPressed: () => _controller.next()),
+                      appButton(
+                        context: context,
+                        title: 'Back',
+                        style: AppButtonStyle.glass,
+                        onPressed: () => _controller.previous(),
+                      ),
+                      appButton(
+                        context: context,
+                        title: 'Next',
+                        style: AppButtonStyle.colored,
+                        onPressed: () => _controller.next(),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
                   Center(
-                    child: appButton(context: context, title: 'Reset', style: AppButtonStyle.text, onPressed: () => _controller.reset()),
+                    child: appButton(
+                      context: context,
+                      title: 'Reset',
+                      style: AppButtonStyle.text,
+                      onPressed: () => _controller.reset(),
+                    ),
                   ),
                 ],
               ),

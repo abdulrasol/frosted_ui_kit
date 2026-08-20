@@ -33,10 +33,12 @@ class FrostedNavigationButtomBar extends StatefulWidget {
   final Widget? action;
 
   @override
-  State<FrostedNavigationButtomBar> createState() => _FrostedNavigationButtomBarState();
+  State<FrostedNavigationButtomBar> createState() =>
+      _FrostedNavigationButtomBarState();
 }
 
-class _FrostedNavigationButtomBarState extends State<FrostedNavigationButtomBar> {
+class _FrostedNavigationButtomBarState
+    extends State<FrostedNavigationButtomBar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -50,7 +52,12 @@ class _FrostedNavigationButtomBarState extends State<FrostedNavigationButtomBar>
               child: BlurredCard(
                 borderRadius: BorderRadius.circular(32),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5), width: 1),
+                border: Border.all(
+                  color: theme.colorScheme.outlineVariant.withValues(
+                    alpha: 0.5,
+                  ),
+                  width: 1,
+                ),
                 sigmaX: 20,
                 sigmaY: 20,
                 child: Row(
@@ -66,7 +73,10 @@ class _FrostedNavigationButtomBarState extends State<FrostedNavigationButtomBar>
                 ),
               ),
             ),
-            if (widget.action != null) ...[const SizedBox(width: 8), widget.action!],
+            if (widget.action != null) ...[
+              const SizedBox(width: 8),
+              widget.action!,
+            ],
           ],
         ),
       ),
@@ -117,10 +127,12 @@ class _FrostedNavbarItemWidget extends StatefulWidget {
   final FrostedNavbarController controller;
 
   @override
-  State<_FrostedNavbarItemWidget> createState() => _FrostedNavbarItemWidgetState();
+  State<_FrostedNavbarItemWidget> createState() =>
+      _FrostedNavbarItemWidgetState();
 }
 
-class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget> with SingleTickerProviderStateMixin {
+class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
 
@@ -160,7 +172,8 @@ class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget> with
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final activeColor = theme.colorScheme.primary;
-    final inactiveColor = widget.item.color ?? theme.colorScheme.onSurfaceVariant;
+    final inactiveColor =
+        widget.item.color ?? theme.colorScheme.onSurfaceVariant;
 
     return Expanded(
       child: GestureDetector(
@@ -176,17 +189,17 @@ class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget> with
 
             return AnimatedBuilder(
               animation: _scaleAnimation,
-              builder: (context, child) => Transform.scale(
-                scale: _scaleAnimation.value,
-                child: child,
-              ),
+              builder: (context, child) =>
+                  Transform.scale(scale: _scaleAnimation.value, child: child),
               child: AnimatedContainer(
                 width: double.infinity,
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                 decoration: BoxDecoration(
-                  color: isActive ? activeColor.withValues(alpha: 0.15) : Colors.transparent,
+                  color: isActive
+                      ? activeColor.withValues(alpha: 0.15)
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: TweenAnimationBuilder<Color?>(
@@ -197,19 +210,24 @@ class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget> with
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (widget.item.badgeCount != null && widget.item.badgeCount! > 0)
+                        if (widget.item.badgeCount != null &&
+                            widget.item.badgeCount! > 0)
                           Badge(
                             label: Text(widget.item.badgeCount.toString()),
                             backgroundColor: theme.colorScheme.error,
                             child: Icon(
-                              isActive ? (widget.item.activeIcon ?? widget.item.icon) : widget.item.icon,
+                              isActive
+                                  ? (widget.item.activeIcon ?? widget.item.icon)
+                                  : widget.item.icon,
                               color: color,
                               size: 24,
                             ),
                           )
                         else
                           Icon(
-                            isActive ? (widget.item.activeIcon ?? widget.item.icon) : widget.item.icon,
+                            isActive
+                                ? (widget.item.activeIcon ?? widget.item.icon)
+                                : widget.item.icon,
                             color: color,
                             size: 24,
                           ),
@@ -223,7 +241,9 @@ class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget> with
                               maxLines: 1,
                               style: theme.textTheme.labelSmall?.copyWith(
                                 color: color,
-                                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                                fontWeight: isActive
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                                 fontSize: 10,
                               ),
                             ),

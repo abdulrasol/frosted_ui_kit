@@ -22,7 +22,8 @@ class ResetPasswordFormWidget extends StatefulWidget with Buttons, Inputs {
   });
 
   @override
-  State<ResetPasswordFormWidget> createState() => _ResetPasswordFormWidgetState();
+  State<ResetPasswordFormWidget> createState() =>
+      _ResetPasswordFormWidgetState();
 }
 
 class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
@@ -64,7 +65,9 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
         children: [
           Text(
             l10n.resetPasswordSubtitle,
-            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
@@ -74,7 +77,9 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
             placeholder: l10n.resetTokenPlaceholder,
             controller: _tokenController,
             prefix: const Icon(Icons.vpn_key_outlined, size: 20),
-            validator: (value) => (value == null || value.trim().isEmpty) ? l10n.pleaseEnterResetToken : null,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.pleaseEnterResetToken
+                : null,
           ),
           const SizedBox(height: 14),
           widget.passwordField(
@@ -83,7 +88,9 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
             placeholder: l10n.newPasswordPlaceholder,
             controller: _passwordController,
             validator: (value) {
-              if (value == null || value.isEmpty) return l10n.pleaseEnterPassword;
+              if (value == null || value.isEmpty) {
+                return l10n.pleaseEnterPassword;
+              }
               if (value.length < 8) return l10n.passwordMinLength;
               return null;
             },
@@ -94,7 +101,9 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
             label: l10n.confirmNewPasswordLabel,
             placeholder: l10n.confirmNewPasswordPlaceholder,
             controller: _passwordConfirmController,
-            validator: (value) => value != _passwordController.text ? l10n.passwordsDoNotMatch : null,
+            validator: (value) => value != _passwordController.text
+                ? l10n.passwordsDoNotMatch
+                : null,
           ),
           const SizedBox(height: 20),
           widget.appButton(
@@ -110,4 +119,3 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
     );
   }
 }
-

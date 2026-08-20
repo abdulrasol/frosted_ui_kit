@@ -15,7 +15,11 @@ class VerifyEmailFormWidget extends StatefulWidget with Buttons, Inputs {
   final VoidCallback? onVerifySuccess;
 
   /// Creates a [VerifyEmailFormWidget] instance.
-  VerifyEmailFormWidget({super.key, required this.controller, this.onVerifySuccess});
+  VerifyEmailFormWidget({
+    super.key,
+    required this.controller,
+    this.onVerifySuccess,
+  });
 
   @override
   State<VerifyEmailFormWidget> createState() => _VerifyEmailFormWidgetState();
@@ -33,7 +37,9 @@ class _VerifyEmailFormWidgetState extends State<VerifyEmailFormWidget> {
 
   Future<void> _onVerifyPressed() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    final success = await widget.controller.confirmEmailVerification(token: _tokenController.text.trim());
+    final success = await widget.controller.confirmEmailVerification(
+      token: _tokenController.text.trim(),
+    );
     if (success && widget.onVerifySuccess != null) {
       widget.onVerifySuccess!();
     }
@@ -52,7 +58,9 @@ class _VerifyEmailFormWidgetState extends State<VerifyEmailFormWidget> {
         children: [
           Text(
             l10n.verifyEmailSubtitle,
-            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
@@ -62,7 +70,9 @@ class _VerifyEmailFormWidgetState extends State<VerifyEmailFormWidget> {
             placeholder: l10n.verificationTokenPlaceholder,
             controller: _tokenController,
             prefix: const Icon(Icons.verified_user_outlined, size: 20),
-            validator: (value) => (value == null || value.trim().isEmpty) ? l10n.pleaseEnterVerificationToken : null,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.pleaseEnterVerificationToken
+                : null,
           ),
           const SizedBox(height: 20),
           widget.appButton(

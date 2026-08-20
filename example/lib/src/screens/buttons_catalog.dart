@@ -47,8 +47,10 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.accents.reversed.toList()[index % Colors.accents.length],
-                        Colors.accents.reversed.toList()[(index + 1) % Colors.accents.length],
+                        Colors.accents.reversed.toList()[index %
+                            Colors.accents.length],
+                        Colors.accents.reversed.toList()[(index + 1) %
+                            Colors.accents.length],
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -65,7 +67,10 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: context.appBarHeight),
-                  const Text('AppButton Styles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'AppButton Styles',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   const SizedBox(height: 16),
 
                   appButton(
@@ -86,7 +91,8 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                     style: AppButtonStyle.colored,
                     sigmaX: _state.sigmaX,
                     sigmaY: _state.sigmaY,
-                    backgroundColor: _state.glassColor ?? Theme.of(context).primaryColor,
+                    backgroundColor:
+                        _state.glassColor ?? Theme.of(context).primaryColor,
                     border: _state.border,
                     onPressed: () {},
                   ),
@@ -104,7 +110,10 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                   ),
 
                   const SizedBox(height: 32),
-                  const Text('Circle Buttons', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'Circle Buttons',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   const SizedBox(height: 16),
 
                   Row(
@@ -141,11 +150,14 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  const Text('FAB Flavors', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'FAB Flavors',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   const SizedBox(height: 16),
-                  
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -181,7 +193,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                       ),
                     ],
                   ),
-                  
+
                   // Extra padding at the bottom so FAB doesn't cover content
                   const SizedBox(height: 80),
                 ],
@@ -195,7 +207,8 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
             bottom: 0,
             child: PlaygroundControls(
               state: _state,
-              showBorderRadius: false, // Buttons have fixed border radius generally, except custom ones.
+              showBorderRadius:
+                  false, // Buttons have fixed border radius generally, except custom ones.
               onChanged: (s) => setState(() => _state = s),
             ),
           ),

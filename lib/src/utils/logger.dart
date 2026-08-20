@@ -17,9 +17,18 @@ class AppLogger {
     _log(message, name: 'ERROR', error: error, stackTrace: stackTrace);
   }
 
-  static void _log(String message, {String name = '', Object? error, StackTrace? stackTrace}) {
+  static void _log(
+    String message, {
+    String name = '',
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     if (kDebugMode) {
-      final time = DateTime.now().toIso8601String().split('T').last.substring(0, 8);
+      final time = DateTime.now()
+          .toIso8601String()
+          .split('T')
+          .last
+          .substring(0, 8);
       print('[$time] [$name] $message');
       if (error != null) {
         print('[$time] [$name] ERROR: $error');

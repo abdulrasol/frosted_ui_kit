@@ -13,10 +13,17 @@ enum FrostedStepperDirection {
 /// A controller for [FrostedStepper].
 /// Uses a ValueNotifier internally for lightweight state management.
 class FrostedStepperController extends ValueNotifier<int> {
-  FrostedStepperController({required this.steps, this.stepsList, this.showTitles = true, int initialIndex = 0})
-    : assert(steps > 0, 'steps must be greater than 0'),
-      assert(!showTitles || stepsList == null || stepsList.length == steps, 'stepsList length must be equal to the number of steps if titles are shown'),
-      super(initialIndex);
+  FrostedStepperController({
+    required this.steps,
+    this.stepsList,
+    this.showTitles = true,
+    int initialIndex = 0,
+  }) : assert(steps > 0, 'steps must be greater than 0'),
+       assert(
+         !showTitles || stepsList == null || stepsList.length == steps,
+         'stepsList length must be equal to the number of steps if titles are shown',
+       ),
+       super(initialIndex);
 
   /// Number of steps
   final int steps;
@@ -106,10 +113,16 @@ class FrostedStepper extends StatelessWidget {
         final isVertical = direction == FrostedStepperDirection.vertical;
 
         if (isVertical) {
-          return Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: _buildSteps(context, currentIndex, isVertical));
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildSteps(context, currentIndex, isVertical),
+          );
         } else {
           return Row(
-            mainAxisSize: stepLineLength != null ? MainAxisSize.min : MainAxisSize.max,
+            mainAxisSize: stepLineLength != null
+                ? MainAxisSize.min
+                : MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _buildSteps(context, currentIndex, isVertical),
           );
@@ -118,7 +131,11 @@ class FrostedStepper extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildSteps(BuildContext context, int currentIndex, bool isVertical) {
+  List<Widget> _buildSteps(
+    BuildContext context,
+    int currentIndex,
+    bool isVertical,
+  ) {
     final list = <Widget>[];
     for (int i = 0; i < controller.steps; i++) {
       list.add(_buildStep(context, i, currentIndex, isVertical));
@@ -129,10 +146,17 @@ class FrostedStepper extends StatelessWidget {
     return list;
   }
 
-  Widget _buildStep(BuildContext context, int index, int currentIndex, bool isVertical) {
+  Widget _buildStep(
+    BuildContext context,
+    int index,
+    int currentIndex,
+    bool isVertical,
+  ) {
     final theme = Theme.of(context);
     final activeColorToUse = activeColor ?? theme.colorScheme.primary;
-    final inactiveColorToUse = inactiveColor ?? theme.colorScheme.outlineVariant.withValues(alpha: 0.4);
+    final inactiveColorToUse =
+        inactiveColor ??
+        theme.colorScheme.outlineVariant.withValues(alpha: 0.4);
     final isDoneOrActive = index <= currentIndex;
 
     final stepWidget = Container(
@@ -140,14 +164,21 @@ class FrostedStepper extends StatelessWidget {
       height: stepSize,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: isDoneOrActive ? activeColorToUse : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: isDoneOrActive
+            ? activeColorToUse
+            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         shape: BoxShape.circle,
-        border: Border.all(color: isDoneOrActive ? activeColorToUse : inactiveColorToUse, width: 1.5),
+        border: Border.all(
+          color: isDoneOrActive ? activeColorToUse : inactiveColorToUse,
+          width: 1.5,
+        ),
       ),
       child: Text(
         (index + 1).toString(),
         style: theme.textTheme.labelMedium?.copyWith(
-          color: isDoneOrActive ? (textColor ?? theme.colorScheme.onPrimary) : theme.colorScheme.onSurfaceVariant,
+          color: isDoneOrActive
+              ? (textColor ?? theme.colorScheme.onPrimary)
+              : theme.colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -161,7 +192,9 @@ class FrostedStepper extends StatelessWidget {
         textAlign: isVertical ? TextAlign.start : TextAlign.center,
         overflow: TextOverflow.ellipsis,
         style: theme.textTheme.labelMedium?.copyWith(
-          color: isDoneOrActive ? activeColorToUse : theme.colorScheme.onSurfaceVariant,
+          color: isDoneOrActive
+              ? activeColorToUse
+              : theme.colorScheme.onSurfaceVariant,
           fontWeight: isDoneOrActive ? FontWeight.bold : FontWeight.normal,
         ),
       );
@@ -190,7 +223,11 @@ class FrostedStepper extends StatelessWidget {
     }
 
     if (isVertical) {
-      return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [stepWidget, titleWidget]);
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [stepWidget, titleWidget],
+      );
     } else {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -200,10 +237,17 @@ class FrostedStepper extends StatelessWidget {
     }
   }
 
-  Widget _buildStepLine(BuildContext context, int index, int currentIndex, bool isVertical) {
+  Widget _buildStepLine(
+    BuildContext context,
+    int index,
+    int currentIndex,
+    bool isVertical,
+  ) {
     final theme = Theme.of(context);
     final activeColorToUse = activeColor ?? theme.colorScheme.primary;
-    final inactiveColorToUse = inactiveColor ?? theme.colorScheme.outlineVariant.withValues(alpha: 0.4);
+    final inactiveColorToUse =
+        inactiveColor ??
+        theme.colorScheme.outlineVariant.withValues(alpha: 0.4);
     final isDone = index < currentIndex;
 
     if (isVertical) {
@@ -211,25 +255,25 @@ class FrostedStepper extends StatelessWidget {
         margin: EdgeInsets.only(left: (stepSize - lineSize) / 2),
         width: lineSize,
         height: verticalLineHeight,
-        decoration: BoxDecoration(color: isDone ? activeColorToUse : inactiveColorToUse, borderRadius: BorderRadius.circular(lineSize)),
+        decoration: BoxDecoration(
+          color: isDone ? activeColorToUse : inactiveColorToUse,
+          borderRadius: BorderRadius.circular(lineSize),
+        ),
       );
     } else {
       final lineWidget = Container(
         margin: EdgeInsets.only(top: (stepSize - lineSize) / 2),
         height: lineSize,
-        decoration: BoxDecoration(color: isDone ? activeColorToUse : inactiveColorToUse, borderRadius: BorderRadius.circular(lineSize)),
+        decoration: BoxDecoration(
+          color: isDone ? activeColorToUse : inactiveColorToUse,
+          borderRadius: BorderRadius.circular(lineSize),
+        ),
       );
 
       if (stepLineLength != null) {
-        return SizedBox(
-          width: stepLineLength,
-          child: lineWidget,
-        );
+        return SizedBox(width: stepLineLength, child: lineWidget);
       } else {
-        return Expanded(
-          flex: 3,
-          child: lineWidget,
-        );
+        return Expanded(flex: 3, child: lineWidget);
       }
     }
   }

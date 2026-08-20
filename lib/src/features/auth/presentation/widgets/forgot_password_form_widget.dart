@@ -22,7 +22,8 @@ class ForgotPasswordFormWidget extends StatefulWidget with Buttons, Inputs {
   });
 
   @override
-  State<ForgotPasswordFormWidget> createState() => _ForgotPasswordFormWidgetState();
+  State<ForgotPasswordFormWidget> createState() =>
+      _ForgotPasswordFormWidgetState();
 }
 
 class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
@@ -45,7 +46,9 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
 
   Future<void> _onRequestResetPressed() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    final success = await widget.controller.requestPasswordReset(email: _emailController.text.trim());
+    final success = await widget.controller.requestPasswordReset(
+      email: _emailController.text.trim(),
+    );
     if (success && widget.onRequestSent != null) {
       widget.onRequestSent!();
     }
@@ -64,7 +67,9 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
         children: [
           Text(
             l10n.enterEmailToReset,
-            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -74,7 +79,9 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
             placeholder: l10n.emailPlaceholder,
             controller: _emailController,
             validator: (value) {
-              if (value == null || value.trim().isEmpty) return l10n.pleaseEnterEmail;
+              if (value == null || value.trim().isEmpty) {
+                return l10n.pleaseEnterEmail;
+              }
               if (!value.contains('@')) return l10n.pleaseEnterValidEmail;
               return null;
             },
@@ -93,4 +100,3 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
     );
   }
 }
-

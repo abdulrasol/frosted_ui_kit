@@ -100,40 +100,54 @@ class PlaygroundControls extends StatelessWidget with Cards {
             (val) => onChanged(state.copyWith(borderWidth: val)),
           ),
           const SizedBox(height: 16),
-          const Text('Glass Color', style: TextStyle(fontWeight: FontWeight.w600)),
+          const Text(
+            'Glass Color',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
           _buildColorPicker(
             selectedColor: state.glassColor,
-            onColorSelected: (c) => onChanged(state.copyWith(glassColor: c, clearGlassColor: c == null)),
+            onColorSelected: (c) => onChanged(
+              state.copyWith(glassColor: c, clearGlassColor: c == null),
+            ),
           ),
           const SizedBox(height: 16),
-          const Text('Border Color', style: TextStyle(fontWeight: FontWeight.w600)),
+          const Text(
+            'Border Color',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
           const SizedBox(height: 8),
           _buildColorPicker(
             selectedColor: state.borderColor,
-            onColorSelected: (c) => onChanged(state.copyWith(borderColor: c, clearBorderColor: c == null)),
+            onColorSelected: (c) => onChanged(
+              state.copyWith(borderColor: c, clearBorderColor: c == null),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSlider(String label, double value, double min, double max, ValueChanged<double> onChanged) {
+  Widget _buildSlider(
+    String label,
+    double value,
+    double min,
+    double max,
+    ValueChanged<double> onChanged,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: const TextStyle(fontSize: 14)),
-        Slider(
-          value: value,
-          min: min,
-          max: max,
-          onChanged: onChanged,
-        ),
+        Slider(value: value, min: min, max: max, onChanged: onChanged),
       ],
     );
   }
 
-  Widget _buildColorPicker({Color? selectedColor, required ValueChanged<Color?> onColorSelected}) {
+  Widget _buildColorPicker({
+    Color? selectedColor,
+    required ValueChanged<Color?> onColorSelected,
+  }) {
     final colors = [
       null, // Transparent / None
       Colors.white.withValues(alpha: 0.1),
@@ -159,7 +173,9 @@ class PlaygroundControls extends StatelessWidget with Cards {
               color: c ?? Colors.transparent,
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? Colors.white : (c == null ? Colors.white38 : Colors.transparent),
+                color: isSelected
+                    ? Colors.white
+                    : (c == null ? Colors.white38 : Colors.transparent),
                 width: isSelected ? 2 : 1,
               ),
             ),

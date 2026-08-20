@@ -9,8 +9,5 @@ class AuthResponseEntity {
   final UserEntity user;
 
   /// Creates an [AuthResponseEntity].
-  const AuthResponseEntity({
-    required this.token,
-    required this.user,
-  });
+  const AuthResponseEntity({required this.token, required this.user});
 }

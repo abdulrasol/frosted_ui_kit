@@ -51,7 +51,9 @@ class AuthController extends ChangeNotifier {
   }) : _currentMode = initialMode;
 
   /// Factory constructor creating an [AuthController] with mock repository fallback for demo/testing.
-  factory AuthController.create({AuthViewMode initialMode = AuthViewMode.login}) {
+  factory AuthController.create({
+    AuthViewMode initialMode = AuthViewMode.login,
+  }) {
     const remoteDataSource = MockAuthRemoteDataSource();
     const repository = AuthRepositoryImpl(remoteDataSource: remoteDataSource);
     return AuthController(repository: repository, initialMode: initialMode);
@@ -108,17 +110,17 @@ class AuthController extends ChangeNotifier {
   }
 
   /// Performs user sign-in authentication.
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     _setLoading(true);
     AppLogger.info('AuthController.login called for email: $email');
     try {
       final response = await repository.login(email: email, password: password);
       _currentUser = response.user;
-      _successMessage = 'Welcome back, ${response.user.name.isNotEmpty ? response.user.name : response.user.email}!';
-      AppLogger.success('AuthController.login success for user ID: ${response.user.id}');
+      _successMessage =
+          'Welcome back, ${response.user.name.isNotEmpty ? response.user.name : response.user.email}!';
+      AppLogger.success(
+        'AuthController.login success for user ID: ${response.user.id}',
+      );
       _setLoading(false);
       return true;
     } catch (e) {
@@ -131,15 +133,20 @@ class AuthController extends ChangeNotifier {
   /// Performs new user registration and advances to verification progress step.
   Future<bool> register(RegisterRequestModel request) async {
     _setLoading(true);
-    AppLogger.info('AuthController.register called for email: ${request.email}');
+    AppLogger.info(
+      'AuthController.register called for email: ${request.email}',
+    );
     try {
       final user = await repository.register(request);
       _currentUser = user;
       _pendingEmail = user.email;
       _verificationStep = VerificationProgressStep.emailSent;
-      _successMessage = 'Account created for ${user.email}! Please verify your email.';
+      _successMessage =
+          'Account created for ${user.email}! Please verify your email.';
       _currentMode = AuthViewMode.verifyEmail;
-      AppLogger.success('AuthController.register success for user ID: ${user.id}');
+      AppLogger.success(
+        'AuthController.register success for user ID: ${user.id}',
+      );
       _setLoading(false);
       return true;
     } catch (e) {
@@ -152,7 +159,9 @@ class AuthController extends ChangeNotifier {
   /// Requests a password reset email token.
   Future<bool> requestPasswordReset({required String email}) async {
     _setLoading(true);
-    AppLogger.info('AuthController.requestPasswordReset called for email: $email');
+    AppLogger.info(
+      'AuthController.requestPasswordReset called for email: $email',
+    );
     try {
       await repository.requestPasswordReset(email: email);
       _pendingEmail = email;

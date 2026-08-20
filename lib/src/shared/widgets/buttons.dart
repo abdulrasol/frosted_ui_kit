@@ -214,11 +214,20 @@ class AppButton extends StatelessWidget {
         break;
     }
 
-    final Color contentColor = isDisabled ? theme.colorScheme.onSurface.withValues(alpha: 0.38) : (iconColor ?? defaultContentColor);
+    final Color contentColor = isDisabled
+        ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
+        : (iconColor ?? defaultContentColor);
 
     final Widget innerContent = Center(
       child: isLoading
-          ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: contentColor))
+          ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: contentColor,
+              ),
+            )
           : Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -229,7 +238,12 @@ class AppButton extends StatelessWidget {
                   Flexible(
                     child: Text(
                       title!,
-                      style: textStyle ?? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: contentColor),
+                      style:
+                          textStyle ??
+                          theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: contentColor,
+                          ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
@@ -249,14 +263,20 @@ class AppButton extends StatelessWidget {
         padding: padding,
         child: Material(
           color: Colors.transparent,
-          child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+          child: InkWell(
+            onTap: effectiveOnPressed,
+            borderRadius: effectiveRadius as BorderRadius?,
+            child: content,
+          ),
         ),
       );
     }
 
     // 2. Colored Button variant
     if (style == AppButtonStyle.colored) {
-      final fillBg = isDisabled ? theme.colorScheme.onSurface.withValues(alpha: 0.12) : (backgroundColor ?? theme.colorScheme.primary);
+      final fillBg = isDisabled
+          ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
+          : (backgroundColor ?? theme.colorScheme.primary);
 
       return Container(
         height: height,
@@ -266,19 +286,27 @@ class AppButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: fillBg,
           borderRadius: effectiveRadius,
-          border: border ?? (borderColor != null ? Border.all(color: borderColor!) : null),
+          border:
+              border ??
+              (borderColor != null ? Border.all(color: borderColor!) : null),
           boxShadow: boxShadow,
         ),
         child: Material(
           color: Colors.transparent,
-          child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+          child: InkWell(
+            onTap: effectiveOnPressed,
+            borderRadius: effectiveRadius as BorderRadius?,
+            child: content,
+          ),
         ),
       );
     }
 
     // 3. Outlined Button variant
     if (style == AppButtonStyle.outlined) {
-      final borderCol = isDisabled ? theme.colorScheme.onSurface.withValues(alpha: 0.12) : (borderColor ?? theme.colorScheme.primary);
+      final borderCol = isDisabled
+          ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
+          : (borderColor ?? theme.colorScheme.primary);
 
       return Container(
         height: height,
@@ -293,7 +321,11 @@ class AppButton extends StatelessWidget {
         ),
         child: Material(
           color: Colors.transparent,
-          child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+          child: InkWell(
+            onTap: effectiveOnPressed,
+            borderRadius: effectiveRadius as BorderRadius?,
+            child: content,
+          ),
         ),
       );
     }
@@ -305,7 +337,9 @@ class AppButton extends StatelessWidget {
       margin: margin,
       padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
       borderRadius: effectiveRadius,
-      border: border ?? (borderColor != null ? Border.all(color: borderColor!) : null),
+      border:
+          border ??
+          (borderColor != null ? Border.all(color: borderColor!) : null),
       color: backgroundColor,
       sigmaX: sigmaX,
       sigmaY: sigmaY,
@@ -313,7 +347,11 @@ class AppButton extends StatelessWidget {
       clipBehavior: clipBehavior,
       child: Material(
         color: Colors.transparent,
-        child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+        child: InkWell(
+          onTap: effectiveOnPressed,
+          borderRadius: effectiveRadius as BorderRadius?,
+          child: content,
+        ),
       ),
     );
   }
@@ -549,7 +587,10 @@ class AppFloatingActionButton extends StatelessWidget {
     this.borderRadius,
     this.margin,
     this.boxShadow,
-  }) : assert(title != null || icon != null, 'A FAB must have either a title or an icon.');
+  }) : assert(
+         title != null || icon != null,
+         'A FAB must have either a title or an icon.',
+       );
 
   /// Optional text label (makes the FAB extended).
   final String? title;
@@ -586,7 +627,11 @@ class AppFloatingActionButton extends StatelessWidget {
         sigmaX: sigmaX,
         sigmaY: sigmaY,
         glassColor: style == AppButtonStyle.glass ? backgroundColor : null,
-        borderColor: borderColor ?? (style == AppButtonStyle.outlined ? Theme.of(context).primaryColor : null),
+        borderColor:
+            borderColor ??
+            (style == AppButtonStyle.outlined
+                ? Theme.of(context).primaryColor
+                : null),
         borderWidth: borderWidth,
         border: border,
         margin: margin,

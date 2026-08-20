@@ -76,7 +76,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
 
           Text(
             l10n.createAccount,
-            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 18),
@@ -85,7 +87,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             label: l10n.nameLabel,
             placeholder: l10n.namePlaceholder,
             controller: _nameController,
-            validator: (value) => (value == null || value.trim().isEmpty) ? l10n.pleaseEnterName : null,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.pleaseEnterName
+                : null,
           ),
           const SizedBox(height: 14),
           widget.emailField(
@@ -94,7 +98,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             placeholder: l10n.emailPlaceholder,
             controller: _emailController,
             validator: (value) {
-              if (value == null || value.trim().isEmpty) return l10n.pleaseEnterEmail;
+              if (value == null || value.trim().isEmpty) {
+                return l10n.pleaseEnterEmail;
+              }
               if (!value.contains('@')) return l10n.pleaseEnterValidEmail;
               return null;
             },
@@ -106,7 +112,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             placeholder: l10n.passwordPlaceholder,
             controller: _passwordController,
             validator: (value) {
-              if (value == null || value.isEmpty) return l10n.pleaseEnterPassword;
+              if (value == null || value.isEmpty) {
+                return l10n.pleaseEnterPassword;
+              }
               if (value.length < 8) return l10n.passwordMinLength;
               return null;
             },
@@ -117,7 +125,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             label: l10n.confirmPasswordLabel,
             placeholder: l10n.passwordPlaceholder,
             controller: _passwordConfirmController,
-            validator: (value) => value != _passwordController.text ? l10n.passwordsDoNotMatch : null,
+            validator: (value) => value != _passwordController.text
+                ? l10n.passwordsDoNotMatch
+                : null,
           ),
 
           const SizedBox(height: 16),

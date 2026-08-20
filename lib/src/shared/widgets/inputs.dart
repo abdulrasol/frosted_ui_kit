@@ -390,14 +390,16 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   void initState() {
     super.initState();
-    _obscured = widget.obscureText ?? (widget.type == AppTextFieldType.password);
+    _obscured =
+        widget.obscureText ?? (widget.type == AppTextFieldType.password);
   }
 
   @override
   void didUpdateWidget(covariant AppTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.obscureText != oldWidget.obscureText) {
-      _obscured = widget.obscureText ?? (widget.type == AppTextFieldType.password);
+      _obscured =
+          widget.obscureText ?? (widget.type == AppTextFieldType.password);
     }
   }
 
@@ -477,8 +479,11 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveBorderRadius = widget.borderRadius ?? BorderRadius.circular(16);
-    final defaultFillColor = widget.fillColor ?? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
+    final effectiveBorderRadius =
+        widget.borderRadius ?? BorderRadius.circular(16);
+    final defaultFillColor =
+        widget.fillColor ??
+        theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,7 +492,8 @@ class _AppTextFieldState extends State<AppTextField> {
         if (widget.label != null) ...[
           Text(
             widget.label!,
-            style: widget.labelStyle ??
+            style:
+                widget.labelStyle ??
                 theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colorScheme.onSurface,
@@ -499,29 +505,45 @@ class _AppTextFieldState extends State<AppTextField> {
           initialValue: widget.controller?.text ?? widget.initialValue,
           validator: widget.validator,
           builder: (FormFieldState<String> state) {
-            final hasError = state.hasError || (widget.errorText != null && widget.errorText!.isNotEmpty);
+            final hasError =
+                state.hasError ||
+                (widget.errorText != null && widget.errorText!.isNotEmpty);
             final displayError = state.errorText ?? widget.errorText;
-            final activeBorderColor = hasError ? theme.colorScheme.error : (widget.borderColor ?? AppThemes.borderColor(context));
+            final activeBorderColor = hasError
+                ? theme.colorScheme.error
+                : (widget.borderColor ?? AppThemes.borderColor(context));
 
             final cupertinoField = CupertinoTextField(
               controller: widget.controller,
               placeholder: widget.placeholder,
-              placeholderStyle: widget.placeholderStyle ??
+              placeholderStyle:
+                  widget.placeholderStyle ??
                   theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                    color: theme.colorScheme.onSurfaceVariant.withValues(
+                      alpha: 0.6,
+                    ),
                   ),
-              style: widget.style ??
-                  theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface),
+              style:
+                  widget.style ??
+                  theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
               keyboardType: _effectiveKeyboardType,
               textInputAction: widget.textInputAction,
               obscureText: _obscured,
               obscuringCharacter: widget.obscuringCharacter,
               inputFormatters: widget.inputFormatters,
               prefix: _effectivePrefix != null
-                  ? Padding(padding: const EdgeInsets.only(left: 12, right: 8), child: _effectivePrefix)
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 12, right: 8),
+                      child: _effectivePrefix,
+                    )
                   : null,
               suffix: _effectiveSuffix != null
-                  ? Padding(padding: const EdgeInsets.only(left: 8, right: 12), child: _effectiveSuffix)
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 12),
+                      child: _effectiveSuffix,
+                    )
                   : null,
               minLines: widget.minLines,
               maxLines: _effectiveMaxLines,
@@ -538,13 +560,17 @@ class _AppTextFieldState extends State<AppTextField> {
                 state.didChange(value);
                 if (widget.onChanged != null) widget.onChanged!(value);
               },
-              padding: widget.contentPadding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding:
+                  widget.contentPadding ??
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: widget.useGlass
                   ? const BoxDecoration(color: Colors.transparent)
                   : BoxDecoration(
                       color: defaultFillColor,
                       borderRadius: effectiveBorderRadius,
-                      border: widget.border ?? Border.all(color: activeBorderColor, width: 1),
+                      border:
+                          widget.border ??
+                          Border.all(color: activeBorderColor, width: 1),
                       boxShadow: widget.boxShadow,
                     ),
             );
@@ -555,7 +581,9 @@ class _AppTextFieldState extends State<AppTextField> {
                     color: defaultFillColor,
                     sigmaX: widget.sigmaX,
                     sigmaY: widget.sigmaY,
-                    border: widget.border ?? Border.all(color: activeBorderColor, width: 1),
+                    border:
+                        widget.border ??
+                        Border.all(color: activeBorderColor, width: 1),
                     boxShadow: widget.boxShadow,
                     margin: widget.margin,
                     clipBehavior: widget.clipBehavior,
@@ -574,8 +602,11 @@ class _AppTextFieldState extends State<AppTextField> {
                     padding: const EdgeInsets.only(top: 6, left: 4),
                     child: Text(
                       displayError,
-                      style: widget.errorStyle ??
-                          theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error),
+                      style:
+                          widget.errorStyle ??
+                          theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
                     ),
                   ),
               ],
