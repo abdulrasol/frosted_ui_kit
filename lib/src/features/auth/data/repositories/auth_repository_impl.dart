@@ -1,10 +1,10 @@
-import 'package:starter/src/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:starter/src/features/auth/data/models/login_request_model.dart';
-import 'package:starter/src/features/auth/data/models/register_request_model.dart';
-import 'package:starter/src/features/auth/data/models/reset_password_request_model.dart';
-import 'package:starter/src/features/auth/domain/entities/auth_response_entity.dart';
-import 'package:starter/src/features/auth/domain/entities/user_entity.dart';
-import 'package:starter/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/login_request_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/register_request_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/reset_password_request_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/auth_response_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/user_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/repositories/auth_repository.dart';
 
 /// Implementation of [AuthRepository] in the data layer connecting usecases to remote data source.
 class AuthRepositoryImpl implements AuthRepository {

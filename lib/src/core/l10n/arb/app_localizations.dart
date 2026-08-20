@@ -200,24 +200,6 @@ abstract class AppLocalizations {
   /// **'Confirm Password'**
   String get confirmPasswordLabel;
 
-  /// No description provided for @emailVisibilityOption.
-  ///
-  /// In en, this message translates to:
-  /// **'Email Visibility'**
-  String get emailVisibilityOption;
-
-  /// No description provided for @meaddOption.
-  ///
-  /// In en, this message translates to:
-  /// **'Meadd Option'**
-  String get meaddOption;
-
-  /// No description provided for @baytraqOption.
-  ///
-  /// In en, this message translates to:
-  /// **'Baytraq Option'**
-  String get baytraqOption;
-
   /// No description provided for @registerAccount.
   ///
   /// In en, this message translates to:

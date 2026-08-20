@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/extensions/context.dart';
-import 'package:starter/src/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:starter/src/features/auth/presentation/widgets/forgot_password_form_widget.dart';
-import 'package:starter/src/features/auth/presentation/widgets/reset_password_form_widget.dart';
-import 'package:starter/src/features/auth/presentation/widgets/verify_email_form_widget.dart';
-import 'package:starter/src/shared/widgets/bottom_sheet.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
-import 'package:starter/src/shared/widgets/inputs.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/forgot_password_form_widget.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/reset_password_form_widget.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/verify_email_form_widget.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/bottom_sheet.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 
-/// Form sub-widget for user sign-in credentials using localized strings.
+/// Form sub-widget for user sign-in credentials using localized strings and glassmorphic inputs.
+///
+/// Designed to be completely reusable across apps. Supports optional callbacks for success
+/// handling and custom navigation flows.
 class LoginFormWidget extends StatefulWidget with BottomSheets, Buttons, Inputs {
   /// Auth controller instance.
   final AuthController controller;
 
-  /// Creates a [LoginFormWidget].
-  LoginFormWidget({super.key, required this.controller});
+  /// Optional callback executed when sign-in completes successfully.
+  final VoidCallback? onLoginSuccess;
+
+  /// Optional callback executed when user taps the "Register" button.
+  final VoidCallback? onRegisterTap;
+
+  /// Creates a [LoginFormWidget] instance.
+  LoginFormWidget({
+    super.key,
+    required this.controller,
+    this.onLoginSuccess,
+    this.onRegisterTap,
+  });
 
   @override
   State<LoginFormWidget> createState() => _LoginFormWidgetState();
@@ -25,8 +39,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _obscurePassword = true;
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -34,15 +46,21 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     super.dispose();
   }
 
-  void _onLoginPressed() {
+  Future<void> _onLoginPressed() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    widget.controller.login(email: _emailController.text.trim(), password: _passwordController.text);
+    final success = await widget.controller.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+    if (success && widget.onLoginSuccess != null) {
+      widget.onLoginSuccess!();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context)!;
 
     return Form(
       key: _formKey,
@@ -51,7 +69,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 16),
-
           Text(
             l10n.welcomeBack,
             style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -64,13 +81,11 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          widget.textField(
+          widget.emailField(
             context: context,
             label: l10n.emailLabel,
             placeholder: l10n.emailPlaceholder,
             controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            prefix: const Icon(Icons.email_outlined, size: 20),
             validator: (value) {
               if (value == null || value.trim().isEmpty) return l10n.pleaseEnterEmail;
               if (!value.contains('@')) return l10n.pleaseEnterValidEmail;
@@ -78,19 +93,11 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             },
           ),
           const SizedBox(height: 14),
-          widget.textField(
+          widget.passwordField(
             context: context,
             label: l10n.passwordLabel,
             placeholder: l10n.passwordPlaceholder,
             controller: _passwordController,
-            obscureText: _obscurePassword,
-            prefix: const Icon(Icons.lock_outline, size: 20),
-            suffix: widget.cricleButton(
-              size: 30,
-              context: context,
-              icon: _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-            ),
             validator: (value) {
               if (value == null || value.isEmpty) return l10n.pleaseEnterPassword;
               return null;
@@ -133,12 +140,16 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 context: context,
                 title: l10n.register,
                 height: 36,
-                onPressed: () => widget.controller.switchMode(AuthViewMode.register),
+                onPressed: () {
+                  if (widget.onRegisterTap != null) {
+                    widget.onRegisterTap!();
+                  } else {
+                    widget.controller.switchMode(AuthViewMode.register);
+                  }
+                },
               ),
             ],
           ),
-
-          // const Divider(height: 32),
           Row(
             spacing: 8,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -176,3 +187,4 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 }
+

@@ -1,8 +1,7 @@
-name: starter
-description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+name: frosted_ui_kit
+description: >-
+  A modern Flutter UI Kit combining Apple's Liquid Glass aesthetics with Telegram's Android dynamic UI.
+  Features blur cards, sliding segmented tabs, glass buttons, custom inputs, and dynamic bottom sheets.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -37,7 +36,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  pocketbase: ^0.24.0+1
+  lottie: ^3.5.1
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +62,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/lottie/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

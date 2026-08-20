@@ -35,24 +35,47 @@ lib/src/features/<feature_name>/
 ## 3. Standardized Shared Widgets
 Use the standardized core shared widgets in `lib/src/shared/widgets/` for UI elements:
 
-- **[BaseWidget](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/base_widget.dart)**: Foundational screen layout wrapper providing automatic glassmorphic app bar (`PrimaryAppBar`) integration.
-- **[Inputs](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/inputs.dart)**: `AppTextField` widget and `Inputs` mixin (`textField(...)`) for text inputs with label, validation, and theme support.
+- **[BaseWidget](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/base_widget.dart)**: Foundational screen layout wrapper providing automatic glassmorphic app bar (`FrostedAppBar`) integration.
+- **[Inputs](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/inputs.dart)**: `AppTextField` widget and `Inputs` mixin (`textField(...)`, `emailField(...)`, `passwordField(...)`, `nameField(...)`). Supports dynamic field types via `AppTextFieldType` (`text`, `email`, `password`, `name`, `phone`, `multiline`, `number`) with automatic keyboard types, obscure toggles, icons, validation, and theme support.
 - **[Cards](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/cards.dart)**: `BluredCard` widget and `Cards` mixin (`bluredCard(...)`) for glassmorphic containers.
-- **[Buttons](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/buttons.dart)**: `CricleButton`, `AppButton` (supporting `AppButtonStyle` variants: `glass`, `colored`, `outlined`, `text`), and `Buttons` mixin (`appButton(...)`, `cricleButton(...)`, `backButton(...)`, `closeButton(...)`) for action buttons. All screens must use these standardized buttons instead of direct `ElevatedButton` or `TextButton`.
+- **[Buttons](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/buttons.dart)**: `CricleButton`, `AppButton`, `AppFloatingActionButton`, and `Buttons` mixin (`appButton(...)`, `cricleButton(...)`, `backButton(...)`, `closeButton(...)`, `appFab(...)`) for action buttons. All screens must use these standardized buttons instead of direct `ElevatedButton` or `TextButton`.
+- **[Loading Buttons](file:///Users/rasol/DevsTools/codes/flutter/frosted_ui_kit/lib/src/shared/widgets/loading_button.dart)**: `FrostLoadingButton` widget driven by `FrostLoadingButtonController` for animated state transitions (idle, loading, success, error) with integrated Lottie support.
 - **[BottomSheets](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/bottom_sheet.dart)**: `AppBottomSheet` widget and `BottomSheets` mixin (`showAppBottomSheet(...)`) for glassmorphic modal bottom sheets.
-- **[Tabs](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/tabs.dart)**: `AppSlidingTabs` widget and `Tabs` mixin (`appSlidingTabs(...)`) for glassmorphic sliding segmented tabs.
+- **Dialogs**: `AppDialog` widget and `Dialogs` mixin (`showAppWarningDialog(...)`, `showAppErrorDialog(...)`, `showAppInputDialog(...)`, `showAppLoadingDialog(...)`) for glassmorphic popup dialogs.
+- **[Loading](file:///Users/rasol/DevsTools/codes/flutter/frosted_ui_kit/lib/src/shared/widgets/loading.dart)**: `AppLoadingIndicator` generic Lottie-based loading animation to replace `CircularProgressIndicator`.
+- **[Steppers](file:///Users/rasol/DevsTools/codes/flutter/frosted_ui_kit/lib/src/shared/widgets/stepper.dart)**: `FrostedStepper` widget and `Steppers` mixin (`appStepper(...)`) for glassmorphic multi-step progress indicators (horizontal & vertical).
+- **[Tabs](file:///Users/rasol/DevsTools/codes/flutter/frosted_ui_kit/lib/src/shared/widgets/tabs.dart)**: `AppSlidingTabs` widget and `Tabs` mixin (`appSlidingTabs(...)`) for glassmorphic sliding segmented tabs.
+- **[ListTiles](file:///Users/rasol/DevsTools/codes/flutter/starter/lib/src/shared/widgets/list_tile.dart)**: `FrostedListSection` and `FrostedListTile` for creating grouped, glassmorphic settings-style lists with integrated dividers.
+- **App Bars**: `FrostedAppBar` (in `app_bar.dart`) for floating, glassmorphic top navigation.
+- **Navigation Bars**: `FrostedNavigationButtomBar` (in `navigation_bar.dart`) for floating, glassmorphic bottom navigation with animated bouncy active states and badge support (`badgeCount`) managed via `FrostedNavbarController`.
 
-> **Widget Extension Rule**: If a new reusable widget pattern is required, build it under `lib/src/shared/widgets/` following the established class + mixin pattern, document it completely with DartDoc, and reuse it consistently.
+> **Widget Extension Rule**: If a new reusable widget pattern is required, build it under `lib/src/shared/widgets/` (or within the `frosted_ui_kit` package) following the established class + mixin pattern, document it completely with DartDoc, and reuse it consistently.
 
 ---
 
-## 4. Documentation Standard
-- **Comment Everything**: Every class, mixin, method, constructor, property, parameter, and utility function must be documented using standard DartDoc (`///`) format.
-- Ensure IDE hover tooltips and auto-complete provide clear explanations and usage details for all APIs.
+## 4. `frosted_ui_kit` Package Identity & Aesthetic Rules
+The UI components in this repository constitute **`frosted_ui_kit`**, a Flutter design system heavily inspired by:
+- **Apple Liquid Glass / Glassmorphism**: Translucent backdrops, soft backdrop blurs, realistic borders, subtle shadows, and layered depth.
+- **Telegram (Modern Android UI)**: Fluid navigation, sliding tabs, rounded control surfaces, smooth micro-interactions, and reactive feedback.
 
 ---
 
-## 5. Localization (l10n) Standard
+## 5. Generic Authentication Module Standard (`lib/src/features/auth`)
+- **Abstract & App-Agnostic**: All authentication entities (`UserEntity`), models (`UserModel`), datasources (`AuthRemoteDataSource`), and screens (`AuthScreen`) MUST remain 100% generic without application-specific legacy flags.
+- **Custom Attributes**: Any app-specific backend fields must be handled dynamically via `customData: Map<String, dynamic>?`.
+
+---
+
+## 6. Mandatory Comprehensive Documentation Standard
+- **100% DartDoc Coverage**: Every single class, enum, mixin, widget, property, method, callback, parameter, and extension created or modified in `frosted_ui_kit` MUST be fully documented using standard DartDoc (`///`) format.
+- **Project Documentation (`docs/`)**: Maintain detailed technical markdown guides in [docs/FROSTED_UI_KIT.md](file:///Users/rasol/DevsTools/codes/flutter/starter/docs/FROSTED_UI_KIT.md). Any architectural change or component addition must be recorded in this documentation.
+- **IDE Hover Clarity**: Ensure tooltips and auto-complete provide rich contextual explanations for developers using `frosted_ui_kit`.
+
+---
+
+## 7. Localization (l10n) Standard
 - **No Direct UI Text / Hardcoded Strings**: Never hardcode user-facing text strings directly inside UI widgets or controllers.
 - All user-facing strings must be defined in `.arb` localization files under `lib/src/core/l10n/arb/` (e.g. `app_en.arb`, `app_ar.arb`).
 - Always access localized strings in UI widgets via `context.l10n.<key>`.
+
+

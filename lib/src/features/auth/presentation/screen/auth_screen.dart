@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/extensions/context.dart';
-import 'package:starter/src/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:starter/src/features/auth/presentation/widgets/login_form_widget.dart';
-import 'package:starter/src/features/auth/presentation/widgets/register_form_widget.dart';
-import 'package:starter/src/shared/widgets/base_widget.dart';
-import 'package:starter/src/shared/widgets/bottom_sheet.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
-import 'package:starter/src/shared/widgets/cards.dart';
-import 'package:starter/src/shared/widgets/tabs.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/extensions/context.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/login_form_widget.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/register_form_widget.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/base_widget.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/bottom_sheet.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/tabs.dart';
 
-/// Clean Authentication Screen with top sliding tabs and localized strings.
+/// Clean Authentication Screen with top sliding glassmorphic tabs and localized strings.
+///
+/// Designed to be reusable across apps with customizable callbacks and controllers.
 class AuthScreen extends StatefulWidget with BottomSheets, Buttons, Cards, Tabs {
   /// Optional pre-configured [AuthController] instance. If null, created via [AuthController.create].
   final AuthController? controller;
 
-  /// Creates an [AuthScreen].
-  AuthScreen({super.key, this.controller});
+  /// Optional callback invoked when sign-in completes successfully.
+  final VoidCallback? onLoginSuccess;
+
+  /// Optional callback invoked when registration completes successfully.
+  final VoidCallback? onRegisterSuccess;
+
+  /// Creates an [AuthScreen] instance.
+  AuthScreen({
+    super.key,
+    this.controller,
+    this.onLoginSuccess,
+    this.onRegisterSuccess,
+  });
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -77,7 +91,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context)!;
     final isLogin = _selectedTabIndex == 0;
     final authTabs = [l10n.signIn, l10n.register];
 
@@ -98,8 +112,14 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: AnimatedCrossFade(
                         duration: const Duration(milliseconds: 300),
                         crossFadeState: isLogin ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                        firstChild: LoginFormWidget(controller: _controller),
-                        secondChild: RegisterFormWidget(controller: _controller),
+                        firstChild: LoginFormWidget(
+                          controller: _controller,
+                          onLoginSuccess: widget.onLoginSuccess,
+                        ),
+                        secondChild: RegisterFormWidget(
+                          controller: _controller,
+                          onRegisterSuccess: widget.onRegisterSuccess,
+                        ),
                       ),
                     ),
                   ),
@@ -112,3 +132,4 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 }
+

@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/extensions/context.dart';
-import 'package:starter/src/features/auth/data/models/register_request_model.dart';
-import 'package:starter/src/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
-import 'package:starter/src/shared/widgets/inputs.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/register_request_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 
-/// Form sub-widget for user account registration using localized strings.
+/// Form sub-widget for user account registration using localized strings and glassmorphic inputs.
+///
+/// Designed to be completely reusable across applications. Supports custom field inputs
+/// and optional callbacks for integration with navigation flows.
 class RegisterFormWidget extends StatefulWidget with Buttons, Inputs {
-  /// Auth controller instance.
+  /// Active authentication controller instance.
   final AuthController controller;
 
-  /// Creates a [RegisterFormWidget].
-  RegisterFormWidget({super.key, required this.controller});
+  /// Optional callback triggered when registration completes successfully.
+  final VoidCallback? onRegisterSuccess;
+
+  /// Optional callback triggered when user taps the "Sign In" button.
+  final VoidCallback? onLoginTap;
+
+  /// Creates a [RegisterFormWidget] instance.
+  RegisterFormWidget({
+    super.key,
+    required this.controller,
+    this.onRegisterSuccess,
+    this.onLoginTap,
+  });
 
   @override
   State<RegisterFormWidget> createState() => _RegisterFormWidgetState();
@@ -19,13 +33,10 @@ class RegisterFormWidget extends StatefulWidget with Buttons, Inputs {
 
 class _RegisterFormWidgetState extends State<RegisterFormWidget> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'test_815@example.com');
-  final _nameController = TextEditingController(text: 'example text');
-  final _passwordController = TextEditingController(text: '123456789');
-  final _passwordConfirmController = TextEditingController(text: '123456789');
-
-  bool _obscurePassword = true;
-  bool _obscurePasswordConfirm = true;
+  final _emailController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _passwordConfirmController = TextEditingController();
 
   @override
   void dispose() {
@@ -36,7 +47,7 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
     super.dispose();
   }
 
-  void _onRegisterPressed() {
+  Future<void> _onRegisterPressed() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final request = RegisterRequestModel(
       email: _emailController.text.trim().toLowerCase(),
@@ -44,13 +55,16 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
       password: _passwordController.text,
       passwordConfirm: _passwordConfirmController.text,
     );
-    widget.controller.register(request);
+    final success = await widget.controller.register(request);
+    if (success && widget.onRegisterSuccess != null) {
+      widget.onRegisterSuccess!();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context)!;
 
     return Form(
       key: _formKey,
@@ -66,22 +80,19 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 18),
-          widget.textField(
+          widget.nameField(
             context: context,
             label: l10n.nameLabel,
             placeholder: l10n.namePlaceholder,
             controller: _nameController,
-            prefix: const Icon(Icons.person_outline, size: 20),
             validator: (value) => (value == null || value.trim().isEmpty) ? l10n.pleaseEnterName : null,
           ),
           const SizedBox(height: 14),
-          widget.textField(
+          widget.emailField(
             context: context,
             label: l10n.emailLabel,
             placeholder: l10n.emailPlaceholder,
             controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            prefix: const Icon(Icons.email_outlined, size: 20),
             validator: (value) {
               if (value == null || value.trim().isEmpty) return l10n.pleaseEnterEmail;
               if (!value.contains('@')) return l10n.pleaseEnterValidEmail;
@@ -89,19 +100,11 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             },
           ),
           const SizedBox(height: 14),
-          widget.textField(
+          widget.passwordField(
             context: context,
             label: l10n.passwordLabel,
             placeholder: l10n.passwordPlaceholder,
             controller: _passwordController,
-            obscureText: _obscurePassword,
-            prefix: const Icon(Icons.lock_outline, size: 20),
-            suffix: widget.cricleButton(
-              size: 30,
-              context: context,
-              icon: _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-            ),
             validator: (value) {
               if (value == null || value.isEmpty) return l10n.pleaseEnterPassword;
               if (value.length < 8) return l10n.passwordMinLength;
@@ -109,19 +112,11 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
             },
           ),
           const SizedBox(height: 14),
-          widget.textField(
+          widget.passwordField(
             context: context,
             label: l10n.confirmPasswordLabel,
             placeholder: l10n.passwordPlaceholder,
             controller: _passwordConfirmController,
-            obscureText: _obscurePasswordConfirm,
-            prefix: const Icon(Icons.lock_outline, size: 20),
-            suffix: widget.cricleButton(
-              size: 30,
-              context: context,
-              icon: _obscurePasswordConfirm ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-              onPressed: () => setState(() => _obscurePasswordConfirm = !_obscurePasswordConfirm),
-            ),
             validator: (value) => value != _passwordController.text ? l10n.passwordsDoNotMatch : null,
           ),
 
@@ -145,7 +140,13 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                 context: context,
                 title: l10n.signIn,
                 height: 36,
-                onPressed: () => widget.controller.switchMode(AuthViewMode.login),
+                onPressed: () {
+                  if (widget.onLoginTap != null) {
+                    widget.onLoginTap!();
+                  } else {
+                    widget.controller.switchMode(AuthViewMode.login);
+                  }
+                },
               ),
             ],
           ),

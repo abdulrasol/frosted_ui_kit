@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/features/auth/presentation/screen/auth_screen.dart';
-import 'package:starter/src/shared/widgets/base_widget.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/screen/auth_screen.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/base_widget.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
 
 class Home extends StatelessWidget with Buttons {
   const Home({super.key});

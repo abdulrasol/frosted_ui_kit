@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/core/l10n/arb/app_localizations.dart';
-import 'package:starter/src/features/home/persentation/screen/home.dart';
-import 'package:starter/src/utils/app_themes.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/features/home/persentation/screen/home.dart';
+import 'package:frosted_ui_kit/src/utils/app_themes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

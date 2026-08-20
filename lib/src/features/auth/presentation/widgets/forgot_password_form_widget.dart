@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/extensions/context.dart';
-import 'package:starter/src/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
-import 'package:starter/src/shared/widgets/inputs.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 
-/// Form sub-widget for requesting password reset email using localized strings.
+/// Form sub-widget for requesting password reset email using localized strings and glassmorphic inputs.
+///
+/// Fully reusable across applications with support for custom callbacks.
 class ForgotPasswordFormWidget extends StatefulWidget with Buttons, Inputs {
   /// Auth controller instance.
   final AuthController controller;
 
-  /// Creates a [ForgotPasswordFormWidget].
-  ForgotPasswordFormWidget({super.key, required this.controller});
+  /// Optional callback invoked when the password reset link is requested.
+  final VoidCallback? onRequestSent;
+
+  /// Creates a [ForgotPasswordFormWidget] instance.
+  ForgotPasswordFormWidget({
+    super.key,
+    required this.controller,
+    this.onRequestSent,
+  });
 
   @override
   State<ForgotPasswordFormWidget> createState() => _ForgotPasswordFormWidgetState();
@@ -34,15 +43,18 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
     super.dispose();
   }
 
-  void _onRequestResetPressed() {
+  Future<void> _onRequestResetPressed() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    widget.controller.requestPasswordReset(email: _emailController.text.trim());
+    final success = await widget.controller.requestPasswordReset(email: _emailController.text.trim());
+    if (success && widget.onRequestSent != null) {
+      widget.onRequestSent!();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context)!;
 
     return Form(
       key: _formKey,
@@ -56,13 +68,11 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          widget.textField(
+          widget.emailField(
             context: context,
             label: l10n.emailLabel,
             placeholder: l10n.emailPlaceholder,
             controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            prefix: const Icon(Icons.email_outlined, size: 20),
             validator: (value) {
               if (value == null || value.trim().isEmpty) return l10n.pleaseEnterEmail;
               if (!value.contains('@')) return l10n.pleaseEnterValidEmail;
@@ -83,3 +93,4 @@ class _ForgotPasswordFormWidgetState extends State<ForgotPasswordFormWidget> {
     );
   }
 }
+

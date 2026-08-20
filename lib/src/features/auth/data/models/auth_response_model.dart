@@ -1,5 +1,5 @@
-import 'package:starter/src/features/auth/data/models/user_model.dart';
-import 'package:starter/src/features/auth/domain/entities/auth_response_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/user_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/auth_response_entity.dart';
 
 /// Data model representing authentication response from server holding token and user data.
 class AuthResponseModel extends AuthResponseEntity {

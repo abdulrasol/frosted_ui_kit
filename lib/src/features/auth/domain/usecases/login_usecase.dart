@@ -1,5 +1,5 @@
-import 'package:starter/src/features/auth/domain/entities/auth_response_entity.dart';
-import 'package:starter/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/auth_response_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/repositories/auth_repository.dart';
 
 /// Use case for logging in a user with email and password.
 class LoginUseCase {

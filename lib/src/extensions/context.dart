@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/core/l10n/arb/app_localizations.dart';
 
 /// Extension methods on [BuildContext] for screen dimensions, padding, and localization.
-extension ContextExtension on BuildContext {
-  /// Convenient getter for accessing [AppLocalizations] instance.
-  AppLocalizations get l10n => AppLocalizations.of(this)!;
-
+extension FrostedContextExtension on BuildContext {
   /// Returns total screen width.
   double get screenWidth => MediaQuery.sizeOf(this).width;
 
@@ -20,6 +16,9 @@ extension ContextExtension on BuildContext {
 
   /// Preferred app bar height size.
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
+
+  /// AppBar height
+  double get appBarHeight => kToolbarHeight;
 
   /// Total top padding including safe area and app bar height.
   double get topPadding => kToolbarHeight + padding.top;

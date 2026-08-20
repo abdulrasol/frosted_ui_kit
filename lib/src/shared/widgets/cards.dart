@@ -1,12 +1,31 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:starter/src/utils/app_themes.dart';
+import 'package:frosted_ui_kit/src/utils/app_themes.dart';
 
-/// A reusable glassmorphic container card with backdrop blur and customizable dimensions.
-class BluredCard extends StatelessWidget {
-  /// Creates a [BluredCard] container with optional padding, margin, radius, and dimensions.
-  const BluredCard({super.key, required this.child, this.borderRadius, this.height, this.width, this.radius, this.margin, this.padding, this.border});
+/// A reusable glassmorphic container card with backdrop blur, customizable dimensions,
+/// border highlights, background tint, and shadow support.
+///
+/// Serves as the central glass foundation for all glassmorphic components in `frosted_ui_kit`.
+class BlurredCard extends StatelessWidget {
+  /// Creates a [BlurredCard] glassmorphic container with comprehensive customization options.
+  const BlurredCard({
+    super.key,
+    required this.child,
+    this.borderRadius,
+    this.height,
+    this.width,
+    this.radius,
+    this.margin,
+    this.padding,
+    this.border,
+    this.sigmaX = 10.0,
+    this.sigmaY = 10.0,
+    this.color,
+    this.boxShadow,
+    this.shape = BoxShape.rectangle,
+    this.clipBehavior = Clip.antiAlias,
+  });
 
   /// The child widget displayed within the glassmorphic card.
   final Widget child;
@@ -29,31 +48,113 @@ class BluredCard extends StatelessWidget {
   /// Inner padding surrounding the child widget inside the container.
   final EdgeInsetsGeometry? padding;
 
-  /// Optional border
+  /// Optional border decoration override (defaults to [AppThemes.border]).
   final BoxBorder? border;
+
+  /// Horizontal backdrop blur intensity (defaults to 10.0).
+  final double sigmaX;
+
+  /// Vertical backdrop blur intensity (defaults to 10.0).
+  final double sigmaY;
+
+  /// Custom translucent background color tint (defaults to primary color with 0.1 alpha).
+  final Color? color;
+
+  /// Optional list of box shadows applied to the card container.
+  final List<BoxShadow>? boxShadow;
+
+  /// Shape of the container box (defaults to [BoxShape.rectangle]).
+  final BoxShape shape;
+
+  /// Content clipping behavior (defaults to [Clip.antiAlias]).
+  final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(radius ?? 50),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          height: height,
-          width: width,
-          margin: margin,
-          padding: padding,
-          decoration: BoxDecoration(border: border ?? AppThemes.border, borderRadius: borderRadius ?? BorderRadius.circular(radius ?? 50)),
-          child: child,
+    final theme = Theme.of(context);
+    final defaultColor = color ?? theme.primaryColor.withValues(alpha: 0.1);
+    final effectiveBorderRadius = shape == BoxShape.circle
+        ? null
+        : (borderRadius ?? BorderRadius.circular(radius ?? 50));
+
+    final containerWidget = Container(
+      height: height,
+      width: width,
+      margin: margin,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: defaultColor,
+        border: border ?? AppThemes.border(context),
+        borderRadius: effectiveBorderRadius,
+        shape: shape,
+        boxShadow: boxShadow,
+      ),
+      child: child,
+    );
+
+    if (shape == BoxShape.circle) {
+      return ClipOval(
+        clipBehavior: clipBehavior,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
+          child: containerWidget,
         ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: effectiveBorderRadius ?? BorderRadius.zero,
+      clipBehavior: clipBehavior,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
+        child: containerWidget,
       ),
     );
   }
 }
 
+/// Legacy alias for [BlurredCard] to maintain backwards compatibility.
+typedef BluredCard = BlurredCard;
+
 /// A mixin providing utility methods for constructing glassmorphic card widgets.
 mixin Cards {
-  /// Helper method returning a configured [BluredCard] instance.
+  /// Helper method returning a configured [BlurredCard] instance.
+  Widget blurredCard({
+    required BuildContext context,
+    required Widget child,
+    BorderRadiusGeometry? borderRadius,
+    double? height,
+    double? width,
+    double? radius,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
+    BoxBorder? border,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? color,
+    List<BoxShadow>? boxShadow,
+    BoxShape shape = BoxShape.rectangle,
+    Clip clipBehavior = Clip.antiAlias,
+  }) {
+    return BlurredCard(
+      borderRadius: borderRadius,
+      height: height,
+      width: width,
+      radius: radius,
+      margin: margin,
+      padding: padding,
+      border: border,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      color: color,
+      boxShadow: boxShadow,
+      shape: shape,
+      clipBehavior: clipBehavior,
+      child: child,
+    );
+  }
+
+  /// Legacy alias for [blurredCard].
   Widget bluredCard({
     required BuildContext context,
     required Widget child,
@@ -64,7 +165,29 @@ mixin Cards {
     EdgeInsetsGeometry? margin,
     EdgeInsetsGeometry? padding,
     BoxBorder? border,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? color,
+    List<BoxShadow>? boxShadow,
+    BoxShape shape = BoxShape.rectangle,
+    Clip clipBehavior = Clip.antiAlias,
   }) {
-    return BluredCard(borderRadius: borderRadius, height: height, width: width, radius: radius, margin: margin, padding: padding, border: border, child: child);
+    return blurredCard(
+      context: context,
+      borderRadius: borderRadius,
+      height: height,
+      width: width,
+      radius: radius,
+      margin: margin,
+      padding: padding,
+      border: border,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      color: color,
+      boxShadow: boxShadow,
+      shape: shape,
+      clipBehavior: clipBehavior,
+      child: child,
+    );
   }
 }

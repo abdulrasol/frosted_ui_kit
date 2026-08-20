@@ -1,11 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:starter/src/shared/widgets/cards.dart';
-import 'package:starter/src/utils/app_themes.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 
 /// Defines visual style variants for [AppButton].
 enum AppButtonStyle {
-  /// Default glassmorphic button style (built on [BluredCard] with backdrop blur).
+  /// Default glassmorphic button style (built on [BlurredCard] with backdrop blur).
   glass,
 
   /// Solid colored filled button style using primary theme color or custom background color.
@@ -18,10 +16,24 @@ enum AppButtonStyle {
   text,
 }
 
-/// A circular glassmorphic button with backdrop blur and semi-transparent border styling.
-class CricleButton extends StatelessWidget {
-  /// Creates a [CricleButton] with specified tap callback and icon.
-  const CricleButton({super.key, required this.onPressed, required this.icon, this.size});
+/// A circular glassmorphic button built on [BlurredCard] with customizable blur, border, and color.
+class CircleButton extends StatelessWidget {
+  /// Creates a [CircleButton] with specified tap callback, icon, and optional glass parameters.
+  const CircleButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    this.size = 48.0,
+    this.sigmaX = 10.0,
+    this.sigmaY = 10.0,
+    this.glassColor,
+    this.borderColor,
+    this.borderWidth,
+    this.border,
+    this.margin,
+    this.boxShadow,
+    this.clipBehavior = Clip.antiAlias,
+  });
 
   /// Callback function executed when the button is tapped.
   final VoidCallback? onPressed;
@@ -29,33 +41,72 @@ class CricleButton extends StatelessWidget {
   /// Icon data displayed at the center of the button.
   final IconData icon;
 
-  /// Custom size for the button.
+  /// Custom diameter size for the circular button (defaults to 48.0).
   final double? size;
+
+  /// Horizontal backdrop blur intensity (defaults to 10.0).
+  final double sigmaX;
+
+  /// Vertical backdrop blur intensity (defaults to 10.0).
+  final double sigmaY;
+
+  /// Optional custom glass background tint color.
+  final Color? glassColor;
+
+  /// Optional border color override.
+  final Color? borderColor;
+
+  /// Optional border width override.
+  final double? borderWidth;
+
+  /// Optional custom border override. If provided, overrides [borderColor] and [borderWidth].
+  final BoxBorder? border;
+
+  /// Outer margin surrounding the button container.
+  final EdgeInsetsGeometry? margin;
+
+  /// Optional list of box shadows applied to the circular button.
+  final List<BoxShadow>? boxShadow;
+
+  /// Content clipping behavior (defaults to [Clip.antiAlias]).
+  final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          height: size ?? 48,
-          width: size ?? 48,
-          decoration: BoxDecoration(border: AppThemes.border, shape: BoxShape.circle),
-          child: InkWell(
-            onTap: onPressed,
-            borderRadius: BorderRadius.circular(50),
-            child: Center(child: Icon(icon, size: (size ?? 48) * 0.6)),
-          ),
-        ),
+    final effectiveSize = size ?? 48.0;
+    BoxBorder? customBorder;
+    if (borderColor != null) {
+      customBorder = Border.all(color: borderColor!, width: borderWidth ?? 1.0);
+    }
+
+    return BlurredCard(
+      height: effectiveSize,
+      width: effectiveSize,
+      shape: BoxShape.circle,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      color: glassColor,
+      border: border ?? customBorder,
+      boxShadow: boxShadow,
+      margin: margin,
+      clipBehavior: clipBehavior,
+      padding: EdgeInsets.zero,
+      child: InkWell(
+        onTap: onPressed,
+        customBorder: const CircleBorder(),
+        child: Center(child: Icon(icon, size: effectiveSize * 0.5)),
       ),
     );
   }
 }
 
+/// Legacy alias for [CircleButton] to maintain backwards compatibility.
+typedef CricleButton = CircleButton;
+
 /// A versatile button widget supporting multiple style variants ([AppButtonStyle.glass],
 /// [AppButtonStyle.colored], [AppButtonStyle.outlined], [AppButtonStyle.text]).
 class AppButton extends StatelessWidget {
-  /// Creates an [AppButton].
+  /// Creates an [AppButton] with customizable style, size, glass effects, and tap handler.
   const AppButton({
     super.key,
     this.title,
@@ -73,6 +124,12 @@ class AppButton extends StatelessWidget {
     this.style = AppButtonStyle.glass,
     this.backgroundColor,
     this.borderColor,
+    this.border,
+    this.sigmaX = 10.0,
+    this.sigmaY = 10.0,
+    this.boxShadow,
+    this.clipBehavior = Clip.antiAlias,
+    this.child,
   });
 
   /// Optional text string displayed on the button.
@@ -92,6 +149,9 @@ class AppButton extends StatelessWidget {
 
   /// Fixed height for the button card (defaults to 48).
   final double? height;
+
+  /// Custom child to override the default text/icon content.
+  final Widget? child;
 
   /// Optional fixed width for the button card.
   final double? width;
@@ -119,6 +179,21 @@ class AppButton extends StatelessWidget {
 
   /// Custom border color override.
   final Color? borderColor;
+
+  /// Optional custom border override. If provided, overrides [borderColor].
+  final BoxBorder? border;
+
+  /// Horizontal backdrop blur intensity for glass style (defaults to 10.0).
+  final double sigmaX;
+
+  /// Vertical backdrop blur intensity for glass style (defaults to 10.0).
+  final double sigmaY;
+
+  /// Optional list of box shadows applied to the button container.
+  final List<BoxShadow>? boxShadow;
+
+  /// Content clipping behavior (defaults to [Clip.antiAlias]).
+  final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
@@ -151,13 +226,19 @@ class AppButton extends StatelessWidget {
               children: [
                 if (icon != null) Icon(icon, size: 20, color: contentColor),
                 if (title != null)
-                  Text(
-                    title!,
-                    style: textStyle ?? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: contentColor),
+                  Flexible(
+                    child: Text(
+                      title!,
+                      style: textStyle ?? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold, color: contentColor),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
               ],
             ),
     );
+
+    final Widget content = child ?? innerContent;
 
     // 1. Text Button variant
     if (style == AppButtonStyle.text) {
@@ -166,7 +247,10 @@ class AppButton extends StatelessWidget {
         width: width,
         margin: margin,
         padding: padding,
-        child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: innerContent),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+        ),
       );
     }
 
@@ -182,9 +266,13 @@ class AppButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: fillBg,
           borderRadius: effectiveRadius,
-          border: borderColor != null ? Border.all(color: borderColor!) : null,
+          border: border ?? (borderColor != null ? Border.all(color: borderColor!) : null),
+          boxShadow: boxShadow,
         ),
-        child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: innerContent),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+        ),
       );
     }
 
@@ -200,30 +288,102 @@ class AppButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? Colors.transparent,
           borderRadius: effectiveRadius,
-          border: Border.all(color: borderCol, width: 1.5),
+          border: border ?? Border.all(color: borderCol, width: 1.5),
+          boxShadow: boxShadow,
         ),
-        child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: innerContent),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+        ),
       );
     }
 
-    // 4. Default Glassmorphic Button variant
-    return BluredCard(
+    // 4. Default Glassmorphic Button variant built on BlurredCard
+    return BlurredCard(
       height: height,
       width: width,
       margin: margin,
       padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
       borderRadius: effectiveRadius,
-      border: borderColor != null ? Border.all(color: borderColor!) : null,
-      child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: innerContent),
+      border: border ?? (borderColor != null ? Border.all(color: borderColor!) : null),
+      color: backgroundColor,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(onTap: effectiveOnPressed, borderRadius: effectiveRadius as BorderRadius?, child: content),
+      ),
     );
   }
 }
 
 /// A mixin providing utility methods for constructing standard navigation and action buttons.
 mixin Buttons {
-  /// Returns a custom [CricleButton] with specified icon and tap callback.
-  Widget cricleButton({required BuildContext context, required IconData icon, VoidCallback? onPressed, double? size}) {
-    return CricleButton(onPressed: onPressed, icon: icon, size: size);
+  /// Returns a custom [CircleButton] with specified icon, tap callback, and glass options.
+  Widget circleButton({
+    required BuildContext context,
+    required IconData icon,
+    VoidCallback? onPressed,
+    double? size,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? glassColor,
+    Color? borderColor,
+    double? borderWidth,
+    BoxBorder? border,
+    EdgeInsetsGeometry? margin,
+    List<BoxShadow>? boxShadow,
+    Clip clipBehavior = Clip.antiAlias,
+  }) {
+    return CircleButton(
+      onPressed: onPressed,
+      icon: icon,
+      size: size,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      glassColor: glassColor,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      border: border,
+      margin: margin,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
+    );
+  }
+
+  /// Legacy alias for [circleButton].
+  Widget cricleButton({
+    required BuildContext context,
+    required IconData icon,
+    VoidCallback? onPressed,
+    double? size,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? glassColor,
+    Color? borderColor,
+    double? borderWidth,
+    BoxBorder? border,
+    EdgeInsetsGeometry? margin,
+    List<BoxShadow>? boxShadow,
+    Clip clipBehavior = Clip.antiAlias,
+  }) {
+    return circleButton(
+      context: context,
+      icon: icon,
+      onPressed: onPressed,
+      size: size,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      glassColor: glassColor,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      border: border,
+      margin: margin,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
+    );
   }
 
   /// Returns a configured [AppButton] with support for style variants ([AppButtonStyle]).
@@ -231,6 +391,7 @@ mixin Buttons {
     required BuildContext context,
     String? title,
     IconData? icon,
+    Widget? child,
     VoidCallback? onPressed,
     bool isLoading = false,
     bool isDisabled = false,
@@ -244,6 +405,11 @@ mixin Buttons {
     AppButtonStyle style = AppButtonStyle.glass,
     Color? backgroundColor,
     Color? borderColor,
+    BoxBorder? border,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    List<BoxShadow>? boxShadow,
+    Clip clipBehavior = Clip.antiAlias,
   }) {
     return AppButton(
       title: title,
@@ -261,14 +427,71 @@ mixin Buttons {
       style: style,
       backgroundColor: backgroundColor,
       borderColor: borderColor,
+      border: border,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
+      child: child,
     );
   }
 
-  /// Returns an RTL-aware back navigation button that pops the current route.
-  Widget backButton(BuildContext context, {VoidCallback? onTap}) {
-    return cricleButton(
+  /// Returns a custom glassmorphic Floating Action Button.
+  Widget appFab({
+    required BuildContext context,
+    String? title,
+    IconData? icon,
+    VoidCallback? onPressed,
+    AppButtonStyle style = AppButtonStyle.glass,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? backgroundColor,
+    Color? borderColor,
+    double? borderWidth,
+    BoxBorder? border,
+    BorderRadiusGeometry? borderRadius,
+    EdgeInsetsGeometry? margin,
+    List<BoxShadow>? boxShadow,
+  }) {
+    return AppFloatingActionButton(
+      title: title,
+      icon: icon,
+      onPressed: onPressed,
+      style: style,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      border: border,
+      borderRadius: borderRadius,
+      margin: margin,
+      boxShadow: boxShadow,
+    );
+  }
+
+  /// Returns an RTL-aware back navigation button built on [CircleButton].
+  Widget backButton(
+    BuildContext context, {
+    VoidCallback? onTap,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? glassColor,
+    BoxBorder? border,
+    EdgeInsetsGeometry? margin,
+    List<BoxShadow>? boxShadow,
+    Clip clipBehavior = Clip.antiAlias,
+  }) {
+    return circleButton(
       context: context,
       icon: Icons.chevron_left_rounded,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      glassColor: glassColor,
+      border: border,
+      margin: margin,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
       onPressed:
           onTap ??
           () {
@@ -279,16 +502,114 @@ mixin Buttons {
     );
   }
 
-  /// Returns a close icon navigation button that pops the current route.
-  Widget closeButton(BuildContext context) {
-    return cricleButton(
+  /// Returns a close icon navigation button built on [CircleButton].
+  Widget closeButton(
+    BuildContext context, {
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? glassColor,
+    BoxBorder? border,
+    EdgeInsetsGeometry? margin,
+    List<BoxShadow>? boxShadow,
+    Clip clipBehavior = Clip.antiAlias,
+  }) {
+    return circleButton(
       context: context,
       icon: Icons.close,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      glassColor: glassColor,
+      border: border,
+      margin: margin,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
       onPressed: () {
         if (Navigator.of(context).canPop()) {
           Navigator.pop(context);
         }
       },
+    );
+  }
+}
+
+/// A flexible glassmorphic floating action button that supports icon-only, text-only, or both (extended).
+class AppFloatingActionButton extends StatelessWidget {
+  const AppFloatingActionButton({
+    super.key,
+    this.title,
+    this.icon,
+    required this.onPressed,
+    this.style = AppButtonStyle.glass,
+    this.sigmaX = 10.0,
+    this.sigmaY = 10.0,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderWidth,
+    this.border,
+    this.borderRadius,
+    this.margin,
+    this.boxShadow,
+  }) : assert(title != null || icon != null, 'A FAB must have either a title or an icon.');
+
+  /// Optional text label (makes the FAB extended).
+  final String? title;
+
+  /// Optional icon.
+  final IconData? icon;
+
+  /// Tap callback.
+  final VoidCallback? onPressed;
+
+  /// The visual style of the FAB.
+  final AppButtonStyle style;
+
+  final double sigmaX;
+  final double sigmaY;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final double? borderWidth;
+  final BoxBorder? border;
+  final BorderRadiusGeometry? borderRadius;
+  final EdgeInsetsGeometry? margin;
+  final List<BoxShadow>? boxShadow;
+
+  @override
+  Widget build(BuildContext context) {
+    // If it has only an icon, it is circular. If it has text, it is rounded rect (extended).
+    final isExtended = title != null;
+
+    if (!isExtended) {
+      return CircleButton(
+        icon: icon!,
+        onPressed: onPressed,
+        size: 56.0, // Standard FAB size
+        sigmaX: sigmaX,
+        sigmaY: sigmaY,
+        glassColor: style == AppButtonStyle.glass ? backgroundColor : null,
+        borderColor: borderColor ?? (style == AppButtonStyle.outlined ? Theme.of(context).primaryColor : null),
+        borderWidth: borderWidth,
+        border: border,
+        margin: margin,
+        boxShadow: boxShadow,
+      );
+    }
+
+    return AppButton(
+      title: title,
+      icon: icon,
+      style: style,
+      onPressed: onPressed,
+      height: 56.0,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+      // borderWidth: borderWidth,
+      border: border,
+      borderRadius: borderRadius ?? BorderRadius.circular(16.0),
+      margin: margin,
+      boxShadow: boxShadow,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
     );
   }
 }

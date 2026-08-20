@@ -1,4 +1,4 @@
-import 'package:starter/src/features/auth/domain/entities/user_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/user_entity.dart';
 
 /// Entity representing successful authentication response holding bearer token and user entity.
 class AuthResponseEntity {

@@ -1,6 +1,6 @@
-import 'package:starter/src/features/auth/data/models/register_request_model.dart';
-import 'package:starter/src/features/auth/domain/entities/auth_response_entity.dart';
-import 'package:starter/src/features/auth/domain/entities/user_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/register_request_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/auth_response_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/user_entity.dart';
 
 /// Abstract domain repository interface contract for authentication operations.
 abstract class AuthRepository {

@@ -60,15 +60,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmPasswordLabel => 'تأكيد كلمة المرور';
 
   @override
-  String get emailVisibilityOption => 'إظهار البريد الإلكتروني';
-
-  @override
-  String get meaddOption => 'خيار معاد';
-
-  @override
-  String get baytraqOption => 'خيار بيتراك';
-
-  @override
   String get registerAccount => 'تسجيل الحساب';
 
   @override

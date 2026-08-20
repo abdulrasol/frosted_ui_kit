@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
-import 'package:starter/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 /// A foundational screen wrapper widget providing a consistent layout structure.
 ///
-/// Wraps the content in a [Scaffold] and automatically adds a [PrimaryAppBar]
+/// Wraps the content in a [Scaffold] and automatically adds a [FrostedAppBar]
 /// at the top unless a custom appbar is provided or [isHideAppbar] is true.
 class BaseWidget extends StatelessWidget {
   /// Creates a [BaseWidget] screen wrapper.
@@ -17,13 +16,14 @@ class BaseWidget extends StatelessWidget {
     this.title,
     this.actions,
     this.backAction,
+    this.bottomNavigationBar,
   });
 
   /// The main body content widget displayed in the scaffold body.
   final Widget child;
 
   /// Optional custom app bar implementing [PreferredSizeWidget].
-  /// If null and [isHideAppbar] is false, [PrimaryAppBar] is used by default.
+  /// If null and [isHideAppbar] is false, [FrostedAppBar] is used by default.
   final PreferredSizeWidget? appbar;
 
   /// When set to true, hides the app bar completely.
@@ -32,100 +32,45 @@ class BaseWidget extends StatelessWidget {
   /// Optional floating action button displayed on the scaffold.
   final Widget? floatingActionButton;
 
-  /// Title text string displayed in the default [PrimaryAppBar].
+  /// Title text string displayed in the default [FrostedAppBar].
   final String? title;
 
-  /// List of action widgets aligned to the end (right) of the [PrimaryAppBar].
+  /// List of action widgets aligned to the end (right) of the [FrostedAppBar].
   final List<Widget>? actions;
 
   /// Optional custom back action.
   final VoidCallback? backAction;
+
+  /// Optional bottom navigation bar displayed at the bottom of the screen.
+  final Widget? bottomNavigationBar;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: bottomNavigationBar != null,
       appBar: isHideAppbar ? null : appbar,
+      floatingActionButton: floatingActionButton,
+      // bottomNavigationBar: bottomNavigationBar,
       body: Stack(
         children: [
           child,
 
+          if (bottomNavigationBar != null)
+            Positioned(
+              bottom: 0, //MediaQuery.of(context).viewInsets.bottom,
+              right: context.horizontalPadding,
+              left: context.horizontalPadding,
+              child: bottomNavigationBar!,
+            ),
           // Default floating primary appbar
           if (!isHideAppbar && appbar == null)
-            Align(
-              alignment: Alignment.topCenter,
-              child: PrimaryAppBar(title: title, actions: actions, backAction: backAction),
+            Positioned(
+              top: 0,
+              right: 0,
+              left: 0,
+              child: FrostedAppBar(title: title, actions: actions, backAction: backAction),
             ),
         ],
-      ),
-    );
-  }
-}
-
-/// A modern, glassmorphic primary application bar with auto-fitting title and end-aligned actions.
-class PrimaryAppBar extends StatelessWidget with Buttons, Cards implements PreferredSizeWidget {
-  /// Creates a [PrimaryAppBar] with optional title string, custom title widget, leading widget, and actions.
-  const PrimaryAppBar({super.key, this.title, this.titleWidget, this.leading, this.actions, this.backAction});
-
-  /// Text title displayed inside a blurred glass card.
-  final String? title;
-
-  /// Custom widget replacing the default title text card.
-  final Widget? titleWidget;
-
-  /// Optional custom leading widget displayed before the title.
-  final Widget? leading;
-
-  /// Optional custom back action.
-  final VoidCallback? backAction;
-
-  /// List of trailing action widgets positioned on the far right.
-  final List<Widget>? actions;
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    final canPop = Navigator.of(context).canPop();
-    return SafeArea(
-      top: true,
-      bottom: false,
-      child: Container(
-        margin: const EdgeInsets.all(5),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              spacing: 8,
-              children: [
-                if (leading != null) leading! else if (canPop) backButton(context, onTap: backAction) else const SizedBox.shrink(),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    spacing: 8,
-                    children: [
-                      if (titleWidget != null)
-                        Flexible(fit: FlexFit.loose, child: titleWidget!)
-                      else if (title != null)
-                        Flexible(
-                          fit: FlexFit.loose,
-                          child: bluredCard(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            height: 48,
-                            context: context,
-                            child: Center(widthFactor: 1.0, child: Text(title!, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                          ),
-                        )
-                      else
-                        const SizedBox.shrink(),
-                      if (actions != null && actions!.isNotEmpty) Row(mainAxisSize: MainAxisSize.min, spacing: 8, children: actions!),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

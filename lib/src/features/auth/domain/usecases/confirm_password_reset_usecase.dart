@@ -1,4 +1,4 @@
-import 'package:starter/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/repositories/auth_repository.dart';
 
 /// Use case for confirming password reset with token and new password.
 class ConfirmPasswordResetUseCase {

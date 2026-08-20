@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:starter/src/features/auth/data/models/register_request_model.dart';
-import 'package:starter/src/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:starter/src/features/auth/domain/entities/user_entity.dart';
-import 'package:starter/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:starter/src/utils/logger.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/models/register_request_model.dart';
+import 'package:frosted_ui_kit/src/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/entities/user_entity.dart';
+import 'package:frosted_ui_kit/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:frosted_ui_kit/src/utils/logger.dart';
 
 /// Available view modes for the unified authentication page flow.
 enum AuthViewMode {
@@ -50,10 +50,10 @@ class AuthController extends ChangeNotifier {
     AuthViewMode initialMode = AuthViewMode.login,
   }) : _currentMode = initialMode;
 
-  /// Factory constructor creating an [AuthController] with default repository and PocketBase remote data source.
+  /// Factory constructor creating an [AuthController] with mock repository fallback for demo/testing.
   factory AuthController.create({AuthViewMode initialMode = AuthViewMode.login}) {
-    final remoteDataSource = AuthRemoteDataSourceImpl();
-    final repository = AuthRepositoryImpl(remoteDataSource: remoteDataSource);
+    const remoteDataSource = MockAuthRemoteDataSource();
+    const repository = AuthRepositoryImpl(remoteDataSource: remoteDataSource);
     return AuthController(repository: repository, initialMode: initialMode);
   }
 

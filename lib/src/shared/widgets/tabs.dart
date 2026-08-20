@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 
 /// A reusable glassmorphic sliding tabs widget with press and smooth animated slide indicators (RTL aware).
 class AppSlidingTabs extends StatelessWidget with Cards {
@@ -15,6 +15,12 @@ class AppSlidingTabs extends StatelessWidget with Cards {
     this.borderRadius,
     this.activeTextStyle,
     this.inactiveTextStyle,
+    this.sigmaX = 10.0,
+    this.sigmaY = 10.0,
+    this.glassColor,
+    this.border,
+    this.boxShadow,
+    this.clipBehavior = Clip.antiAlias,
   });
 
   /// List of tab label titles.
@@ -44,6 +50,24 @@ class AppSlidingTabs extends StatelessWidget with Cards {
   /// Text style for inactive tab labels.
   final TextStyle? inactiveTextStyle;
 
+  /// Horizontal backdrop blur intensity (defaults to 10.0).
+  final double sigmaX;
+
+  /// Vertical backdrop blur intensity (defaults to 10.0).
+  final double sigmaY;
+
+  /// Custom translucent background color tint.
+  final Color? glassColor;
+
+  /// Optional custom border decoration override.
+  final BoxBorder? border;
+
+  /// Optional list of box shadows applied to the card container.
+  final List<BoxShadow>? boxShadow;
+
+  /// Content clipping behavior (defaults to [Clip.antiAlias]).
+  final Clip clipBehavior;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -65,6 +89,12 @@ class AppSlidingTabs extends StatelessWidget with Cards {
       margin: margin,
       padding: padding ?? const EdgeInsets.all(4),
       borderRadius: effectiveRadius,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      color: glassColor,
+      border: border,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
       child: Stack(
         children: [
           // Smooth Animated Sliding Indicator Pill
@@ -129,6 +159,12 @@ mixin Tabs {
     BorderRadiusGeometry? borderRadius,
     TextStyle? activeTextStyle,
     TextStyle? inactiveTextStyle,
+    double sigmaX = 10.0,
+    double sigmaY = 10.0,
+    Color? glassColor,
+    BoxBorder? border,
+    List<BoxShadow>? boxShadow,
+    Clip clipBehavior = Clip.antiAlias,
   }) {
     return AppSlidingTabs(
       tabs: tabs,
@@ -140,6 +176,12 @@ mixin Tabs {
       borderRadius: borderRadius,
       activeTextStyle: activeTextStyle,
       inactiveTextStyle: inactiveTextStyle,
+      sigmaX: sigmaX,
+      sigmaY: sigmaY,
+      glassColor: glassColor,
+      border: border,
+      boxShadow: boxShadow,
+      clipBehavior: clipBehavior,
     );
   }
 }

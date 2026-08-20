@@ -60,15 +60,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmPasswordLabel => 'Confirm Password';
 
   @override
-  String get emailVisibilityOption => 'Email Visibility';
-
-  @override
-  String get meaddOption => 'Meadd Option';
-
-  @override
-  String get baytraqOption => 'Baytraq Option';
-
-  @override
   String get registerAccount => 'Register Account';
 
   @override

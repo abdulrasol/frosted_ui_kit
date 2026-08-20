@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:starter/src/extensions/context.dart';
-import 'package:starter/src/features/auth/presentation/controllers/auth_controller.dart';
-import 'package:starter/src/shared/widgets/buttons.dart';
-import 'package:starter/src/shared/widgets/inputs.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 
-/// Form sub-widget for confirming email verification using token with localized strings.
+/// Form sub-widget for confirming email verification using token with localized strings and glassmorphic inputs.
+///
+/// Fully reusable across applications with support for custom callbacks.
 class VerifyEmailFormWidget extends StatefulWidget with Buttons, Inputs {
   /// Auth controller instance.
   final AuthController controller;
 
-  /// Creates a [VerifyEmailFormWidget].
-  VerifyEmailFormWidget({super.key, required this.controller});
+  /// Optional callback executed when email verification completes successfully.
+  final VoidCallback? onVerifySuccess;
+
+  /// Creates a [VerifyEmailFormWidget] instance.
+  VerifyEmailFormWidget({super.key, required this.controller, this.onVerifySuccess});
 
   @override
   State<VerifyEmailFormWidget> createState() => _VerifyEmailFormWidgetState();
@@ -26,15 +31,18 @@ class _VerifyEmailFormWidgetState extends State<VerifyEmailFormWidget> {
     super.dispose();
   }
 
-  void _onVerifyPressed() {
+  Future<void> _onVerifyPressed() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    widget.controller.confirmEmailVerification(token: _tokenController.text.trim());
+    final success = await widget.controller.confirmEmailVerification(token: _tokenController.text.trim());
+    if (success && widget.onVerifySuccess != null) {
+      widget.onVerifySuccess!();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context)!;
 
     return Form(
       key: _formKey,
