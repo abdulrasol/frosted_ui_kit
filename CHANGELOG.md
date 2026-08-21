@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Updated README with full documentation URL and complete example code.
+
 ## 1.0.0
 
 * Initial release of the `frosted_ui_kit` package.

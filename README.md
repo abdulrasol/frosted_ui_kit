@@ -39,32 +39,57 @@ import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 ## 🛠️ Usage Example
 
+Here is a full playground application demonstrating how to initialize and use the `frosted_ui_kit` components:
+
 ```dart
 import 'package:flutter/material.dart';
-import 'package:frosted_ui_kit/src/shared/widgets/base_widget.dart';
-import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
-import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'src/catalog_home_screen.dart';
 
-class HomeScreen extends StatelessWidget with Cards, Buttons {
-  const HomeScreen({super.key});
+void main() {
+  runApp(const MySandboxApp());
+}
+
+/// Playground application for testing and extending [frosted_ui_kit] components.
+class MySandboxApp extends StatefulWidget {
+  const MySandboxApp({super.key});
+
+  static MySandboxAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<MySandboxAppState>()!;
+
+  @override
+  State<MySandboxApp> createState() => MySandboxAppState();
+}
+
+class MySandboxAppState extends State<MySandboxApp> {
+  ThemeMode _themeMode = ThemeMode.dark;
+
+  void toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark
+          ? ThemeMode.light
+          : ThemeMode.dark;
+    });
+  }
+
+  bool get isDarkMode => _themeMode == ThemeMode.dark;
 
   @override
   Widget build(BuildContext context) {
-    return BaseWidget(
-      titleText: 'Frosted UI',
-      child: Column(
-        children: [
-          bluredCard(
-            child: const Text('Liquid Glass Container'),
-          ),
-          const SizedBox(height: 16),
-          appButton(
-            text: 'Glass Button',
-            style: AppButtonStyle.glass,
-            onPressed: () {},
-          ),
-        ],
+    return MaterialApp(
+      title: 'Frosted UI Kit Sandbox',
+      debugShowCheckedModeBanner: false,
+      themeMode: _themeMode,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.grey[100],
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFF1F1C2C),
+      ),
+      home: const CatalogHomeScreen(),
     );
   }
 }
@@ -75,3 +100,5 @@ class HomeScreen extends StatelessWidget with Cards, Buttons {
 ## 📚 Code Quality & Documentation
 
 All components in `frosted_ui_kit` adhere to strict 100% DartDoc coverage standards for seamless developer experience and rich IDE hover tooltips.
+
+For the complete technical API index and visual catalog, please visit the [Full Documentation](https://subultech.top/packages/frostuikit).
