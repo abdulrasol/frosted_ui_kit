@@ -17,6 +17,7 @@ A modern, highly-customizable Flutter UI kit inspired by **Apple's Liquid Glass*
   - **`AppSlidingTabs` & `Tabs`**: Telegram-inspired smooth sliding segmented controls.
   - **`AppBottomSheet` & `BottomSheets`**: Glassmorphic modal bottom sheets.
   - **`AppTextField` & `Inputs`**: Standardized input fields with validation and theme support.
+- 🔐 **Generic Authentication UI**: Pre-built, app-agnostic screens for Login, Register, Password Recovery, and Email Verification with optional feature flags to disable specific flows.
 - 🌍 **Full Localization & Theme Ready**: Built to work seamlessly with `flutter_localizations` and dark/light themes.
 
 ---

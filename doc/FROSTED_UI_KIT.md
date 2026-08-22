@@ -525,14 +525,22 @@ The authentication module provides ready-to-use pure UI screens and forms for si
 - **`VerifyEmailFormWidget`**: Email token confirmation form.
 - **`AuthController`**: Pure UI state manager for view modes, loading states, and user feedback.
 
+#### Feature Flags
+Both `AuthScreen` and `AuthView` accept the following optional boolean parameters (all default to `true`) to allow you to disable specific authentication flows, making the UI highly reusable across different applications:
+- `showRegisterButton`
+- `showForgotPasswordButton`
+- `showResetTokenButton`
+- `showVerifyTokenButton`
+
 ```dart
-// Example embedding AuthScreen with callbacks:
+// Example embedding AuthScreen with callbacks and disabled features:
 AuthScreen(
+  showRegisterButton: false, // Disables registration
+  showForgotPasswordButton: false, // Disables forgot password
+  showResetTokenButton: false,
+  showVerifyTokenButton: false,
   onLoginSuccess: () {
     Navigator.of(context).pushReplacementNamed('/home');
-  },
-  onRegisterSuccess: () {
-    // Perform post-registration navigation
   },
 );
 ```
