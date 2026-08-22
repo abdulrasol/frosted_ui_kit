@@ -15,8 +15,23 @@ class AuthScreen extends StatelessWidget {
   final AuthController? controller;
   final VoidCallback? onLoginSuccess;
   final VoidCallback? onRegisterSuccess;
+  
+  /// Feature flags to enable/disable specific auth flows.
+  final bool showRegisterButton;
+  final bool showForgotPasswordButton;
+  final bool showResetTokenButton;
+  final bool showVerifyTokenButton;
 
-  const AuthScreen({super.key, this.controller, this.onLoginSuccess, this.onRegisterSuccess});
+  const AuthScreen({
+    super.key,
+    this.controller,
+    this.onLoginSuccess,
+    this.onRegisterSuccess,
+    this.showRegisterButton = true,
+    this.showForgotPasswordButton = true,
+    this.showResetTokenButton = true,
+    this.showVerifyTokenButton = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +43,15 @@ class AuthScreen extends StatelessWidget {
       // Actually, better to just let AuthView handle it. Let's just pass title 'Authentication'
       builder: (context, _) => BaseWidget(
         title: 'Authentication',
-        child: AuthView(controller: controller, onLoginSuccess: onLoginSuccess, onRegisterSuccess: onRegisterSuccess),
+        child: AuthView(
+          controller: controller,
+          onLoginSuccess: onLoginSuccess,
+          onRegisterSuccess: onRegisterSuccess,
+          showRegisterButton: showRegisterButton,
+          showForgotPasswordButton: showForgotPasswordButton,
+          showResetTokenButton: showResetTokenButton,
+          showVerifyTokenButton: showVerifyTokenButton,
+        ),
       ),
     );
   }
@@ -39,8 +62,21 @@ class AuthView extends StatefulWidget with Tabs {
   final AuthController? controller;
   final VoidCallback? onLoginSuccess;
   final VoidCallback? onRegisterSuccess;
+  final bool showRegisterButton;
+  final bool showForgotPasswordButton;
+  final bool showResetTokenButton;
+  final bool showVerifyTokenButton;
 
-  AuthView({super.key, this.controller, this.onLoginSuccess, this.onRegisterSuccess});
+  AuthView({
+    super.key,
+    this.controller,
+    this.onLoginSuccess,
+    this.onRegisterSuccess,
+    this.showRegisterButton = true,
+    this.showForgotPasswordButton = true,
+    this.showResetTokenButton = true,
+    this.showVerifyTokenButton = true,
+  });
 
   @override
   State<AuthView> createState() => _AuthViewState();
@@ -113,7 +149,8 @@ class _AuthViewState extends State<AuthView> {
           padding: EdgeInsets.only(top: context.topPadding + 4, right: context.horizontalPadding, left: context.horizontalPadding),
           child: Column(
             children: [
-              widget.appSlidingTabs(context: context, tabs: authTabs, selectedIndex: _selectedTabIndex, onTabChanged: _onTabSelected),
+              if (widget.showRegisterButton)
+                widget.appSlidingTabs(context: context, tabs: authTabs, selectedIndex: _selectedTabIndex, onTabChanged: _onTabSelected),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -121,8 +158,17 @@ class _AuthViewState extends State<AuthView> {
                     child: AnimatedCrossFade(
                       duration: const Duration(milliseconds: 300),
                       crossFadeState: isLogin ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                      firstChild: LoginFormWidget(controller: _controller, onLoginSuccess: widget.onLoginSuccess),
-                      secondChild: RegisterFormWidget(controller: _controller, onRegisterSuccess: widget.onRegisterSuccess),
+                      firstChild: LoginFormWidget(
+                        controller: _controller,
+                        onLoginSuccess: widget.onLoginSuccess,
+                        showRegisterButton: widget.showRegisterButton,
+                        showForgotPasswordButton: widget.showForgotPasswordButton,
+                        showResetTokenButton: widget.showResetTokenButton,
+                        showVerifyTokenButton: widget.showVerifyTokenButton,
+                      ),
+                      secondChild: widget.showRegisterButton
+                          ? RegisterFormWidget(controller: _controller, onRegisterSuccess: widget.onRegisterSuccess)
+                          : const SizedBox.shrink(),
                     ),
                   ),
                 ),
