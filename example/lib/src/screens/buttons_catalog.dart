@@ -1,3 +1,4 @@
+import 'package:example_app/src/shared/playground_background.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -13,64 +14,25 @@ class ButtonsCatalog extends StatefulWidget {
 class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
   PlaygroundState _state = const PlaygroundState();
 
-  int _fabFlavor = 0; // 0 = Icon, 1 = Text, 2 = Extended
-
   @override
   Widget build(BuildContext context) {
     return BaseWidget(
+      floatingActionButton: _buildFab(),
       title: 'Buttons Playground',
-      floatingActionButton: appFab(
-        context: context,
-        icon: _fabFlavor != 1 ? Icons.add : null,
-        title: _fabFlavor != 0 ? 'Create' : null,
-        sigmaX: _state.sigmaX,
-        sigmaY: _state.sigmaY,
-        backgroundColor: _state.glassColor,
-        border: _state.border,
-        onPressed: () {
-          setState(() {
-            _fabFlavor = (_fabFlavor + 1) % 3;
-          });
-        },
-      ),
+
       child: Stack(
         children: [
           // Background content to show off blur
-          Positioned.fill(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 500),
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return Container(
-                  height: 60,
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.accents.reversed.toList()[index %
-                            Colors.accents.length],
-                        Colors.accents.reversed.toList()[(index + 1) %
-                            Colors.accents.length],
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                );
-              },
-            ),
-          ),
+          // Background content to show off
+          const Positioned.fill(child: PlaygroundBackground()),
 
-          Center(
+          Positioned.fill(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 400),
+              padding: EdgeInsets.symmetric(vertical: context.topPadding + 10, horizontal: 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: context.appBarHeight),
-                  const Text(
-                    'AppButton Styles',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
+                  const Text('AppButton Styles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 16),
 
                   appButton(
@@ -91,8 +53,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                     style: AppButtonStyle.colored,
                     sigmaX: _state.sigmaX,
                     sigmaY: _state.sigmaY,
-                    backgroundColor:
-                        _state.glassColor ?? Theme.of(context).primaryColor,
+                    backgroundColor: _state.glassColor ?? Theme.of(context).primaryColor,
                     border: _state.border,
                     onPressed: () {},
                   ),
@@ -110,10 +71,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                   ),
 
                   const SizedBox(height: 32),
-                  const Text(
-                    'Circle Buttons',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
+                  const Text('Circle Buttons', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 16),
 
                   Row(
@@ -152,10 +110,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                   ),
 
                   const SizedBox(height: 32),
-                  const Text(
-                    'FAB Flavors',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
+                  const Text('FAB Flavors', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 16),
 
                   Row(
@@ -200,20 +155,29 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
               ),
             ),
           ),
-
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: PlaygroundControls(
-              state: _state,
-              showBorderRadius:
-                  false, // Buttons have fixed border radius generally, except custom ones.
-              onChanged: (s) => setState(() => _state = s),
-            ),
-          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFab() {
+    return appFab(
+      context: context,
+      icon: Icons.tune,
+      
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black26,
+          builder: (context) => PlaygroundControls(
+            state: _state,
+            onChanged: (s) {
+              setState(() => _state = s);
+            },
+          ),
+        );
+      },
     );
   }
 }

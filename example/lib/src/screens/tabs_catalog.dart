@@ -1,3 +1,4 @@
+import 'package:example_app/src/shared/playground_background.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -26,6 +27,7 @@ class _TabsCatalogState extends State<TabsCatalog> with Tabs, Buttons, Cards {
     return BaseWidget(
       title: 'Tabs Playground',
       bottomNavigationBar: FrostedNavigationButtomBar(
+        action: _buildFab(),
         controller: _navController,
         items: [
           FrostedNavbarItem(icon: Icons.home_max, color: Colors.amber),
@@ -36,32 +38,11 @@ class _TabsCatalogState extends State<TabsCatalog> with Tabs, Buttons, Cards {
       ),
       child: Stack(
         children: [
-          // Background content to show off blur
+          // Background content to show off
+          const Positioned.fill(child: PlaygroundBackground()),
           Positioned.fill(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 500),
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return Container(
-                  height: 60,
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.accents[(index + 5) % Colors.accents.length],
-                        Colors.accents[(index + 6) % Colors.accents.length],
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 400),
+              padding: EdgeInsets.symmetric(vertical: context.topPadding + 10, horizontal: 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -90,19 +71,28 @@ class _TabsCatalogState extends State<TabsCatalog> with Tabs, Buttons, Cards {
               ),
             ),
           ),
-
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: PlaygroundControls(
-              state: _state,
-              showBorderRadius: false,
-              onChanged: (s) => setState(() => _state = s),
-            ),
-          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFab() {
+    return appFab(
+      context: context,
+      icon: Icons.tune,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black26,
+          builder: (context) => PlaygroundControls(
+            state: _state,
+            onChanged: (s) {
+              setState(() => _state = s);
+            },
+          ),
+        );
+      },
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:example_app/src/shared/playground_background.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -16,51 +17,40 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
   @override
   Widget build(BuildContext context) {
     return BaseWidget(
+      floatingActionButton: _buildFab(),
       title: 'App Bar Playground',
 
       actions: [
         circleButton(context: context, icon: Icons.settings, onPressed: () {}),
+        circleButton(context: context, icon: Icons.add, onPressed: () {}),
       ],
 
       child: Stack(
         children: [
           // Background content to show off blur behind app bar
-          Positioned.fill(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 16, bottom: 500),
-              itemCount: 40,
-              itemBuilder: (context, index) {
-                return Container(
-                  height: 60,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.accents[(index + 9) % Colors.accents.length],
-                        Colors.accents[(index + 10) % Colors.accents.length],
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: PlaygroundControls(
-              state: _state,
-              onChanged: (s) => setState(() => _state = s),
-            ),
-          ),
+          const Positioned.fill(child: PlaygroundBackground()),
         ],
       ),
+    );
+  }
+
+  Widget _buildFab() {
+    return appFab(
+      context: context,
+      icon: Icons.tune,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black26,
+          builder: (context) => PlaygroundControls(
+            state: _state,
+            onChanged: (s) {
+              setState(() => _state = s);
+            },
+          ),
+        );
+      },
     );
   }
 }

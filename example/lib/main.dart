@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
 import 'src/catalog_home_screen.dart';
 
 void main() {
@@ -9,8 +11,7 @@ void main() {
 class MySandboxApp extends StatefulWidget {
   const MySandboxApp({super.key});
 
-  static MySandboxAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<MySandboxAppState>()!;
+  static MySandboxAppState of(BuildContext context) => context.findAncestorStateOfType<MySandboxAppState>()!;
 
   @override
   State<MySandboxApp> createState() => MySandboxAppState();
@@ -21,9 +22,7 @@ class MySandboxAppState extends State<MySandboxApp> {
 
   void toggleTheme() {
     setState(() {
-      _themeMode = _themeMode == ThemeMode.dark
-          ? ThemeMode.light
-          : ThemeMode.dark;
+      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     });
   }
 
@@ -35,16 +34,15 @@ class MySandboxAppState extends State<MySandboxApp> {
       title: 'Frosted UI Kit Sandbox',
       debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        useMaterial3: true,
-        scaffoldBackgroundColor: Colors.grey[100],
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFF1F1C2C),
-      ),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en', ''), Locale('ar', '')],
+      theme: ThemeData(brightness: Brightness.light, useMaterial3: true, scaffoldBackgroundColor: Colors.grey[100]),
+      darkTheme: ThemeData(brightness: Brightness.dark, useMaterial3: true, scaffoldBackgroundColor: const Color(0xFF1F1C2C)),
       home: const CatalogHomeScreen(),
     );
   }

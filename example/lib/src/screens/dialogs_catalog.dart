@@ -1,3 +1,4 @@
+import 'package:example_app/src/shared/playground_background.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -10,20 +11,8 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
       title: 'Dialogs Catalog',
       child: Stack(
         children: [
-          // Background Gradient
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: Theme.of(context).brightness == Brightness.dark
-                      ? const [Color(0xFF1F1C2C), Color(0xFF928DAB)]
-                      : const [Color(0xFFE2E2E2), Color(0xFFC9D6FF)],
-                ),
-              ),
-            ),
-          ),
+          // Background content to show off
+          const Positioned.fill(child: PlaygroundBackground()),
           SafeArea(
             child: ListView(
               padding: const EdgeInsets.all(24),
@@ -37,14 +26,11 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
                     final result = await showAppWarningDialog(
                       context: context,
                       title: 'Delete Customer?',
-                      description:
-                          'Are you sure you want to delete this customer? This action cannot be undone.',
+                      description: 'Are you sure you want to delete this customer? This action cannot be undone.',
                       confirmText: 'Delete',
                     );
                     if (result == true && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Customer deleted!')),
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Customer deleted!')));
                     }
                   },
                 ),
@@ -55,12 +41,7 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
                   style: AppButtonStyle.colored,
                   backgroundColor: Theme.of(context).colorScheme.error,
                   onPressed: () {
-                    showAppErrorDialog(
-                      context: context,
-                      title: 'Access Denied',
-                      description:
-                          'You do not have permission to perform this action.',
-                    );
+                    showAppErrorDialog(context: context, title: 'Access Denied', description: 'You do not have permission to perform this action.');
                   },
                 ),
                 const SizedBox(height: 16),
@@ -86,9 +67,7 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
                       },
                     );
                     if (result != null && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Renamed to: $result')),
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Renamed to: $result')));
                     }
                   },
                 ),
@@ -102,8 +81,7 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
                     await showAppWarningDialog(
                       context: context,
                       title: 'Custom Styled',
-                      description:
-                          'This dialog uses custom colors for title, description, and buttons.',
+                      description: 'This dialog uses custom colors for title, description, and buttons.',
                       confirmText: 'Awesome!',
                       cancelText: 'Dismiss',
                       icon: Icons.palette_rounded,
@@ -126,12 +104,7 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
                   backgroundColor: Colors.teal,
                   onPressed: () async {
                     // Show the loading dialog without awaiting it
-                    showAppLoadingDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      message: 'Authenticating...',
-                      color: Colors.teal,
-                    );
+                    showAppLoadingDialog(context: context, barrierDismissible: true, message: 'Authenticating...', color: Colors.teal);
                     // Simulate a network request
                     await Future.delayed(const Duration(seconds: 50));
                     // Close the dialog if still mounted

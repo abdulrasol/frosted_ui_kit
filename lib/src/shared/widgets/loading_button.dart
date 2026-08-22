@@ -152,18 +152,29 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
             Widget content;
             switch (state) {
               case FrostLoadingButtonState.idle:
+                final Color defaultContentColor = theme.colorScheme.onPrimary;
+                final Color contentColor = isDisabled
+                    ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
+                    : (iconColor ?? defaultContentColor);
+
                 content = Row(
                   key: const ValueKey('idle'),
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 8,
                   children: [
-                    if (icon != null) Icon(icon, size: 20),
+                    if (icon != null) Icon(icon, size: 20, color: contentColor),
                     Flexible(
                       child: Text(
                         title,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
+                        style:
+                            textStyle ??
+                            theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: contentColor,
+                            ),
                       ),
                     ),
                   ],

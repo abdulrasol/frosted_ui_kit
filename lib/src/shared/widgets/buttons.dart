@@ -91,10 +91,13 @@ class CircleButton extends StatelessWidget {
       margin: margin,
       clipBehavior: clipBehavior,
       padding: EdgeInsets.zero,
-      child: InkWell(
-        onTap: onPressed,
-        customBorder: const CircleBorder(),
-        child: Center(child: Icon(icon, size: effectiveSize * 0.5)),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          customBorder: const CircleBorder(),
+          child: Center(child: Icon(icon, size: effectiveSize * 0.5)),
+        ),
       ),
     );
   }
@@ -282,9 +285,8 @@ class AppButton extends StatelessWidget {
         height: height,
         width: width,
         margin: margin,
-        padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.zero,
         decoration: BoxDecoration(
-          color: fillBg,
           borderRadius: effectiveRadius,
           border:
               border ??
@@ -292,11 +294,16 @@ class AppButton extends StatelessWidget {
           boxShadow: boxShadow,
         ),
         child: Material(
-          color: Colors.transparent,
+          color: fillBg,
+          clipBehavior: clipBehavior,
+          borderRadius: effectiveRadius as BorderRadius?,
           child: InkWell(
             onTap: effectiveOnPressed,
             borderRadius: effectiveRadius as BorderRadius?,
-            child: content,
+            child: Padding(
+              padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+              child: content,
+            ),
           ),
         ),
       );
@@ -312,19 +319,23 @@ class AppButton extends StatelessWidget {
         height: height,
         width: width,
         margin: margin,
-        padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.zero,
         decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.transparent,
           borderRadius: effectiveRadius,
           border: border ?? Border.all(color: borderCol, width: 1.5),
           boxShadow: boxShadow,
         ),
         child: Material(
-          color: Colors.transparent,
+          color: backgroundColor ?? Colors.transparent,
+          clipBehavior: clipBehavior,
+          borderRadius: effectiveRadius as BorderRadius?,
           child: InkWell(
             onTap: effectiveOnPressed,
             borderRadius: effectiveRadius as BorderRadius?,
-            child: content,
+            child: Padding(
+              padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+              child: content,
+            ),
           ),
         ),
       );
@@ -335,7 +346,7 @@ class AppButton extends StatelessWidget {
       height: height,
       width: width,
       margin: margin,
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.zero,
       borderRadius: effectiveRadius,
       border:
           border ??
@@ -350,7 +361,10 @@ class AppButton extends StatelessWidget {
         child: InkWell(
           onTap: effectiveOnPressed,
           borderRadius: effectiveRadius as BorderRadius?,
-          child: content,
+          child: Padding(
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+            child: content,
+          ),
         ),
       ),
     );

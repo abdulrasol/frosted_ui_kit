@@ -5,38 +5,48 @@ import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_c
 import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/login_form_widget.dart';
 import 'package:frosted_ui_kit/src/features/auth/presentation/widgets/register_form_widget.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/base_widget.dart';
-import 'package:frosted_ui_kit/src/shared/widgets/bottom_sheet.dart';
-import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
-import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/tabs.dart';
 
 /// Clean Authentication Screen with top sliding glassmorphic tabs and localized strings.
 ///
 /// Designed to be reusable across apps with customizable callbacks and controllers.
-class AuthScreen extends StatefulWidget
-    with BottomSheets, Buttons, Cards, Tabs {
-  /// Optional pre-configured [AuthController] instance. If null, created via [AuthController.create].
+class AuthScreen extends StatelessWidget {
+  /// Optional pre-configured [AuthController] instance.
   final AuthController? controller;
-
-  /// Optional callback invoked when sign-in completes successfully.
   final VoidCallback? onLoginSuccess;
-
-  /// Optional callback invoked when registration completes successfully.
   final VoidCallback? onRegisterSuccess;
 
-  /// Creates an [AuthScreen] instance.
-  AuthScreen({
-    super.key,
-    this.controller,
-    this.onLoginSuccess,
-    this.onRegisterSuccess,
-  });
+  const AuthScreen({super.key, this.controller, this.onLoginSuccess, this.onRegisterSuccess});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  Widget build(BuildContext context) {
+    // AuthView manages its own state and reads current mode from its controller,
+    // but we can't easily sync the BaseWidget title without listening.
+    // For simplicity, we just use a static title or wrap it in a listener.
+    return ListenableBuilder(
+      listenable: controller ?? AuthController.create(), // If we need to listen, but AuthView creates its own if null.
+      // Actually, better to just let AuthView handle it. Let's just pass title 'Authentication'
+      builder: (context, _) => BaseWidget(
+        title: 'Authentication',
+        child: AuthView(controller: controller, onLoginSuccess: onLoginSuccess, onRegisterSuccess: onRegisterSuccess),
+      ),
+    );
+  }
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+/// The embeddable view containing the sliding tabs and auth forms.
+class AuthView extends StatefulWidget with Tabs {
+  final AuthController? controller;
+  final VoidCallback? onLoginSuccess;
+  final VoidCallback? onRegisterSuccess;
+
+  AuthView({super.key, this.controller, this.onLoginSuccess, this.onRegisterSuccess});
+
+  @override
+  State<AuthView> createState() => _AuthViewState();
+}
+
+class _AuthViewState extends State<AuthView> {
   late final AuthController _controller;
   bool _createdControllerLocally = false;
   int _selectedTabIndex = 0;
@@ -67,9 +77,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final success = _controller.successMessage;
     final error = _controller.errorMessage;
 
-    final targetIndex = _controller.currentMode == AuthViewMode.register
-        ? 1
-        : 0;
+    final targetIndex = _controller.currentMode == AuthViewMode.register ? 1 : 0;
     if (_selectedTabIndex != targetIndex) {
       setState(() {
         _selectedTabIndex = targetIndex;
@@ -78,14 +86,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (success != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(success), backgroundColor: Colors.green),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(success), backgroundColor: Colors.green));
     } else if (error != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error), backgroundColor: Colors.red),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error), backgroundColor: Colors.red));
     }
   }
 
@@ -93,9 +97,7 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() {
       _selectedTabIndex = index;
     });
-    _controller.switchMode(
-      index == 0 ? AuthViewMode.login : AuthViewMode.register,
-    );
+    _controller.switchMode(index == 0 ? AuthViewMode.login : AuthViewMode.register);
   }
 
   @override
@@ -107,49 +109,25 @@ class _AuthScreenState extends State<AuthScreen> {
     return ListenableBuilder(
       listenable: _controller,
       builder: (context, _) {
-        return BaseWidget(
-          title: isLogin ? l10n.signIn : l10n.register,
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: context.topPadding + 4,
-              right: context.horizontalPadding,
-              left: context.horizontalPadding,
-            ),
-            child: Column(
-              children: [
-                widget.appSlidingTabs(
-                  context: context,
-                  tabs: authTabs,
-                  selectedIndex: _selectedTabIndex,
-                  onTabChanged: _onTabSelected,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: context.horizontalPadding + 4,
-                        left: 16,
-                        right: 16,
-                      ),
-                      child: AnimatedCrossFade(
-                        duration: const Duration(milliseconds: 300),
-                        crossFadeState: isLogin
-                            ? CrossFadeState.showFirst
-                            : CrossFadeState.showSecond,
-                        firstChild: LoginFormWidget(
-                          controller: _controller,
-                          onLoginSuccess: widget.onLoginSuccess,
-                        ),
-                        secondChild: RegisterFormWidget(
-                          controller: _controller,
-                          onRegisterSuccess: widget.onRegisterSuccess,
-                        ),
-                      ),
+        return Padding(
+          padding: EdgeInsets.only(top: context.topPadding + 4, right: context.horizontalPadding, left: context.horizontalPadding),
+          child: Column(
+            children: [
+              widget.appSlidingTabs(context: context, tabs: authTabs, selectedIndex: _selectedTabIndex, onTabChanged: _onTabSelected),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: context.horizontalPadding + 4, left: 16, right: 16, bottom: 40),
+                    child: AnimatedCrossFade(
+                      duration: const Duration(milliseconds: 300),
+                      crossFadeState: isLogin ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                      firstChild: LoginFormWidget(controller: _controller, onLoginSuccess: widget.onLoginSuccess),
+                      secondChild: RegisterFormWidget(controller: _controller, onRegisterSuccess: widget.onRegisterSuccess),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

@@ -1,3 +1,4 @@
+import 'package:example_app/src/shared/playground_background.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -16,31 +17,12 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
   @override
   Widget build(BuildContext context) {
     return BaseWidget(
+      floatingActionButton: _buildFab(),
       title: 'Cards Playground',
       child: Stack(
         children: [
-          // Background content to show off blur
-          Positioned.fill(
-            child: ListView.builder(
-              padding: const EdgeInsets.only(bottom: 500),
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return Container(
-                  height: 60,
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.accents[index % Colors.accents.length],
-                        Colors.accents[(index + 1) % Colors.accents.length],
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                );
-              },
-            ),
-          ),
+          // Background content to show off
+          const Positioned.fill(child: PlaygroundBackground()),
 
           Center(
             child: SingleChildScrollView(
@@ -60,10 +42,7 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                     child: const Text(
                       'This is a Glass Card\nNotice the background blur!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -78,28 +57,35 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                     child: const Text(
                       'Circle',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: PlaygroundControls(
-              state: _state,
-              onChanged: (s) => setState(() => _state = s),
-            ),
-          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFab() {
+    return appFab(
+      context: context,
+      icon: Icons.tune,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black26,
+          builder: (context) => PlaygroundControls(
+            state: _state,
+            onChanged: (s) {
+              setState(() => _state = s);
+            },
+          ),
+        );
+      },
     );
   }
 }

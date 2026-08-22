@@ -1,3 +1,9 @@
+## 1.0.2
+
+* Added GIF demo to the pub.dev main page.
+* Exported `AuthScreen` as part of the public API and extracted `AuthView` for inline embedding.
+* Fixed button animations and padding for `AppButton`, `CricleButton`, and `FrostLoadingButton`.
+
 ## 1.0.1
 
 * Updated README with full documentation URL and complete example code.

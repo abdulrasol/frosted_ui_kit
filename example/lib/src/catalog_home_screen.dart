@@ -20,9 +20,9 @@ class CatalogHomeScreen extends StatefulWidget {
   State<CatalogHomeScreen> createState() => _CatalogHomeScreenState();
 }
 
-class _CatalogHomeScreenState extends State<CatalogHomeScreen>
-    with Cards, Buttons {
+class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Buttons, Tabs {
   final FrostedNavbarController _navController = FrostedNavbarController();
+  int _currentTab = 0;
 
   @override
   void dispose() {
@@ -35,39 +35,30 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen>
     final isDark = MySandboxApp.of(context).isDarkMode;
 
     return BaseWidget(
-      title: 'Frosted UI Kit Catalog',
+      title: 'Frosted UI Kit',
       actions: [
+        circleButton(context: context, icon: isDark ? Icons.light_mode : Icons.dark_mode, onPressed: () => MySandboxApp.of(context).toggleTheme()),
         circleButton(
           context: context,
-          icon: isDark ? Icons.light_mode : Icons.dark_mode,
-          onPressed: () => MySandboxApp.of(context).toggleTheme(),
+          icon: Icons.person,
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AuthScreen()));
+          },
         ),
       ],
       bottomNavigationBar: FrostedNavigationButtomBar(
         controller: _navController,
         items: [
-          FrostedNavbarItem(
-            icon: Icons.home,
-            activeIcon: Icons.home_filled,
-            title: 'Home',
-          ),
+          FrostedNavbarItem(icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard, title: 'Catalog'),
           FrostedNavbarItem(icon: Icons.search, title: 'Search'),
-          FrostedNavbarItem(
-            icon: Icons.notifications_none,
-            activeIcon: Icons.notifications,
-            title: 'Notifications',
-          ),
-          FrostedNavbarItem(
-            icon: Icons.settings_outlined,
-            activeIcon: Icons.settings,
-            title: 'Settings',
-          ),
+          FrostedNavbarItem(icon: Icons.notifications_none, activeIcon: Icons.notifications, title: 'Alerts', badgeCount: 3),
+          FrostedNavbarItem(icon: Icons.person_outline, activeIcon: Icons.person, title: 'Profile'),
         ],
         action: appFab(context: context, icon: Icons.add, onPressed: () {}),
       ),
       child: Stack(
         children: [
-          // Background Gradient
+          // Vibrant Mesh Background
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -75,8 +66,19 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen>
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: isDark
-                      ? const [Color(0xFF1F1C2C), Color(0xFF928DAB)]
-                      : const [Color(0xFFE2E2E2), Color(0xFFC9D6FF)],
+                      ? const [
+                          Color(0xFF2C1930), // Deep Purple
+                          Color(0xFF14243A), // Deep Blue
+                          Color(0xFF20132B), // Very Dark Violet
+                          Color(0xFF0F1E28), // Dark Cyan tint
+                        ]
+                      : const [
+                          Color(0xFFF9D423), // Warm yellow
+                          Color(0xFFFF4E50), // Vibrant Red/Pink
+                          Color(0xFF6dd5ed), // Sky Blue
+                          Color(0xFF2193b0), // Deep Blue
+                        ],
+                  stops: const [0.0, 0.4, 0.7, 1.0],
                 ),
               ),
             ),
@@ -84,77 +86,145 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen>
 
           SafeArea(
             child: ListView(
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 16,
-                bottom:
-                    16, //+ (_navType == FrostedNavigationBarType.circular ? 80 : 56), // Padding for nav bar
-              ),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
               children: [
                 SizedBox(height: context.appBarHeight),
-                _buildCatalogTile(
+
+                // Hero Section
+                bluredCard(
                   context: context,
-                  title: 'Cards',
-                  icon: Icons.rectangle_outlined,
-                  onTap: () => _navigateTo(context, const CardsCatalog()),
+                  padding: const EdgeInsets.all(24),
+                  borderRadius: BorderRadius.circular(32),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: const LinearGradient(colors: [Colors.purpleAccent, Colors.blueAccent]),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 2),
+                            ),
+                            child: const Icon(Icons.person, color: Colors.white, size: 30),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Pro Dashboard',
+                                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Liquid Glass Aesthetics',
+                                  style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      // Showcase Sliding Tabs inline
+                      appSlidingTabs(
+                        context: context,
+                        tabs: const ['Components', 'Settings', 'Analytics'],
+                        selectedIndex: _currentTab,
+                        onTabChanged: (index) {
+                          setState(() {
+                            _currentTab = index;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Buttons',
-                  icon: Icons.smart_button,
-                  onTap: () => _navigateTo(context, const ButtonsCatalog()),
+
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    'Component Library',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                  ),
                 ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Loading Buttons',
-                  icon: Icons.animation,
-                  onTap: () =>
-                      _navigateTo(context, const LoadingButtonCatalog()),
+                const SizedBox(height: 16),
+                // Grid Catalog
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 1.1,
+                  children: [
+                    _buildGridTile(
+                      context: context,
+                      title: 'Cards',
+                      icon: Icons.layers_outlined,
+                      onTap: () => _navigateTo(context, const CardsCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Buttons',
+                      icon: Icons.touch_app_outlined,
+                      onTap: () => _navigateTo(context, const ButtonsCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Loading',
+                      icon: Icons.hourglass_top_rounded,
+                      onTap: () => _navigateTo(context, const LoadingButtonCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Inputs',
+                      icon: Icons.text_fields_rounded,
+                      onTap: () => _navigateTo(context, const InputsCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Tabs',
+                      icon: Icons.tab_unselected_rounded,
+                      onTap: () => _navigateTo(context, const TabsCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Bottom Sheets',
+                      icon: Icons.call_to_action_outlined,
+                      onTap: () => _navigateTo(context, const BottomSheetCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Dialogs',
+                      icon: Icons.chat_bubble_outline_rounded,
+                      onTap: () => _navigateTo(context, const DialogsCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'Steppers',
+                      icon: Icons.linear_scale_rounded,
+                      onTap: () => _navigateTo(context, const StepperCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'List Sections',
+                      icon: Icons.format_list_bulleted_rounded,
+                      onTap: () => _navigateTo(context, const ListTileCatalog()),
+                    ),
+                    _buildGridTile(
+                      context: context,
+                      title: 'App Bars',
+                      icon: Icons.view_headline_rounded,
+                      onTap: () => _navigateTo(context, const AppBarCatalog()),
+                    ),
+                  ],
                 ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Inputs',
-                  icon: Icons.text_fields,
-                  onTap: () => _navigateTo(context, const InputsCatalog()),
-                ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Tabs',
-                  icon: Icons.tab,
-                  onTap: () => _navigateTo(context, const TabsCatalog()),
-                ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Bottom Sheets',
-                  icon: Icons.call_to_action_outlined,
-                  onTap: () => _navigateTo(context, const BottomSheetCatalog()),
-                ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Dialogs',
-                  icon: Icons.chat_bubble_outline_rounded,
-                  onTap: () => _navigateTo(context, const DialogsCatalog()),
-                ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'Steppers',
-                  icon: Icons.linear_scale_rounded,
-                  onTap: () => _navigateTo(context, const StepperCatalog()),
-                ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'List Sections',
-                  icon: Icons.format_list_bulleted,
-                  onTap: () => _navigateTo(context, const ListTileCatalog()),
-                ),
-                _buildCatalogTile(
-                  context: context,
-                  title: 'App Bars',
-                  icon: Icons.view_headline,
-                  onTap: () => _navigateTo(context, const AppBarCatalog()),
-                ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 35),
+                SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
               ],
             ),
           ),
@@ -167,51 +237,31 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen>
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 
-  Widget _buildCatalogTile({
-    required BuildContext context,
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: bluredCard(
-        context: context,
-        padding: EdgeInsets.zero,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Icon(
-                  icon,
-                  size: 32,
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.5),
-                ),
-              ],
-            ),
+  Widget _buildGridTile({required BuildContext context, required String title, required IconData icon, required VoidCallback onTap}) {
+    return bluredCard(
+      context: context,
+      padding: EdgeInsets.zero,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15)),
+                child: Icon(icon, size: 32, color: Theme.of(context).colorScheme.primary),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+              ),
+            ],
           ),
         ),
       ),

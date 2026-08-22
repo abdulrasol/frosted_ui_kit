@@ -1,3 +1,4 @@
+import 'package:example_app/src/shared/playground_background.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
@@ -9,10 +10,8 @@ class LoadingButtonCatalog extends StatefulWidget {
   State<LoadingButtonCatalog> createState() => _LoadingButtonCatalogState();
 }
 
-class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
-    with Buttons {
-  final FrostLoadingButtonController _controller =
-      FrostLoadingButtonController();
+class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Buttons {
+  final FrostLoadingButtonController _controller = FrostLoadingButtonController();
 
   @override
   void dispose() {
@@ -41,57 +40,29 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
       child: Stack(
         children: [
           // Background Gradient
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: Theme.of(context).brightness == Brightness.dark
-                      ? const [Color(0xFF2C3E50), Color(0xFF3498DB)]
-                      : const [Color(0xFFE0EAFC), Color(0xFFCFDEF3)],
-                ),
-              ),
-            ),
-          ),
+          // Background content to show off
+          const Positioned.fill(child: PlaygroundBackground()),
           SafeArea(
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
                 SizedBox(height: context.appBarHeight),
 
-                Text(
-                  'Animated State Button',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
+                Text('Animated State Button', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
-                const Text(
-                  'A button that animates between idle, loading (Lottie), success, and error states.',
-                ),
+                const Text('A button that animates between idle, loading (Lottie), success, and error states.'),
                 const SizedBox(height: 32),
 
                 // The main state button
                 Center(
-                  child: FrostLoadingButton(
-                    controller: _controller,
-                    title: 'Submit Order',
-                    icon: CupertinoIcons.cart_fill,
-                    onPressed: _simulateNetworkRequest,
-                  ),
+                  child: FrostLoadingButton(controller: _controller, title: 'Submit Order', icon: CupertinoIcons.cart_fill, onPressed: _simulateNetworkRequest),
                 ),
 
                 const SizedBox(height: 48),
                 const Divider(),
                 const SizedBox(height: 24),
 
-                Text(
-                  'Manual Controls',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('Manual Controls', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
 
                 // Manual controls to test states

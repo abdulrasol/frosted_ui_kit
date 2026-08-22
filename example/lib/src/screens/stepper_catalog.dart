@@ -1,3 +1,5 @@
+import 'package:example_app/src/shared/playground_background.dart';
+import 'package:example_app/src/shared/playground_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -8,17 +10,13 @@ class StepperCatalog extends StatefulWidget {
   State<StepperCatalog> createState() => _StepperCatalogState();
 }
 
-class _StepperCatalogState extends State<StepperCatalog>
-    with Buttons, Steppers {
+class _StepperCatalogState extends State<StepperCatalog> with Buttons, Steppers {
   late FrostedStepperController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = FrostedStepperController(
-      steps: 4,
-      stepsList: ['Cart', 'Address', 'Payment', 'Review'],
-    );
+    _controller = FrostedStepperController(steps: 4, stepsList: ['Cart', 'Address', 'Payment', 'Review']);
   }
 
   @override
@@ -27,53 +25,33 @@ class _StepperCatalogState extends State<StepperCatalog>
     super.dispose();
   }
 
+  PlaygroundState _state = const PlaygroundState();
+
   @override
   Widget build(BuildContext context) {
     return BaseWidget(
       title: 'Stepper Catalog',
+      floatingActionButton: _buildFab(),
       child: Stack(
         children: [
-          // Background Gradient
-          // Container(
-          //   decoration: const BoxDecoration(
-          //     gradient: LinearGradient(
-          //       colors: [Color(0xFFE0EAFC), Color(0xFFCFDEF3)],
-          //       begin: Alignment.topLeft,
-          //       end: Alignment.bottomRight,
-          //     ),
-          //   ),
-          // ),
+          // Background content to show off
+          const Positioned.fill(child: PlaygroundBackground()),
           SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                vertical: context.appBarHeight,
-                horizontal: context.horizontalPadding,
-              ),
+              padding: EdgeInsets.symmetric(vertical: context.appBarHeight, horizontal: context.horizontalPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    'Horizontal Stepper',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  const Text('Horizontal Stepper', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 24),
-                  appStepper(
-                    controller: _controller,
-                    direction: FrostedStepperDirection.horizontal,
-                  ),
+                  appStepper(controller: _controller, direction: FrostedStepperDirection.horizontal),
 
                   const SizedBox(height: 48),
 
-                  const Text(
-                    'Vertical Stepper',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  const Text('Vertical Stepper', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 24),
                   Center(
-                    child: appStepper(
-                      controller: _controller,
-                      direction: FrostedStepperDirection.vertical,
-                    ),
+                    child: appStepper(controller: _controller, direction: FrostedStepperDirection.vertical),
                   ),
 
                   const SizedBox(height: 48),
@@ -82,28 +60,13 @@ class _StepperCatalogState extends State<StepperCatalog>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      appButton(
-                        context: context,
-                        title: 'Back',
-                        style: AppButtonStyle.glass,
-                        onPressed: () => _controller.previous(),
-                      ),
-                      appButton(
-                        context: context,
-                        title: 'Next',
-                        style: AppButtonStyle.colored,
-                        onPressed: () => _controller.next(),
-                      ),
+                      appButton(context: context, title: 'Back', style: AppButtonStyle.glass, onPressed: () => _controller.previous()),
+                      appButton(context: context, title: 'Next', style: AppButtonStyle.colored, onPressed: () => _controller.next()),
                     ],
                   ),
                   const SizedBox(height: 24),
                   Center(
-                    child: appButton(
-                      context: context,
-                      title: 'Reset',
-                      style: AppButtonStyle.text,
-                      onPressed: () => _controller.reset(),
-                    ),
+                    child: appButton(context: context, title: 'Reset', style: AppButtonStyle.text, onPressed: () => _controller.reset()),
                   ),
                 ],
               ),
@@ -111,6 +74,26 @@ class _StepperCatalogState extends State<StepperCatalog>
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFab() {
+    return appFab(
+      context: context,
+      icon: Icons.tune,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black26,
+          builder: (context) => PlaygroundControls(
+            state: _state,
+            onChanged: (s) {
+              setState(() => _state = s);
+            },
+          ),
+        );
+      },
     );
   }
 }
