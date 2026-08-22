@@ -3,6 +3,7 @@
 * Added GIF demo to the pub.dev main page.
 * Exported `AuthScreen` as part of the public API and extracted `AuthView` for inline embedding.
 * Fixed button animations and padding for `AppButton`, `CricleButton`, and `FrostLoadingButton`.
+* Added feature flags and custom widget overrides (e.g., `customLoginButton`) to `AuthScreen` to allow disabling or customizing specific authentication flows.
 
 ## 1.0.1
 

@@ -28,6 +28,13 @@ class LoginFormWidget extends StatefulWidget
   final bool showResetTokenButton;
   final bool showVerifyTokenButton;
 
+  /// Optional custom button overrides
+  final Widget? customLoginButton;
+  final Widget? customRegisterButton;
+  final Widget? customForgotPasswordButton;
+  final Widget? customResetTokenButton;
+  final Widget? customVerifyTokenButton;
+
   /// Creates a [LoginFormWidget] instance.
   LoginFormWidget({
     super.key,
@@ -38,6 +45,11 @@ class LoginFormWidget extends StatefulWidget
     this.showForgotPasswordButton = true,
     this.showResetTokenButton = true,
     this.showVerifyTokenButton = true,
+    this.customLoginButton,
+    this.customRegisterButton,
+    this.customForgotPasswordButton,
+    this.customResetTokenButton,
+    this.customVerifyTokenButton,
   });
 
   @override
@@ -125,31 +137,33 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           if (widget.showForgotPasswordButton)
             Align(
               alignment: Alignment.centerRight,
-              child: widget.appButton(
-                style: AppButtonStyle.text,
-                context: context,
-                title: l10n.forgotPassword,
-                height: 36,
-                onPressed: () {
-                  widget.showAppBottomSheet(
+              child: widget.customForgotPasswordButton ??
+                  widget.appButton(
+                    style: AppButtonStyle.text,
                     context: context,
                     title: l10n.forgotPassword,
-                    child: ForgotPasswordFormWidget(
-                      controller: widget.controller,
-                    ),
-                  );
-                },
-              ),
+                    height: 36,
+                    onPressed: () {
+                      widget.showAppBottomSheet(
+                        context: context,
+                        title: l10n.forgotPassword,
+                        child: ForgotPasswordFormWidget(
+                          controller: widget.controller,
+                        ),
+                      );
+                    },
+                  ),
             ),
           const SizedBox(height: 18),
-          widget.appButton(
-            context: context,
-            title: l10n.signIn,
-            icon: Icons.login_rounded,
-            isLoading: widget.controller.isLoading,
-            height: 50,
-            onPressed: _onLoginPressed,
-          ),
+          widget.customLoginButton ??
+              widget.appButton(
+                context: context,
+                title: l10n.signIn,
+                icon: Icons.login_rounded,
+                isLoading: widget.controller.isLoading,
+                height: 50,
+                onPressed: _onLoginPressed,
+              ),
           const SizedBox(height: 16),
           if (widget.showRegisterButton)
             Row(
@@ -157,19 +171,20 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               children: [
                 Text(l10n.dontHaveAccount),
                 const SizedBox(width: 8),
-                widget.appButton(
-                  style: AppButtonStyle.colored,
-                  context: context,
-                  title: l10n.register,
-                  height: 36,
-                  onPressed: () {
-                    if (widget.onRegisterTap != null) {
-                      widget.onRegisterTap!();
-                    } else {
-                      widget.controller.switchMode(AuthViewMode.register);
-                    }
-                  },
-                ),
+                widget.customRegisterButton ??
+                    widget.appButton(
+                      style: AppButtonStyle.colored,
+                      context: context,
+                      title: l10n.register,
+                      height: 36,
+                      onPressed: () {
+                        if (widget.onRegisterTap != null) {
+                          widget.onRegisterTap!();
+                        } else {
+                          widget.controller.switchMode(AuthViewMode.register);
+                        }
+                      },
+                    ),
               ],
             ),
           if (widget.showResetTokenButton || widget.showVerifyTokenButton)
@@ -178,35 +193,37 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 if (widget.showResetTokenButton)
-                  widget.appButton(
-                    context: context,
-                    style: AppButtonStyle.text,
-                    title: l10n.resetToken,
-                    height: 38,
-                    onPressed: () {
-                      widget.showAppBottomSheet(
+                  widget.customResetTokenButton ??
+                      widget.appButton(
                         context: context,
-                        title: l10n.resetPassword,
-                        child: ResetPasswordFormWidget(
-                          controller: widget.controller,
-                        ),
-                      );
-                    },
-                  ),
+                        style: AppButtonStyle.text,
+                        title: l10n.resetToken,
+                        height: 38,
+                        onPressed: () {
+                          widget.showAppBottomSheet(
+                            context: context,
+                            title: l10n.resetPassword,
+                            child: ResetPasswordFormWidget(
+                              controller: widget.controller,
+                            ),
+                          );
+                        },
+                      ),
                 if (widget.showVerifyTokenButton)
-                  widget.appButton(
-                    style: AppButtonStyle.text,
-                    context: context,
-                    title: l10n.verifyToken,
-                    height: 38,
-                    onPressed: () {
-                      widget.showAppBottomSheet(
+                  widget.customVerifyTokenButton ??
+                      widget.appButton(
+                        style: AppButtonStyle.text,
                         context: context,
-                        title: l10n.verifyEmail,
-                        child: VerifyEmailFormWidget(controller: widget.controller),
-                      );
-                    },
-                  ),
+                        title: l10n.verifyToken,
+                        height: 38,
+                        onPressed: () {
+                          widget.showAppBottomSheet(
+                            context: context,
+                            title: l10n.verifyEmail,
+                            child: VerifyEmailFormWidget(controller: widget.controller),
+                          );
+                        },
+                      ),
               ],
             ),
         ],

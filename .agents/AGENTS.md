@@ -63,7 +63,7 @@ The UI components in this repository constitute **`frosted_ui_kit`**, a Flutter 
 ## 5. Generic Authentication Module Standard (`lib/src/features/auth`)
 - **Abstract & App-Agnostic**: All authentication entities (`UserEntity`), models (`UserModel`), datasources (`AuthRemoteDataSource`), and screens (`AuthScreen`) MUST remain 100% generic without application-specific legacy flags.
 - **Custom Attributes**: Any app-specific backend fields must be handled dynamically via `customData: Map<String, dynamic>?`.
-- **Feature Flags**: The `AuthScreen` and `AuthView` widgets use boolean flags (`showRegisterButton`, `showForgotPasswordButton`, `showResetTokenButton`, `showVerifyTokenButton`) to allow consumers to disable specific auth flows (e.g., registration or password recovery) to maximize reusability across different applications.
+- **Feature Flags & Overrides**: The `AuthScreen` and `AuthView` widgets use boolean flags (`showRegisterButton`, `showForgotPasswordButton`, etc.) to disable specific auth flows, and accept custom `Widget` overrides (e.g., `customLoginButton`) for maximum visual customizability across different applications.
 
 ---
 

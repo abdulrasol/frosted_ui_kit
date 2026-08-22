@@ -22,6 +22,13 @@ class AuthScreen extends StatelessWidget {
   final bool showResetTokenButton;
   final bool showVerifyTokenButton;
 
+  /// Optional custom button overrides
+  final Widget? customLoginButton;
+  final Widget? customRegisterButton;
+  final Widget? customForgotPasswordButton;
+  final Widget? customResetTokenButton;
+  final Widget? customVerifyTokenButton;
+
   const AuthScreen({
     super.key,
     this.controller,
@@ -31,6 +38,11 @@ class AuthScreen extends StatelessWidget {
     this.showForgotPasswordButton = true,
     this.showResetTokenButton = true,
     this.showVerifyTokenButton = true,
+    this.customLoginButton,
+    this.customRegisterButton,
+    this.customForgotPasswordButton,
+    this.customResetTokenButton,
+    this.customVerifyTokenButton,
   });
 
   @override
@@ -51,6 +63,11 @@ class AuthScreen extends StatelessWidget {
           showForgotPasswordButton: showForgotPasswordButton,
           showResetTokenButton: showResetTokenButton,
           showVerifyTokenButton: showVerifyTokenButton,
+          customLoginButton: customLoginButton,
+          customRegisterButton: customRegisterButton,
+          customForgotPasswordButton: customForgotPasswordButton,
+          customResetTokenButton: customResetTokenButton,
+          customVerifyTokenButton: customVerifyTokenButton,
         ),
       ),
     );
@@ -67,6 +84,13 @@ class AuthView extends StatefulWidget with Tabs {
   final bool showResetTokenButton;
   final bool showVerifyTokenButton;
 
+  /// Optional custom button overrides
+  final Widget? customLoginButton;
+  final Widget? customRegisterButton;
+  final Widget? customForgotPasswordButton;
+  final Widget? customResetTokenButton;
+  final Widget? customVerifyTokenButton;
+
   AuthView({
     super.key,
     this.controller,
@@ -76,6 +100,11 @@ class AuthView extends StatefulWidget with Tabs {
     this.showForgotPasswordButton = true,
     this.showResetTokenButton = true,
     this.showVerifyTokenButton = true,
+    this.customLoginButton,
+    this.customRegisterButton,
+    this.customForgotPasswordButton,
+    this.customResetTokenButton,
+    this.customVerifyTokenButton,
   });
 
   @override
@@ -165,6 +194,11 @@ class _AuthViewState extends State<AuthView> {
                         showForgotPasswordButton: widget.showForgotPasswordButton,
                         showResetTokenButton: widget.showResetTokenButton,
                         showVerifyTokenButton: widget.showVerifyTokenButton,
+                        customLoginButton: widget.customLoginButton,
+                        customRegisterButton: widget.customRegisterButton,
+                        customForgotPasswordButton: widget.customForgotPasswordButton,
+                        customResetTokenButton: widget.customResetTokenButton,
+                        customVerifyTokenButton: widget.customVerifyTokenButton,
                       ),
                       secondChild: widget.showRegisterButton
                           ? RegisterFormWidget(controller: _controller, onRegisterSuccess: widget.onRegisterSuccess)
