@@ -20,6 +20,9 @@ export 'src/shared/widgets/dialogs.dart';
 // Extensions
 export 'src/extensions/context.dart';
 
+// Localization
+export 'src/core/l10n/arb/app_localizations.dart';
+
 // Auth Feature - Domain Layer
 export 'src/features/auth/domain/entities/auth_response_entity.dart';
 export 'src/features/auth/domain/entities/user_entity.dart';

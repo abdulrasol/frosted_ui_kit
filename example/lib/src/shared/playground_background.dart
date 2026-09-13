@@ -1,5 +1,6 @@
-import 'package:example_app/main.dart';
 import 'package:flutter/material.dart';
+
+import '../../main.dart';
 
 class PlaygroundBackground extends StatelessWidget {
   const PlaygroundBackground({super.key});

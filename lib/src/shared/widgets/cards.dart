@@ -19,12 +19,13 @@ class BlurredCard extends StatelessWidget {
     this.margin,
     this.padding,
     this.border,
-    this.sigmaX = 10.0,
-    this.sigmaY = 10.0,
+    this.sigmaX = 5.0, // Reduced default value for better performance
+    this.sigmaY = 5.0,
     this.color,
     this.boxShadow,
     this.shape = BoxShape.rectangle,
-    this.clipBehavior = Clip.antiAlias,
+    this.clipBehavior = Clip.hardEdge, // Using hardEdge is significantly faster than antiAlias
+    this.disableBlur, // Option to disable blur on low-end devices (defaults to Android auto-disable if left null)
   });
 
   /// The child widget displayed within the glassmorphic card.
@@ -51,10 +52,10 @@ class BlurredCard extends StatelessWidget {
   /// Optional border decoration override (defaults to [AppThemes.border]).
   final BoxBorder? border;
 
-  /// Horizontal backdrop blur intensity (defaults to 10.0).
+  /// Horizontal backdrop blur intensity.
   final double sigmaX;
 
-  /// Vertical backdrop blur intensity (defaults to 10.0).
+  /// Vertical backdrop blur intensity.
   final double sigmaY;
 
   /// Custom translucent background color tint (defaults to primary color with 0.1 alpha).
@@ -66,13 +67,22 @@ class BlurredCard extends StatelessWidget {
   /// Shape of the container box (defaults to [BoxShape.rectangle]).
   final BoxShape shape;
 
-  /// Content clipping behavior (defaults to [Clip.antiAlias]).
+  /// Content clipping behavior.
   final Clip clipBehavior;
+  
+  /// If true, completely disables the BackdropFilter and relies only on the background color's opacity.
+  /// If null, it will automatically disable blur on Android for better performance, and keep it enabled on iOS.
+  final bool? disableBlur;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final defaultColor = color ?? theme.primaryColor.withValues(alpha: 0.1);
+    
+    // Auto-detect platform for performance optimization if disableBlur is not explicitly set
+    final shouldDisableBlur = disableBlur ?? (theme.platform == TargetPlatform.android);
+    
+    // If blur is disabled, slightly increase color opacity to compensate for lack of blur
+    final defaultColor = color ?? theme.primaryColor.withValues(alpha: shouldDisableBlur ? 0.15 : 0.1);
     final effectiveBorderRadius = shape == BoxShape.circle
         ? null
         : (borderRadius ?? BorderRadius.circular(radius ?? 50));
@@ -92,6 +102,12 @@ class BlurredCard extends StatelessWidget {
       child: child,
     );
 
+    // Fastest option: without blur (relies solely on transparency, similar to Telegram's Android UI)
+    if (shouldDisableBlur || (sigmaX == 0 && sigmaY == 0)) {
+      return containerWidget;
+    }
+
+    // With blur (high-performance Android and iOS)
     if (shape == BoxShape.circle) {
       return ClipOval(
         clipBehavior: clipBehavior,
@@ -129,12 +145,13 @@ mixin Cards {
     EdgeInsetsGeometry? margin,
     EdgeInsetsGeometry? padding,
     BoxBorder? border,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double sigmaX = 5.0,
+    double sigmaY = 5.0,
     Color? color,
     List<BoxShadow>? boxShadow,
     BoxShape shape = BoxShape.rectangle,
-    Clip clipBehavior = Clip.antiAlias,
+    Clip clipBehavior = Clip.hardEdge,
+    bool? disableBlur,
   }) {
     return BlurredCard(
       borderRadius: borderRadius,
@@ -150,6 +167,7 @@ mixin Cards {
       boxShadow: boxShadow,
       shape: shape,
       clipBehavior: clipBehavior,
+      disableBlur: disableBlur,
       child: child,
     );
   }
@@ -165,12 +183,13 @@ mixin Cards {
     EdgeInsetsGeometry? margin,
     EdgeInsetsGeometry? padding,
     BoxBorder? border,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double sigmaX = 5.0,
+    double sigmaY = 5.0,
     Color? color,
     List<BoxShadow>? boxShadow,
     BoxShape shape = BoxShape.rectangle,
-    Clip clipBehavior = Clip.antiAlias,
+    Clip clipBehavior = Clip.hardEdge,
+    bool? disableBlur,
   }) {
     return blurredCard(
       context: context,
@@ -187,6 +206,7 @@ mixin Cards {
       boxShadow: boxShadow,
       shape: shape,
       clipBehavior: clipBehavior,
+      disableBlur: disableBlur,
       child: child,
     );
   }

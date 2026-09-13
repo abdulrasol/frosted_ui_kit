@@ -57,6 +57,7 @@ Use the standardized core shared widgets in `lib/src/shared/widgets/` for UI ele
 The UI components in this repository constitute **`frosted_ui_kit`**, a Flutter design system heavily inspired by:
 - **Apple Liquid Glass / Glassmorphism**: Translucent backdrops, soft backdrop blurs, realistic borders, subtle shadows, and layered depth.
 - **Telegram (Modern Android UI)**: Fluid navigation, sliding tabs, rounded control surfaces, smooth micro-interactions, and reactive feedback.
+- **Smart Platform Adaptation**: The UI intelligently adapts its core effects. On iOS, it embraces full `BackdropFilter` hardware acceleration via Impeller. On Android, it defaults to lightweight Alpha Transparency to maintain Telegram-like 60fps fluidity on all device tiers.
 
 ---
 

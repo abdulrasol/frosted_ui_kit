@@ -81,6 +81,10 @@ class LoginSampleWidget extends StatelessWidget with Inputs {
 ### 2. 🧊 Glass Cards (`BlurredCard` & `Cards`)
 Translucent glassmorphic container leveraging Flutter's `BackdropFilter` and `ClipRRect` to create realistic glass depth.
 
+**Smart Platform Optimization**: `BlurredCard` automatically adapts to the platform for maximum performance:
+- **iOS**: Uses the highly optimized `BackdropFilter` (via Impeller) with a smooth `sigmaX/Y: 5.0`.
+- **Android**: Automatically falls back to Alpha Transparency (`disableBlur = true`) mimicking Telegram's approach for fluid performance on all devices. You can override this behavior by explicitly setting the `disableBlur` parameter.
+
 #### API & Key Parameters:
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
@@ -92,6 +96,10 @@ Translucent glassmorphic container leveraging Flutter's `BackdropFilter` and `Cl
 | `padding` | `EdgeInsetsGeometry?` | `null` | Inner padding surrounding child. |
 | `margin` | `EdgeInsetsGeometry?` | `null` | Outer margin around card box. |
 | `border` | `BoxBorder?` | `AppThemes.border` | Translucent border stroke decoration. |
+| `sigmaX` | `double` | `5.0` | Horizontal backdrop blur intensity. |
+| `sigmaY` | `double` | `5.0` | Vertical backdrop blur intensity. |
+| `clipBehavior` | `Clip` | `Clip.hardEdge` | Content clipping behavior (optimized for speed). |
+| `disableBlur` | `bool?` | `null` (Auto) | If true, disables the heavy blur filter and relies on alpha transparency. Defaults to true on Android and false on iOS. |
 
 #### Code Usage Example:
 ```dart
@@ -419,6 +427,7 @@ Screen scaffold wrapper ensuring consistent layout padding, safe areas, and a fl
 | `controller` | `FrostedNavbarController` | *Required* | Controller managing the active tab index. |
 | `items` | `List<FrostedNavbarItem>` | *Required* | List of tab items to display (data class). |
 | `action` | `Widget?` | `null` | Optional action widget (e.g. FAB) displayed at the end. |
+| `onTabChanged` | `ValueChanged<int>?` | `null` | Global callback executed when any tab is tapped. |
 
 #### Code Usage Example:
 ```dart
@@ -445,6 +454,9 @@ class _MyScreenState extends State<MyScreen> {
       ],
       bottomNavigationBar: FrostedNavigationButtomBar(
         controller: _navController,
+        onTabChanged: (index) {
+          print('Tab changed to $index');
+        },
         items: [
           FrostedNavbarItem(icon: Icons.home, title: 'Home'),
           FrostedNavbarItem(icon: Icons.search, title: 'Search', badgeCount: 3),

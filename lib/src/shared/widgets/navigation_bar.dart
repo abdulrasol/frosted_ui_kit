@@ -21,6 +21,7 @@ class FrostedNavigationButtomBar extends StatefulWidget {
     required this.items,
     required this.controller,
     this.action,
+    this.onTabChanged,
   });
 
   /// The list of items to display in the navigation bar.
@@ -31,6 +32,9 @@ class FrostedNavigationButtomBar extends StatefulWidget {
 
   /// Optional action widget (like a FAB) displayed at the end of the bar.
   final Widget? action;
+
+  /// Optional callback executed when any tab is tapped.
+  final ValueChanged<int>? onTabChanged;
 
   @override
   State<FrostedNavigationButtomBar> createState() =>
@@ -68,6 +72,7 @@ class _FrostedNavigationButtomBarState
                       item: widget.items[index],
                       index: index,
                       controller: widget.controller,
+                      onTabChanged: widget.onTabChanged,
                     );
                   }),
                 ),
@@ -120,11 +125,13 @@ class _FrostedNavbarItemWidget extends StatefulWidget {
     required this.item,
     required this.index,
     required this.controller,
+    this.onTabChanged,
   });
 
   final FrostedNavbarItem item;
   final int index;
   final FrostedNavbarController controller;
+  final ValueChanged<int>? onTabChanged;
 
   @override
   State<_FrostedNavbarItemWidget> createState() =>
@@ -162,6 +169,7 @@ class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget>
     _scaleController.reverse();
     widget.controller.selectedIndex = widget.index;
     widget.item.onTap?.call();
+    widget.onTabChanged?.call(widget.index);
   }
 
   void _handleTapCancel() {

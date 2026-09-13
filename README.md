@@ -2,15 +2,14 @@
 
 A modern, highly-customizable Flutter UI kit inspired by **Apple's Liquid Glass** aesthetic and **Telegram's modern Android redesign**. `frosted_ui_kit` brings translucent backdrops, soft backdrop blurs, realistic glossy borders, fluid animations, and high-level control surfaces to your Flutter applications.
 
-<p align="center">
-  <img src="demo.gif" width="300" alt="Frosted UI Kit Demo">
-</p>
+![Frosted UI Kit Demo](https://raw.githubusercontent.com/abdulrasol/frosted_ui_kit/main/demo.gif)
 
 ---
 
 ## ✨ Features
 
 - 🧊 **Glassmorphism & Liquid Aesthetics**: Soft backdrop blurs (`BackdropFilter`), custom translucent depth, realistic borders, and subtle shadows.
+- 🧠 **Smart Platform Adaptation**: Intelligently uses `BackdropFilter` hardware acceleration via Impeller on iOS, and seamlessly falls back to smooth Alpha Transparency on Android for Telegram-like 60fps fluidity on all device tiers.
 - ⚡ **Telegram-Style Fluidity**: Dynamic sliding tabs, responsive micro-animations, floating rounded containers, and interactive control surfaces.
 - 📱 **Standardized Component Suite**:
   - **`BaseWidget`**: Foundational layout wrapper with integrated glassmorphic app bar (`PrimaryAppBar`).
