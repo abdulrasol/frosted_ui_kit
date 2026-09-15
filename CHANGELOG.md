@@ -1,3 +1,11 @@
+## 1.1.4
+
+* **Fix**: Renamed the generated localization class from `AppLocalizations` to `FrostedAppLocalizations` to prevent naming conflicts with applications that import this package and also use their own Flutter localizations.
+
+## 1.1.3
+
+* **UI Polish**: Fixed the Alpha Transparency fallback on Android to use a semi-solid `surface` color (`0.85` opacity) instead of a highly transparent `primaryColor` (`0.15` opacity). This ensures readable text and a luxurious frosted-like feel (similar to Telegram) on low-end devices without hardware blur.
+
 ## 1.1.2
 
 * **Fix**: Shortened package description in `pubspec.yaml` to meet pub.dev scoring requirements (under 180 characters) to achieve 160/160 pub points.

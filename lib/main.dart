@@ -18,8 +18,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       theme: AppThemes.theme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: FrostedAppLocalizations.localizationsDelegates,
+      supportedLocales: FrostedAppLocalizations.supportedLocales,
       locale: Locale('ar'),
       home: const Home(),
     );

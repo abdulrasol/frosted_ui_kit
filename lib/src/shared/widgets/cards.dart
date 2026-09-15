@@ -81,8 +81,11 @@ class BlurredCard extends StatelessWidget {
     // Auto-detect platform for performance optimization if disableBlur is not explicitly set
     final shouldDisableBlur = disableBlur ?? (theme.platform == TargetPlatform.android);
     
-    // If blur is disabled, slightly increase color opacity to compensate for lack of blur
-    final defaultColor = color ?? theme.primaryColor.withValues(alpha: shouldDisableBlur ? 0.15 : 0.1);
+    // If blur is disabled, we need a solid-like background to maintain readability and luxury feel (like Telegram/X)
+    final defaultColor = color ?? 
+        (shouldDisableBlur 
+            ? theme.colorScheme.surface.withValues(alpha: 0.85) 
+            : theme.primaryColor.withValues(alpha: 0.1));
     final effectiveBorderRadius = shape == BoxShape.circle
         ? null
         : (borderRadius ?? BorderRadius.circular(radius ?? 50));

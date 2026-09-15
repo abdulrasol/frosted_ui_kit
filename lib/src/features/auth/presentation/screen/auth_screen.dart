@@ -167,7 +167,7 @@ class _AuthViewState extends State<AuthView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = FrostedAppLocalizations.of(context)!;
     final isLogin = _selectedTabIndex == 0;
     final authTabs = [l10n.signIn, l10n.register];
 

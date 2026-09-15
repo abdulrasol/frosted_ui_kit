@@ -35,7 +35,7 @@ class MySandboxAppState extends State<MySandboxApp> {
       debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
       localizationsDelegates: const [
-        AppLocalizations.delegate,
+        FrostedAppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

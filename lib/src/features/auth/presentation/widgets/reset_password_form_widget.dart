@@ -55,7 +55,7 @@ class _ResetPasswordFormWidgetState extends State<ResetPasswordFormWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = FrostedAppLocalizations.of(context)!;
 
     return Form(
       key: _formKey,
