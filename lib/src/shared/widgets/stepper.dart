@@ -283,6 +283,7 @@ class FrostedStepper extends StatelessWidget {
 mixin Steppers {
   /// Builds a [FrostedStepper].
   Widget appStepper({
+    Key? key,
     required FrostedStepperController controller,
     FrostedStepperDirection direction = FrostedStepperDirection.horizontal,
     Color? activeColor,
@@ -291,6 +292,7 @@ mixin Steppers {
     double? stepLineLength,
   }) {
     return FrostedStepper(
+      key: key,
       controller: controller,
       direction: direction,
       activeColor: activeColor,

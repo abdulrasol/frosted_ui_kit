@@ -567,3 +567,28 @@ AuthScreen(
   },
 );
 ```
+
+---
+
+## 🔑 Tour & Onboarding Support (Widget Keys)
+
+To fully support in-app tutorials, interactive tours, and automated testing, **every widget and mixin generator method** in `frosted_ui_kit` now accepts an optional `Key? key` parameter. 
+
+When building an onboarding flow (using packages like `showcaseview` or `tutorial_coach_mark`), you can assign a `GlobalKey` to any internal UI component seamlessly.
+
+**Example Usage:**
+```dart
+final GlobalKey myButtonKey = GlobalKey();
+
+appButton(
+  key: myButtonKey, // Pass the key directly to the mixin generator
+  context: context,
+  title: 'Start Tour',
+  onPressed: () => _startTour(),
+);
+```
+
+This applies to all components including:
+- Mixin generators (`appButton`, `textField`, `showAppBottomSheet`, `showAppWarningDialog`, `blurredCard`, `appSlidingTabs`, `appStepper`, etc.)
+- Direct widget instantiations (`AppButton`, `AppTextField`, `BaseWidget`, etc.)
+- Bottom Sheets and Dialogs via their mixin launchers.

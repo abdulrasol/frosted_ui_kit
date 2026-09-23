@@ -137,7 +137,8 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           if (widget.showForgotPasswordButton)
             Align(
               alignment: Alignment.centerRight,
-              child: widget.customForgotPasswordButton ??
+              child:
+                  widget.customForgotPasswordButton ??
                   widget.appButton(
                     style: AppButtonStyle.text,
                     context: context,
@@ -220,7 +221,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                           widget.showAppBottomSheet(
                             context: context,
                             title: l10n.verifyEmail,
-                            child: VerifyEmailFormWidget(controller: widget.controller),
+                            child: VerifyEmailFormWidget(
+                              controller: widget.controller,
+                            ),
                           );
                         },
                       ),

@@ -24,7 +24,8 @@ class BlurredCard extends StatelessWidget {
     this.color,
     this.boxShadow,
     this.shape = BoxShape.rectangle,
-    this.clipBehavior = Clip.hardEdge, // Using hardEdge is significantly faster than antiAlias
+    this.clipBehavior =
+        Clip.hardEdge, // Using hardEdge is significantly faster than antiAlias
     this.disableBlur, // Option to disable blur on low-end devices (defaults to Android auto-disable if left null)
   });
 
@@ -69,7 +70,7 @@ class BlurredCard extends StatelessWidget {
 
   /// Content clipping behavior.
   final Clip clipBehavior;
-  
+
   /// If true, completely disables the BackdropFilter and relies only on the background color's opacity.
   /// If null, it will automatically disable blur on Android for better performance, and keep it enabled on iOS.
   final bool? disableBlur;
@@ -77,14 +78,16 @@ class BlurredCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     // Auto-detect platform for performance optimization if disableBlur is not explicitly set
-    final shouldDisableBlur = disableBlur ?? (theme.platform == TargetPlatform.android);
-    
+    final shouldDisableBlur =
+        disableBlur ?? (theme.platform == TargetPlatform.android);
+
     // If blur is disabled, we need a solid-like background to maintain readability and luxury feel (like Telegram/X)
-    final defaultColor = color ?? 
-        (shouldDisableBlur 
-            ? theme.colorScheme.surface.withValues(alpha: 0.85) 
+    final defaultColor =
+        color ??
+        (shouldDisableBlur
+            ? theme.colorScheme.surface.withValues(alpha: 0.85)
             : theme.primaryColor.withValues(alpha: 0.1));
     final effectiveBorderRadius = shape == BoxShape.circle
         ? null
@@ -139,6 +142,7 @@ typedef BluredCard = BlurredCard;
 mixin Cards {
   /// Helper method returning a configured [BlurredCard] instance.
   Widget blurredCard({
+    Key? key,
     required BuildContext context,
     required Widget child,
     BorderRadiusGeometry? borderRadius,
@@ -157,6 +161,7 @@ mixin Cards {
     bool? disableBlur,
   }) {
     return BlurredCard(
+      key: key,
       borderRadius: borderRadius,
       height: height,
       width: width,
@@ -177,6 +182,7 @@ mixin Cards {
 
   /// Legacy alias for [blurredCard].
   Widget bluredCard({
+    Key? key,
     required BuildContext context,
     required Widget child,
     BorderRadiusGeometry? borderRadius,

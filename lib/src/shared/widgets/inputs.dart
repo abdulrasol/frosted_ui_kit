@@ -622,6 +622,7 @@ class _AppTextFieldState extends State<AppTextField> {
 mixin Inputs {
   /// Returns a configured [AppTextField] widget with explicit parameter configuration and glass options.
   Widget textField({
+    Key? key,
     required BuildContext context,
     AppTextFieldType type = AppTextFieldType.text,
     String? label,
@@ -665,6 +666,7 @@ mixin Inputs {
     Clip clipBehavior = Clip.antiAlias,
   }) {
     return AppTextField(
+      key: key,
       type: type,
       label: label,
       placeholder: placeholder,
@@ -710,6 +712,7 @@ mixin Inputs {
 
   /// Convenience shortcut for creating an Email input field.
   Widget emailField({
+    Key? key,
     required BuildContext context,
     String? label = 'Email',
     String? placeholder = 'name@example.com',
@@ -744,6 +747,7 @@ mixin Inputs {
 
   /// Convenience shortcut for creating a Password input field with toggle visibility.
   Widget passwordField({
+    Key? key,
     required BuildContext context,
     String? label = 'Password',
     String? placeholder = '••••••••',
@@ -778,6 +782,7 @@ mixin Inputs {
 
   /// Convenience shortcut for creating a Name input field.
   Widget nameField({
+    Key? key,
     required BuildContext context,
     String? label = 'Name',
     String? placeholder = 'John Doe',

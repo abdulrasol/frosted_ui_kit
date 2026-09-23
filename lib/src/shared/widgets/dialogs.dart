@@ -33,6 +33,7 @@ class AppDialog extends StatelessWidget with Cards {
 
 class _InputDialogContent extends StatefulWidget {
   const _InputDialogContent({
+    super.key,
     this.title,
     this.description,
     required this.hintText,
@@ -162,6 +163,7 @@ mixin Dialogs {
   /// Shows a warning/confirmation dialog.
   /// Returns `true` if the user confirms, `false` otherwise.
   Future<bool?> showAppWarningDialog({
+    Key? key,
     required BuildContext context,
     required String title,
     required String description,
@@ -183,6 +185,7 @@ mixin Dialogs {
       context: context,
       builder: (context) {
         return AppDialog(
+          key: key,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -261,6 +264,7 @@ mixin Dialogs {
   /// Shows an error/rejection dialog.
   /// Only contains an acknowledgment button.
   Future<void> showAppErrorDialog({
+    Key? key,
     required BuildContext context,
     String? title,
     String? description,
@@ -279,6 +283,7 @@ mixin Dialogs {
       context: context,
       builder: (context) {
         return AppDialog(
+          key: key,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -338,6 +343,7 @@ mixin Dialogs {
   /// Shows an input dialog that prompts the user to enter text.
   /// Returns the entered text or `null` if cancelled.
   Future<String?> showAppInputDialog({
+    Key? key,
     required BuildContext context,
     String? title,
     String? description,
@@ -356,7 +362,9 @@ mixin Dialogs {
       context: context,
       builder: (context) {
         return AppDialog(
+          key: key,
           child: _InputDialogContent(
+            key: key,
             title: title,
             description: description,
             hintText: hintText,
@@ -378,6 +386,7 @@ mixin Dialogs {
   /// Shows a glassmorphic loading dialog that uses [AppLoadingIndicator].
   /// Returns a Future that completes when the dialog is dismissed.
   Future<void> showAppLoadingDialog({
+    Key? key,
     double? size,
     required BuildContext context,
     String? message,

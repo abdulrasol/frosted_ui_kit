@@ -1,7 +1,7 @@
 name: frosted_ui_kit
 description: A modern Flutter UI kit combining Apple's Liquid Glass aesthetics and Telegram's fluid Android UI. Includes blur cards, sliding tabs, and glass buttons.
 
-version: 1.1.4
+version: 1.1.5
 
 homepage: https://subultech.top/packages/frostuikit
 repository: https://github.com/abdulrasol/frosted_ui_kit

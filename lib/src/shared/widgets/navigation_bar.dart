@@ -54,6 +54,7 @@ class _FrostedNavigationButtomBarState
           children: [
             Expanded(
               child: BlurredCard(
+                key: widget.key,
                 borderRadius: BorderRadius.circular(32),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 border: Border.all(
@@ -69,6 +70,7 @@ class _FrostedNavigationButtomBarState
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: List.generate(widget.items.length, (index) {
                     return _FrostedNavbarItemWidget(
+                      key: widget.items[index].key,
                       item: widget.items[index],
                       index: index,
                       controller: widget.controller,
@@ -99,7 +101,11 @@ class FrostedNavbarItem {
     this.onTap,
     this.color,
     this.badgeCount,
+    this.key,
   });
+
+  /// The key for the item.
+  final Key? key;
 
   /// The default icon displayed when the item is not selected.
   final IconData icon;
@@ -122,12 +128,12 @@ class FrostedNavbarItem {
 
 class _FrostedNavbarItemWidget extends StatefulWidget {
   const _FrostedNavbarItemWidget({
+    super.key,
     required this.item,
     required this.index,
     required this.controller,
     this.onTabChanged,
   });
-
   final FrostedNavbarItem item;
   final int index;
   final FrostedNavbarController controller;

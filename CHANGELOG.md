@@ -1,3 +1,7 @@
+## 1.1.5
+
+* **Feature**: Added `Key? key` support to all widgets and mixin generator methods (`appButton`, `textField`, `showAppBottomSheet`, etc.) to fully support in-app tutorials, interactive tours (e.g., `showcaseview`), and automated testing.
+
 ## 1.1.4
 
 * **Fix**: Renamed the generated localization class from `AppLocalizations` to `FrostedAppLocalizations` to prevent naming conflicts with applications that import this package and also use their own Flutter localizations.

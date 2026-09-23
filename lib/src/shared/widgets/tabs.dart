@@ -168,6 +168,7 @@ class AppSlidingTabs extends StatelessWidget with Cards {
 mixin Tabs {
   /// Returns a configured [AppSlidingTabs] widget instance.
   Widget appSlidingTabs({
+    Key? key,
     required BuildContext context,
     required List<String> tabs,
     required int selectedIndex,
@@ -186,6 +187,7 @@ mixin Tabs {
     Clip clipBehavior = Clip.antiAlias,
   }) {
     return AppSlidingTabs(
+      key: key,
       tabs: tabs,
       selectedIndex: selectedIndex,
       onTabChanged: onTabChanged,

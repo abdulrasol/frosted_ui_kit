@@ -129,6 +129,7 @@ mixin BottomSheets {
   /// Displays a standardized [AppBottomSheet] modal built on [BlurredCard].
   Future<T?> showAppBottomSheet<T>({
     required BuildContext context,
+    Key? key,
     required Widget child,
     String? title,
     bool isScrollControlled = true,
@@ -153,6 +154,7 @@ mixin BottomSheets {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return AppBottomSheet(
+          key: key,
           title: title,
           padding: padding,
           margin: margin,

@@ -15,7 +15,7 @@ class AuthScreen extends StatelessWidget {
   final AuthController? controller;
   final VoidCallback? onLoginSuccess;
   final VoidCallback? onRegisterSuccess;
-  
+
   /// Feature flags to enable/disable specific auth flows.
   final bool showRegisterButton;
   final bool showForgotPasswordButton;
@@ -51,7 +51,9 @@ class AuthScreen extends StatelessWidget {
     // but we can't easily sync the BaseWidget title without listening.
     // For simplicity, we just use a static title or wrap it in a listener.
     return ListenableBuilder(
-      listenable: controller ?? AuthController.create(), // If we need to listen, but AuthView creates its own if null.
+      listenable:
+          controller ??
+          AuthController.create(), // If we need to listen, but AuthView creates its own if null.
       // Actually, better to just let AuthView handle it. Let's just pass title 'Authentication'
       builder: (context, _) => BaseWidget(
         title: 'Authentication',
@@ -142,7 +144,9 @@ class _AuthViewState extends State<AuthView> {
     final success = _controller.successMessage;
     final error = _controller.errorMessage;
 
-    final targetIndex = _controller.currentMode == AuthViewMode.register ? 1 : 0;
+    final targetIndex = _controller.currentMode == AuthViewMode.register
+        ? 1
+        : 0;
     if (_selectedTabIndex != targetIndex) {
       setState(() {
         _selectedTabIndex = targetIndex;
@@ -151,10 +155,14 @@ class _AuthViewState extends State<AuthView> {
 
     if (success != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(success), backgroundColor: Colors.green));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(success), backgroundColor: Colors.green),
+      );
     } else if (error != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error), backgroundColor: Colors.red),
+      );
     }
   }
 
@@ -162,7 +170,9 @@ class _AuthViewState extends State<AuthView> {
     setState(() {
       _selectedTabIndex = index;
     });
-    _controller.switchMode(index == 0 ? AuthViewMode.login : AuthViewMode.register);
+    _controller.switchMode(
+      index == 0 ? AuthViewMode.login : AuthViewMode.register,
+    );
   }
 
   @override
@@ -175,33 +185,54 @@ class _AuthViewState extends State<AuthView> {
       listenable: _controller,
       builder: (context, _) {
         return Padding(
-          padding: EdgeInsets.only(top: context.topPadding + 4, right: context.horizontalPadding, left: context.horizontalPadding),
+          padding: EdgeInsets.only(
+            top: context.topPadding + 4,
+            right: context.horizontalPadding,
+            left: context.horizontalPadding,
+          ),
           child: Column(
             children: [
               if (widget.showRegisterButton)
-                widget.appSlidingTabs(context: context, tabs: authTabs, selectedIndex: _selectedTabIndex, onTabChanged: _onTabSelected),
+                widget.appSlidingTabs(
+                  context: context,
+                  tabs: authTabs,
+                  selectedIndex: _selectedTabIndex,
+                  onTabChanged: _onTabSelected,
+                ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.only(top: context.horizontalPadding + 4, left: 16, right: 16, bottom: 40),
+                    padding: EdgeInsets.only(
+                      top: context.horizontalPadding + 4,
+                      left: 16,
+                      right: 16,
+                      bottom: 40,
+                    ),
                     child: AnimatedCrossFade(
                       duration: const Duration(milliseconds: 300),
-                      crossFadeState: isLogin ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                      crossFadeState: isLogin
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
                       firstChild: LoginFormWidget(
                         controller: _controller,
                         onLoginSuccess: widget.onLoginSuccess,
                         showRegisterButton: widget.showRegisterButton,
-                        showForgotPasswordButton: widget.showForgotPasswordButton,
+                        showForgotPasswordButton:
+                            widget.showForgotPasswordButton,
                         showResetTokenButton: widget.showResetTokenButton,
                         showVerifyTokenButton: widget.showVerifyTokenButton,
                         customLoginButton: widget.customLoginButton,
                         customRegisterButton: widget.customRegisterButton,
-                        customForgotPasswordButton: widget.customForgotPasswordButton,
+                        customForgotPasswordButton:
+                            widget.customForgotPasswordButton,
                         customResetTokenButton: widget.customResetTokenButton,
                         customVerifyTokenButton: widget.customVerifyTokenButton,
                       ),
                       secondChild: widget.showRegisterButton
-                          ? RegisterFormWidget(controller: _controller, onRegisterSuccess: widget.onRegisterSuccess)
+                          ? RegisterFormWidget(
+                              controller: _controller,
+                              onRegisterSuccess: widget.onRegisterSuccess,
+                            )
                           : const SizedBox.shrink(),
                     ),
                   ),

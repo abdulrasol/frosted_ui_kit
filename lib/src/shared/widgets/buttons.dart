@@ -375,6 +375,7 @@ class AppButton extends StatelessWidget {
 mixin Buttons {
   /// Returns a custom [CircleButton] with specified icon, tap callback, and glass options.
   Widget circleButton({
+    Key? key,
     required BuildContext context,
     required IconData icon,
     VoidCallback? onPressed,
@@ -390,6 +391,7 @@ mixin Buttons {
     Clip clipBehavior = Clip.antiAlias,
   }) {
     return CircleButton(
+      key: key,
       onPressed: onPressed,
       icon: icon,
       size: size,
@@ -407,6 +409,7 @@ mixin Buttons {
 
   /// Legacy alias for [circleButton].
   Widget cricleButton({
+    Key? key,
     required BuildContext context,
     required IconData icon,
     VoidCallback? onPressed,
@@ -440,6 +443,7 @@ mixin Buttons {
 
   /// Returns a configured [AppButton] with support for style variants ([AppButtonStyle]).
   Widget appButton({
+    Key? key,
     required BuildContext context,
     String? title,
     IconData? icon,
@@ -464,6 +468,7 @@ mixin Buttons {
     Clip clipBehavior = Clip.antiAlias,
   }) {
     return AppButton(
+      key: key,
       title: title,
       icon: icon,
       onPressed: onPressed,
@@ -490,6 +495,7 @@ mixin Buttons {
 
   /// Returns a custom glassmorphic Floating Action Button.
   Widget appFab({
+    Key? key,
     required BuildContext context,
     String? title,
     IconData? icon,
@@ -506,6 +512,7 @@ mixin Buttons {
     List<BoxShadow>? boxShadow,
   }) {
     return AppFloatingActionButton(
+      key: key,
       title: title,
       icon: icon,
       onPressed: onPressed,
@@ -635,6 +642,7 @@ class AppFloatingActionButton extends StatelessWidget {
 
     if (!isExtended) {
       return CircleButton(
+        key: key,
         icon: icon!,
         onPressed: onPressed,
         size: 56.0, // Standard FAB size
@@ -654,6 +662,7 @@ class AppFloatingActionButton extends StatelessWidget {
     }
 
     return AppButton(
+      key: key,
       title: title,
       icon: icon,
       style: style,
