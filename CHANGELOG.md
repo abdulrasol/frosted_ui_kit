@@ -1,15 +1,12 @@
-## Unreleased
+## 1.2.0
 
-* **Feature**: Added optional `BaseWidget.hideAppBarOnScroll` behavior. The
-  default floating `FrostedAppBar` hides while scrolling down and reappears on
-  upward scrolling, with no behavior change unless explicitly enabled.
-* **UI**: Added `CircleButtonStyle.waterDrop` as the default icon-button style,
-  with selected colors, press-scale feedback, tooltips, and accessibility
-  semantics. Existing glass buttons remain available explicitly.
-* **Fix**: Dialog content now scrolls and moves above the on-screen keyboard.
-* **Loading UX**: `FrostLoadingButton` now preserves its width while loading,
-  uses a smaller indicator, and exposes accessible state labels. The previous
-  collapsing layout remains available with `collapseOnLoading: true`.
+* **Feature**: Added `BaseWidget.hideAppBarOnScroll` and `appBarScrollBehavior` (`AppBarScrollBehavior.hideAll`, `AppBarScrollBehavior.collapseTitle`, and `AppBarScrollBehavior.none`) to allow the default floating `FrostedAppBar` to hide or collapse on downward scroll and reappear on upward scroll with smooth transitions and hysteresis control.
+* **Feature**: Added subtle status bar background gradient via `BaseWidget.showStatusBarGradient` to improve legibility of system status bar icons when content scrolls underneath.
+* **UI**: Introduced `CircleButtonStyle.waterDrop` as the default style for `CircleButton`, featuring a low-sigma liquid glass blur, animated press scaling, tooltips, and full accessibility semantics. Added support for `selected`, `selectedColor`, and `selectedIconColor`.
+* **UI**: Added `AppButtonStyle.waterDrop` styling option for `AppButton`.
+* **Fix**: Dialogs (`AppDialog`) are now fully keyboard-aware and scrollable with `SingleChildScrollView` constrained by viewport insets, preventing them from being obscured by on-screen keyboards. Added entrance scale/fade animation, `isDestructive` option on warning dialogs, and `autofocus` on input dialogs.
+* **Loading UX**: `FrostLoadingButton` now preserves its width while loading by default, utilizes a compact indicator, and exposes accessible state labels (`loadingLabel`, `successLabel`, `errorLabel`). Added `collapseOnLoading: true` for the legacy collapsing behavior.
+* **Performance**: Optimized floating navigation bar rendering by isolating repaints with `RepaintBoundary` and refined safe area padding.
 
 ## 1.1.5
 

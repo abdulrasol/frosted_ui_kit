@@ -65,7 +65,7 @@ class AppDialog extends StatelessWidget with Cards {
           constraints: BoxConstraints(
             maxWidth: maxWidth,
             maxHeight: availableHeight.clamp(
-              220,
+              0,
               MediaQuery.sizeOf(context).height * 0.84,
             ),
           ),
