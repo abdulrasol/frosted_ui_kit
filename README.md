@@ -12,7 +12,7 @@ A modern, highly-customizable Flutter UI kit inspired by **Apple's Liquid Glass*
 - 🧠 **Smart Platform Adaptation**: Intelligently uses `BackdropFilter` hardware acceleration via Impeller on iOS, and seamlessly falls back to smooth Alpha Transparency on Android for Telegram-like 60fps fluidity on all device tiers.
 - ⚡ **Telegram-Style Fluidity**: Dynamic sliding tabs, responsive micro-animations, floating rounded containers, and interactive control surfaces.
 - 📱 **Standardized Component Suite**:
-  - **`BaseWidget`**: Foundational layout wrapper with integrated glassmorphic app bar (`PrimaryAppBar`).
+  - **`BaseWidget`**: Foundational layout wrapper with integrated glassmorphic app bar (`FrostedAppBar`) and optional scroll-to-hide behavior.
   - **`BluredCard` & `Cards`**: Glassmorphic container widgets with customizable blur intensity.
   - **`AppButton` & `CricleButton`**: Multi-styled buttons supporting `glass`, `colored`, `outlined`, and `text` styles.
   - **`AppSlidingTabs` & `Tabs`**: Telegram-inspired smooth sliding segmented controls.

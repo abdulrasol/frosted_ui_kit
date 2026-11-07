@@ -10,8 +10,10 @@ class LoadingButtonCatalog extends StatefulWidget {
   State<LoadingButtonCatalog> createState() => _LoadingButtonCatalogState();
 }
 
-class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Buttons {
-  final FrostLoadingButtonController _controller = FrostLoadingButtonController();
+class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
+    with Buttons {
+  final FrostLoadingButtonController _controller =
+      FrostLoadingButtonController();
 
   @override
   void dispose() {
@@ -48,21 +50,39 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Button
               children: [
                 SizedBox(height: context.appBarHeight),
 
-                Text('Animated State Button', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  'Animated State Button',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
-                const Text('A button that animates between idle, loading (Lottie), success, and error states.'),
+                const Text(
+                  'A button that animates between idle, loading (Lottie), success, and error states.',
+                ),
                 const SizedBox(height: 32),
 
                 // The main state button
                 Center(
-                  child: FrostLoadingButton(controller: _controller, title: 'Submit Order', icon: CupertinoIcons.cart_fill, onPressed: _simulateNetworkRequest),
+                  child: FrostLoadingButton(
+                    controller: _controller,
+                    title: 'Submit Order',
+                    icon: CupertinoIcons.cart_fill,
+                    style: AppButtonStyle.waterDrop,
+                    onPressed: _simulateNetworkRequest,
+                  ),
                 ),
 
                 const SizedBox(height: 48),
                 const Divider(),
                 const SizedBox(height: 24),
 
-                Text('Manual Controls', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  'Manual Controls',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 16),
 
                 // Manual controls to test states
@@ -73,7 +93,7 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Button
                     appButton(
                       context: context,
                       title: 'Start',
-                      style: AppButtonStyle.colored,
+                      style: AppButtonStyle.waterDrop,
                       width: 140,
                       backgroundColor: Colors.blueGrey,
                       onPressed: () => _controller.start(),
@@ -81,7 +101,7 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Button
                     appButton(
                       context: context,
                       title: 'Success',
-                      style: AppButtonStyle.colored,
+                      style: AppButtonStyle.waterDrop,
                       width: 140,
                       backgroundColor: Colors.green,
                       onPressed: () => _controller.success(),
@@ -89,7 +109,7 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Button
                     appButton(
                       context: context,
                       title: 'Error',
-                      style: AppButtonStyle.colored,
+                      style: AppButtonStyle.waterDrop,
                       width: 140,
                       backgroundColor: Colors.red,
                       onPressed: () => _controller.error(),
@@ -97,7 +117,7 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog> with Button
                     appButton(
                       context: context,
                       title: 'Reset',
-                      style: AppButtonStyle.colored,
+                      style: AppButtonStyle.waterDrop,
                       width: 140,
                       backgroundColor: Colors.orange,
                       onPressed: () => _controller.reset(),

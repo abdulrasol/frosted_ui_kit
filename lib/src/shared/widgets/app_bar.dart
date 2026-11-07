@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 
+/// Controls how the default app bar reacts to body scrolling.
+enum AppBarScrollBehavior {
+  /// Keeps the app bar visible.
+  none,
+
+  /// Hides the complete floating app bar while scrolling down.
+  hideAll,
+
+  /// Keeps the app bar controls visible and collapses its title.
+  collapseTitle,
+}
+
 /// A modern, glassmorphic primary application bar with auto-fitting title and end-aligned actions.
 class FrostedAppBar extends StatelessWidget
     with Buttons, Cards
@@ -14,8 +26,9 @@ class FrostedAppBar extends StatelessWidget
     this.leading,
     this.actions,
     this.backAction,
-    this.sigmaX = 10.0,
-    this.sigmaY = 10.0,
+    this.titleCollapsed = false,
+    this.sigmaX = 6.0,
+    this.sigmaY = 6.0,
     this.glassColor,
     this.border,
     this.borderRadius,
@@ -36,13 +49,18 @@ class FrostedAppBar extends StatelessWidget
   /// Optional custom back action.
   final VoidCallback? backAction;
 
+  /// Whether the title content should be visually collapsed.
+  ///
+  /// Leading and action widgets remain available when this is true.
+  final bool titleCollapsed;
+
   /// List of trailing action widgets positioned on the far right.
   final List<Widget>? actions;
 
-  /// Horizontal backdrop blur intensity (defaults to 10.0).
+  /// Horizontal backdrop blur intensity (defaults to 6.0).
   final double sigmaX;
 
-  /// Vertical backdrop blur intensity (defaults to 10.0).
+  /// Vertical backdrop blur intensity (defaults to 6.0).
   final double sigmaY;
 
   /// Custom translucent background color tint.
@@ -92,31 +110,48 @@ class FrostedAppBar extends StatelessWidget
                     spacing: 8,
                     children: [
                       if (titleWidget != null)
-                        Flexible(fit: FlexFit.loose, child: titleWidget!)
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: AnimatedOpacity(
+                            opacity: titleCollapsed ? 0 : 1,
+                            duration: const Duration(milliseconds: 180),
+                            child: ExcludeSemantics(
+                              excluding: titleCollapsed,
+                              child: titleWidget!,
+                            ),
+                          ),
+                        )
                       else if (title != null)
                         Flexible(
                           fit: FlexFit.loose,
-                          child: bluredCard(
-                            padding:
-                                padding ??
-                                const EdgeInsets.symmetric(horizontal: 16),
-                            margin: margin,
-                            borderRadius: borderRadius,
-                            border: border,
-                            sigmaX: sigmaX,
-                            sigmaY: sigmaY,
-                            color: glassColor,
-                            boxShadow: boxShadow,
-                            height: 48,
-                            context: context,
-                            child: Center(
-                              widthFactor: 1.0,
-                              child: Text(
-                                title!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                          child: AnimatedOpacity(
+                            opacity: titleCollapsed ? 0 : 1,
+                            duration: const Duration(milliseconds: 180),
+                            child: ExcludeSemantics(
+                              excluding: titleCollapsed,
+                              child: bluredCard(
+                                padding:
+                                    padding ??
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                margin: margin,
+                                borderRadius: borderRadius,
+                                border: border,
+                                sigmaX: sigmaX,
+                                sigmaY: sigmaY,
+                                color: glassColor,
+                                boxShadow: boxShadow,
+                                height: 48,
+                                context: context,
+                                child: Center(
+                                  widthFactor: 1.0,
+                                  child: Text(
+                                    title!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

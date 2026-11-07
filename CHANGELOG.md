@@ -1,3 +1,16 @@
+## Unreleased
+
+* **Feature**: Added optional `BaseWidget.hideAppBarOnScroll` behavior. The
+  default floating `FrostedAppBar` hides while scrolling down and reappears on
+  upward scrolling, with no behavior change unless explicitly enabled.
+* **UI**: Added `CircleButtonStyle.waterDrop` as the default icon-button style,
+  with selected colors, press-scale feedback, tooltips, and accessibility
+  semantics. Existing glass buttons remain available explicitly.
+* **Fix**: Dialog content now scrolls and moves above the on-screen keyboard.
+* **Loading UX**: `FrostLoadingButton` now preserves its width while loading,
+  uses a smaller indicator, and exposes accessible state labels. The previous
+  collapsing layout remains available with `collapseOnLoading: true`.
+
 ## 1.1.5
 
 * **Feature**: Added `Key? key` support to all widgets and mixin generator methods (`appButton`, `textField`, `showAppBottomSheet`, etc.) to fully support in-app tutorials, interactive tours (e.g., `showcaseview`), and automated testing.

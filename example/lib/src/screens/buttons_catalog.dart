@@ -28,11 +28,17 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
 
           Positioned.fill(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: context.topPadding + 10, horizontal: 16),
+              padding: EdgeInsets.symmetric(
+                vertical: context.topPadding + 10,
+                horizontal: 16,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('AppButton Styles', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'AppButton Styles',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   const SizedBox(height: 16),
 
                   appButton(
@@ -46,6 +52,30 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                     onPressed: () {},
                   ),
                   const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: appButton(
+                          context: context,
+                          title: 'Loading',
+                          style: AppButtonStyle.colored,
+                          isLoading: true,
+                          onPressed: () {},
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: appButton(
+                          context: context,
+                          title: 'Disabled',
+                          style: AppButtonStyle.outlined,
+                          isDisabled: true,
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
 
                   appButton(
                     context: context,
@@ -53,7 +83,8 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                     style: AppButtonStyle.colored,
                     sigmaX: _state.sigmaX,
                     sigmaY: _state.sigmaY,
-                    backgroundColor: _state.glassColor ?? Theme.of(context).primaryColor,
+                    backgroundColor:
+                        _state.glassColor ?? Theme.of(context).primaryColor,
                     border: _state.border,
                     onPressed: () {},
                   ),
@@ -69,10 +100,48 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                     border: _state.border,
                     onPressed: () {},
                   ),
+                  const SizedBox(height: 12),
+                  appButton(
+                    context: context,
+                    title: 'Water Drop Style',
+                    style: AppButtonStyle.waterDrop,
+                    icon: Icons.water_drop_outlined,
+                    onPressed: () {},
+                  ),
 
                   const SizedBox(height: 32),
-                  const Text('Circle Buttons', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'Circle Buttons',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   const SizedBox(height: 16),
+
+                  const Text(
+                    'Water Drop Style',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      circleButton(
+                        context: context,
+                        icon: Icons.water_drop_outlined,
+                        style: CircleButtonStyle.waterDrop,
+                        tooltip: 'Water drop button',
+                        semanticLabel: 'Water drop button',
+                        onPressed: () {},
+                      ),
+                      const SizedBox(width: 16),
+                      circleButton(
+                        context: context,
+                        icon: Icons.favorite,
+                        style: CircleButtonStyle.waterDrop,
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -80,6 +149,8 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                       circleButton(
                         context: context,
                         icon: Icons.add,
+                        tooltip: 'Add item',
+                        semanticLabel: 'Add item',
                         sigmaX: _state.sigmaX,
                         sigmaY: _state.sigmaY,
                         glassColor: _state.glassColor,
@@ -110,7 +181,10 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                   ),
 
                   const SizedBox(height: 32),
-                  const Text('FAB Flavors', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const Text(
+                    'FAB Flavors',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
                   const SizedBox(height: 16),
 
                   Row(
@@ -119,6 +193,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                       appFab(
                         context: context,
                         icon: Icons.edit,
+                        style: AppButtonStyle.waterDrop,
                         sigmaX: _state.sigmaX,
                         sigmaY: _state.sigmaY,
                         backgroundColor: _state.glassColor,
@@ -129,6 +204,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                       appFab(
                         context: context,
                         title: 'Save',
+                        style: AppButtonStyle.waterDrop,
                         sigmaX: _state.sigmaX,
                         sigmaY: _state.sigmaY,
                         backgroundColor: _state.glassColor,
@@ -140,6 +216,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
                         context: context,
                         icon: Icons.send,
                         title: 'Send',
+                        style: AppButtonStyle.waterDrop,
                         sigmaX: _state.sigmaX,
                         sigmaY: _state.sigmaY,
                         backgroundColor: _state.glassColor,
@@ -164,7 +241,7 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
     return appFab(
       context: context,
       icon: Icons.tune,
-      
+
       onPressed: () {
         showModalBottomSheet(
           context: context,

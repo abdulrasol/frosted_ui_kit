@@ -1,5 +1,8 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_performance.dart';
 
 /// Defines visual style variants for [AppButton].
 enum AppButtonStyle {
@@ -14,6 +17,21 @@ enum AppButtonStyle {
 
   /// Text-only button style without border or card background.
   text,
+
+  /// Lightweight liquid-glass style with a low-sigma, performance-aware blur.
+  waterDrop,
+}
+
+/// Visual treatments available for icon-only circular buttons.
+enum CircleButtonStyle {
+  /// Uses the existing glassmorphic surface.
+  glass,
+
+  /// Uses a translucent layered highlight and low-sigma blur that resembles a water droplet.
+  waterDrop,
+
+  /// Uses a solid themed surface without backdrop blur.
+  solid,
 }
 
 /// A circular glassmorphic button built on [BlurredCard] with customizable blur, border, and color.
@@ -33,6 +51,12 @@ class CircleButton extends StatelessWidget {
     this.margin,
     this.boxShadow,
     this.clipBehavior = Clip.antiAlias,
+    this.style = CircleButtonStyle.waterDrop,
+    this.selected = false,
+    this.selectedColor,
+    this.selectedIconColor,
+    this.tooltip,
+    this.semanticLabel,
   });
 
   /// Callback function executed when the button is tapped.
@@ -71,6 +95,24 @@ class CircleButton extends StatelessWidget {
   /// Content clipping behavior (defaults to [Clip.antiAlias]).
   final Clip clipBehavior;
 
+  /// Visual treatment used by the button.
+  final CircleButtonStyle style;
+
+  /// Whether the button is currently selected.
+  final bool selected;
+
+  /// Optional surface color used while [selected] is true.
+  final Color? selectedColor;
+
+  /// Optional icon color used while [selected] is true.
+  final Color? selectedIconColor;
+
+  /// Optional tooltip shown for pointer and long-press interactions.
+  final String? tooltip;
+
+  /// Accessible label announced by screen readers.
+  final String? semanticLabel;
+
   @override
   Widget build(BuildContext context) {
     final effectiveSize = size ?? 48.0;
@@ -79,31 +121,196 @@ class CircleButton extends StatelessWidget {
       customBorder = Border.all(color: borderColor!, width: borderWidth ?? 1.0);
     }
 
-    return BlurredCard(
-      height: effectiveSize,
-      width: effectiveSize,
-      shape: BoxShape.circle,
-      sigmaX: sigmaX,
-      sigmaY: sigmaY,
-      color: glassColor,
-      border: border ?? customBorder,
-      boxShadow: boxShadow,
-      margin: margin,
-      clipBehavior: clipBehavior,
-      padding: EdgeInsets.zero,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          customBorder: const CircleBorder(),
-          child: Center(child: Icon(icon, size: effectiveSize * 0.5)),
+    final Widget surface;
+    final selectedIcon =
+        selectedIconColor ??
+        (selected ? Theme.of(context).colorScheme.onPrimary : null);
+    if (style == CircleButtonStyle.waterDrop) {
+      final theme = Theme.of(context);
+      final isDark = theme.brightness == Brightness.dark;
+      final surfaceColor = selected && selectedColor != null
+          ? selectedColor!
+          : (glassColor ?? theme.colorScheme.surfaceContainerHighest);
+      surface = Container(
+        height: effectiveSize,
+        width: effectiveSize,
+        margin: margin,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isDark ? null : surfaceColor.withValues(alpha: 0.20),
+          gradient: isDark
+              ? const RadialGradient(
+                  center: Alignment(-0.35, -0.4),
+                  radius: 0.9,
+                  colors: [
+                    Color.fromRGBO(255, 255, 255, 0.14),
+                    Color.fromRGBO(255, 255, 255, 0.04),
+                    Color.fromRGBO(0, 0, 0, 0.10),
+                  ],
+                  stops: [0, 0.48, 1],
+                )
+              : null,
+          border:
+              border ??
+              Border.all(
+                color:
+                    (borderColor ??
+                            (isDark ? Colors.white : theme.colorScheme.outline))
+                        .withValues(alpha: isDark ? 0.34 : 0.48),
+                width: borderWidth ?? 1,
+              ),
+          boxShadow:
+              boxShadow ??
+              [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.14 : 0.045),
+                  blurRadius: isDark ? 8 : 4,
+                  offset: const Offset(1, 2),
+                ),
+              ],
         ),
+        child: _buildInteractiveContent(
+          context,
+          effectiveSize,
+          onPressed,
+          semanticLabel,
+          selectedIcon,
+        ),
+      );
+    } else if (style == CircleButtonStyle.solid) {
+      surface = Container(
+        height: effectiveSize,
+        width: effectiveSize,
+        margin: margin,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: selected && selectedColor != null
+              ? selectedColor
+              : (glassColor ?? Theme.of(context).colorScheme.primary),
+          border:
+              border ??
+              (borderColor == null
+                  ? null
+                  : Border.all(color: borderColor!, width: borderWidth ?? 1)),
+          boxShadow: boxShadow,
+        ),
+        child: _buildInteractiveContent(
+          context,
+          effectiveSize,
+          onPressed,
+          semanticLabel,
+          selectedIcon,
+        ),
+      );
+    } else {
+      surface = BlurredCard(
+        height: effectiveSize,
+        width: effectiveSize,
+        shape: BoxShape.circle,
+        sigmaX: sigmaX,
+        sigmaY: sigmaY,
+        color: glassColor,
+        border: border ?? customBorder,
+        boxShadow: boxShadow,
+        margin: margin,
+        clipBehavior: clipBehavior,
+        padding: EdgeInsets.zero,
+        child: _buildInteractiveContent(
+          context,
+          effectiveSize,
+          onPressed,
+          semanticLabel,
+          selectedIcon,
+        ),
+      );
+    }
+
+    final liquidSurface = style == CircleButtonStyle.waterDrop
+        ? _wrapWaterDrop(context, surface)
+        : surface;
+    final button = Semantics(
+      button: true,
+      enabled: onPressed != null,
+      label: semanticLabel,
+      excludeSemantics: semanticLabel != null,
+      child: _PressScale(child: liquidSurface),
+    );
+    return tooltip == null ? button : Tooltip(message: tooltip!, child: button);
+  }
+
+  Widget _buildInteractiveContent(
+    BuildContext context,
+    double effectiveSize,
+    VoidCallback? onPressed,
+    String? semanticLabel,
+    Color? iconColor,
+  ) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        customBorder: const CircleBorder(),
+        child: Center(
+          child: Icon(
+            icon,
+            size: effectiveSize * 0.5,
+            color: iconColor,
+            semanticLabel: semanticLabel,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _wrapWaterDrop(BuildContext context, Widget child) {
+    final performance = FrostedPerformance.of(context);
+    final blurred = performance.blurEnabled
+        ? BackdropFilter(
+            filter: ui.ImageFilter.blur(
+              sigmaX: 5 * performance.blurScale,
+              sigmaY: 5 * performance.blurScale,
+            ),
+            child: child,
+          )
+        : child;
+    return ClipOval(child: blurred);
+  }
+}
+
+class _PressScale extends StatefulWidget {
+  const _PressScale({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_PressScale> createState() => _PressScaleState();
+}
+
+class _PressScaleState extends State<_PressScale> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (_pressed != value) setState(() => _pressed = value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: (_) => _setPressed(true),
+      onPointerUp: (_) => _setPressed(false),
+      onPointerCancel: (_) => _setPressed(false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.92 : 1,
+        duration: const Duration(milliseconds: 110),
+        curve: Curves.easeOutCubic,
+        child: widget.child,
       ),
     );
   }
 }
 
 /// Legacy alias for [CircleButton] to maintain backwards compatibility.
+@Deprecated('Use CircleButton instead. This alias remains for compatibility.')
 typedef CricleButton = CircleButton;
 
 /// A versatile button widget supporting multiple style variants ([AppButtonStyle.glass],
@@ -202,7 +409,9 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final effectiveOnPressed = (isLoading || isDisabled) ? null : onPressed;
-    final effectiveRadius = borderRadius ?? BorderRadius.circular(16);
+    final BorderRadius effectiveRadius = borderRadius is BorderRadius
+        ? borderRadius as BorderRadius
+        : BorderRadius.circular(16);
 
     // Determine content color based on style variant and disabled state
     final Color defaultContentColor;
@@ -213,6 +422,7 @@ class AppButton extends StatelessWidget {
       case AppButtonStyle.glass:
       case AppButtonStyle.outlined:
       case AppButtonStyle.text:
+      case AppButtonStyle.waterDrop:
         defaultContentColor = theme.colorScheme.primary;
         break;
     }
@@ -256,6 +466,80 @@ class AppButton extends StatelessWidget {
     );
 
     final Widget content = child ?? innerContent;
+
+    if (style == AppButtonStyle.waterDrop) {
+      final isDark = theme.brightness == Brightness.dark;
+      final surfaceColor =
+          backgroundColor ??
+          (isDark
+              ? theme.colorScheme.primary
+              : theme.colorScheme.surfaceContainerHighest);
+      final buttonSurface = Container(
+        height: height,
+        width: width,
+        margin: margin,
+        decoration: BoxDecoration(
+          borderRadius: effectiveRadius,
+          color: isDark ? null : surfaceColor.withValues(alpha: 0.18),
+          gradient: isDark
+              ? const LinearGradient(
+                  begin: Alignment(-0.8, -1),
+                  end: Alignment(0.8, 1),
+                  colors: [
+                    Color.fromRGBO(255, 255, 255, 0.14),
+                    Color.fromRGBO(255, 255, 255, 0.04),
+                    Color.fromRGBO(0, 0, 0, 0.10),
+                  ],
+                )
+              : null,
+          border:
+              border ??
+              Border.all(
+                color:
+                    (borderColor ??
+                            (isDark ? Colors.white : theme.colorScheme.outline))
+                        .withValues(alpha: isDark ? 0.34 : 0.44),
+              ),
+          boxShadow:
+              boxShadow ??
+              [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.14 : 0.04),
+                  blurRadius: isDark ? 8 : 4,
+                  offset: const Offset(2, 4),
+                ),
+              ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          clipBehavior: clipBehavior,
+          borderRadius: effectiveRadius,
+          child: InkWell(
+            onTap: effectiveOnPressed,
+            borderRadius: effectiveRadius,
+            child: Padding(
+              padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+              child: content,
+            ),
+          ),
+        ),
+      );
+      final performance = FrostedPerformance.of(context);
+      final glassSurface = performance.blurEnabled
+          ? BackdropFilter(
+              filter: ui.ImageFilter.blur(
+                sigmaX: 5 * performance.blurScale,
+                sigmaY: 5 * performance.blurScale,
+              ),
+              child: buttonSurface,
+            )
+          : buttonSurface;
+      return ClipRRect(
+        borderRadius: effectiveRadius,
+        clipBehavior: clipBehavior,
+        child: glassSurface,
+      );
+    }
 
     // 1. Text Button variant
     if (style == AppButtonStyle.text) {
@@ -389,6 +673,12 @@ mixin Buttons {
     EdgeInsetsGeometry? margin,
     List<BoxShadow>? boxShadow,
     Clip clipBehavior = Clip.antiAlias,
+    String? tooltip,
+    String? semanticLabel,
+    CircleButtonStyle style = CircleButtonStyle.waterDrop,
+    bool selected = false,
+    Color? selectedColor,
+    Color? selectedIconColor,
   }) {
     return CircleButton(
       key: key,
@@ -404,6 +694,12 @@ mixin Buttons {
       margin: margin,
       boxShadow: boxShadow,
       clipBehavior: clipBehavior,
+      tooltip: tooltip,
+      semanticLabel: semanticLabel,
+      style: style,
+      selected: selected,
+      selectedColor: selectedColor,
+      selectedIconColor: selectedIconColor,
     );
   }
 
@@ -423,6 +719,12 @@ mixin Buttons {
     EdgeInsetsGeometry? margin,
     List<BoxShadow>? boxShadow,
     Clip clipBehavior = Clip.antiAlias,
+    String? tooltip,
+    String? semanticLabel,
+    CircleButtonStyle style = CircleButtonStyle.waterDrop,
+    bool selected = false,
+    Color? selectedColor,
+    Color? selectedIconColor,
   }) {
     return circleButton(
       context: context,
@@ -438,6 +740,12 @@ mixin Buttons {
       margin: margin,
       boxShadow: boxShadow,
       clipBehavior: clipBehavior,
+      tooltip: tooltip,
+      semanticLabel: semanticLabel,
+      style: style,
+      selected: selected,
+      selectedColor: selectedColor,
+      selectedIconColor: selectedIconColor,
     );
   }
 

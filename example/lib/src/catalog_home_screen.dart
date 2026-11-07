@@ -84,149 +84,127 @@ class _CatalogHomeScreenState extends State<CatalogHomeScreen> with Cards, Butto
             ),
           ),
 
-          SafeArea(
-            child: ListView(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
-              children: [
-                SizedBox(height: context.appBarHeight),
+          ListView(
+            padding: EdgeInsets.only(left: 16, right: 16, top: context.topPadding, bottom: 16),
+            children: [
+              SizedBox(height: context.appBarHeight),
 
-                // Hero Section
-                bluredCard(
-                  context: context,
-                  padding: const EdgeInsets.all(24),
-                  borderRadius: BorderRadius.circular(32),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: const LinearGradient(colors: [Colors.purpleAccent, Colors.blueAccent]),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 2),
-                            ),
-                            child: const Icon(Icons.person, color: Colors.white, size: 30),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Pro Dashboard',
-                                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Liquid Glass Aesthetics',
-                                  style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      // Showcase Sliding Tabs inline
-                      appSlidingTabs(
-                        context: context,
-                        tabs: const ['Components', 'Settings', 'Analytics'],
-                        selectedIndex: _currentTab,
-                        onTabChanged: (index) {
-                          setState(() {
-                            _currentTab = index;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    'Component Library',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Grid Catalog
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1.1,
+              // Hero Section
+              bluredCard(
+                context: context,
+                padding: const EdgeInsets.all(24),
+                borderRadius: BorderRadius.circular(32),
+                child: Column(
                   children: [
-                    _buildGridTile(
-                      context: context,
-                      title: 'Cards',
-                      icon: Icons.layers_outlined,
-                      onTap: () => _navigateTo(context, const CardsCatalog()),
+                    Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(colors: [Colors.purpleAccent, Colors.blueAccent]),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 2),
+                          ),
+                          child: const Icon(Icons.person, color: Colors.white, size: 30),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Pro Dashboard',
+                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Liquid Glass Aesthetics',
+                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    _buildGridTile(
+                    const SizedBox(height: 24),
+                    // Showcase Sliding Tabs inline
+                    appSlidingTabs(
                       context: context,
-                      title: 'Buttons',
-                      icon: Icons.touch_app_outlined,
-                      onTap: () => _navigateTo(context, const ButtonsCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'Loading',
-                      icon: Icons.hourglass_top_rounded,
-                      onTap: () => _navigateTo(context, const LoadingButtonCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'Inputs',
-                      icon: Icons.text_fields_rounded,
-                      onTap: () => _navigateTo(context, const InputsCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'Tabs',
-                      icon: Icons.tab_unselected_rounded,
-                      onTap: () => _navigateTo(context, const TabsCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'Bottom Sheets',
-                      icon: Icons.call_to_action_outlined,
-                      onTap: () => _navigateTo(context, const BottomSheetCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'Dialogs',
-                      icon: Icons.chat_bubble_outline_rounded,
-                      onTap: () => _navigateTo(context, const DialogsCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'Steppers',
-                      icon: Icons.linear_scale_rounded,
-                      onTap: () => _navigateTo(context, const StepperCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'List Sections',
-                      icon: Icons.format_list_bulleted_rounded,
-                      onTap: () => _navigateTo(context, const ListTileCatalog()),
-                    ),
-                    _buildGridTile(
-                      context: context,
-                      title: 'App Bars',
-                      icon: Icons.view_headline_rounded,
-                      onTap: () => _navigateTo(context, const AppBarCatalog()),
+                      tabs: const ['Components', 'Settings', 'Analytics'],
+                      selectedIndex: _currentTab,
+                      onTabChanged: (index) {
+                        setState(() {
+                          _currentTab = index;
+                        });
+                      },
                     ),
                   ],
                 ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'Component Library',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Grid Catalog
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 1.1,
+                children: [
+                  _buildGridTile(context: context, title: 'Cards', icon: Icons.layers_outlined, onTap: () => _navigateTo(context, const CardsCatalog())),
+                  _buildGridTile(context: context, title: 'Buttons', icon: Icons.touch_app_outlined, onTap: () => _navigateTo(context, const ButtonsCatalog())),
+                  _buildGridTile(
+                    context: context,
+                    title: 'Loading',
+                    icon: Icons.hourglass_top_rounded,
+                    onTap: () => _navigateTo(context, const LoadingButtonCatalog()),
+                  ),
+                  _buildGridTile(context: context, title: 'Inputs', icon: Icons.text_fields_rounded, onTap: () => _navigateTo(context, const InputsCatalog())),
+                  _buildGridTile(context: context, title: 'Tabs', icon: Icons.tab_unselected_rounded, onTap: () => _navigateTo(context, const TabsCatalog())),
+                  _buildGridTile(
+                    context: context,
+                    title: 'Bottom Sheets',
+                    icon: Icons.call_to_action_outlined,
+                    onTap: () => _navigateTo(context, const BottomSheetCatalog()),
+                  ),
+                  _buildGridTile(
+                    context: context,
+                    title: 'Dialogs',
+                    icon: Icons.chat_bubble_outline_rounded,
+                    onTap: () => _navigateTo(context, const DialogsCatalog()),
+                  ),
+                  _buildGridTile(
+                    context: context,
+                    title: 'Steppers',
+                    icon: Icons.linear_scale_rounded,
+                    onTap: () => _navigateTo(context, const StepperCatalog()),
+                  ),
+                  _buildGridTile(
+                    context: context,
+                    title: 'List Sections',
+                    icon: Icons.format_list_bulleted_rounded,
+                    onTap: () => _navigateTo(context, const ListTileCatalog()),
+                  ),
+                  _buildGridTile(
+                    context: context,
+                    title: 'App Bars',
+                    icon: Icons.view_headline_rounded,
+                    onTap: () => _navigateTo(context, const AppBarCatalog()),
+                  ),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
+            ],
           ),
         ],
       ),

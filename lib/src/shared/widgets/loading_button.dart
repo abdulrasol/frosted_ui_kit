@@ -62,6 +62,11 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
     this.successIcon = Icons.check_circle_rounded,
     this.errorIcon = Icons.error_rounded,
     this.isFullWidth = true,
+    this.collapseOnLoading = false,
+    this.loadingColor,
+    this.loadingLabel = 'Loading',
+    this.successLabel = 'Completed',
+    this.errorLabel = 'Action failed',
   });
 
   /// The controller that drives the state of the button.
@@ -116,8 +121,24 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
   final IconData errorIcon;
 
   /// Whether the button should stretch to full width in idle/success/error states.
-  /// If true, the loading state will still collapse to a circle for the spinner.
+  /// If true, the loading state collapses to a square spinner.
   final bool isFullWidth;
+
+  /// Whether loading collapses the button to a square spinner.
+  /// Defaults to false so surrounding content does not move when loading starts.
+  final bool collapseOnLoading;
+
+  /// Optional loading indicator color.
+  final Color? loadingColor;
+
+  /// Accessible label announced while loading.
+  final String loadingLabel;
+
+  /// Accessible label announced after success.
+  final String successLabel;
+
+  /// Accessible label announced after an error.
+  final String errorLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -181,9 +202,10 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
                 );
                 break;
               case FrostLoadingButtonState.loading:
-                content = const AppLoadingIndicator(
+                content = AppLoadingIndicator(
                   key: ValueKey('loading'),
-                  size: 48,
+                  size: 24,
+                  color: loadingColor ?? theme.colorScheme.onPrimary,
                 );
                 break;
               case FrostLoadingButtonState.success:
@@ -204,40 +226,56 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
                 break;
             }
 
-            return AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: appButton(
-                context: context,
-                title: null, // Title handled in custom content
-                icon: null, // Icon handled in custom content
-                style: style,
-                backgroundColor: currentBgColor,
-                isDisabled: isDisabled,
-                onPressed: onPressed,
-                height: height,
-                width: state == FrostLoadingButtonState.loading
-                    ? (height ?? 48)
-                    : (isFullWidth ? (maxWidth ?? width) : width),
-                borderRadius: borderRadius,
-                margin: margin,
-                padding: state == FrostLoadingButtonState.loading
-                    ? EdgeInsets.zero
-                    : padding,
-                textStyle: textStyle,
-                iconColor: iconColor,
-                // Override the standard button content with our AnimatedSwitcher
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  switchInCurve: Curves.easeIn,
-                  switchOutCurve: Curves.easeOut,
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: ScaleTransition(scale: animation, child: child),
-                    );
-                  },
-                  child: content,
+            final statusLabel = switch (state) {
+              FrostLoadingButtonState.idle => title,
+              FrostLoadingButtonState.loading => loadingLabel,
+              FrostLoadingButtonState.success => successLabel,
+              FrostLoadingButtonState.error => errorLabel,
+            };
+
+            return Semantics(
+              button: true,
+              enabled:
+                  state == FrostLoadingButtonState.idle && onPressed != null,
+              liveRegion: true,
+              label: statusLabel,
+              child: AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: appButton(
+                  context: context,
+                  title: null, // Title handled in custom content
+                  icon: null, // Icon handled in custom content
+                  style: style,
+                  backgroundColor: currentBgColor,
+                  isDisabled: isDisabled,
+                  onPressed: onPressed,
+                  height: height,
+                  width:
+                      state == FrostLoadingButtonState.loading &&
+                          collapseOnLoading
+                      ? (height ?? 48)
+                      : (isFullWidth ? (maxWidth ?? width) : width),
+                  borderRadius: borderRadius,
+                  margin: margin,
+                  padding: state == FrostLoadingButtonState.loading
+                      ? EdgeInsets.zero
+                      : padding,
+                  textStyle: textStyle,
+                  iconColor: iconColor,
+                  // Override the standard button content with our AnimatedSwitcher
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeIn,
+                    switchOutCurve: Curves.easeOut,
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(scale: animation, child: child),
+                      );
+                    },
+                    child: content,
+                  ),
                 ),
               ),
             );

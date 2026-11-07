@@ -48,43 +48,50 @@ class _FrostedNavigationButtomBarState
     final theme = Theme.of(context);
 
     return SafeArea(
+      top: false,
+      minimum: const EdgeInsets.only(bottom: 6),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: BlurredCard(
-                key: widget.key,
-                borderRadius: BorderRadius.circular(32),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                border: Border.all(
-                  color: theme.colorScheme.outlineVariant.withValues(
-                    alpha: 0.5,
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 4),
+        child: RepaintBoundary(
+          child: Row(
+            children: [
+              Expanded(
+                child: BlurredCard(
+                  key: widget.key,
+                  borderRadius: BorderRadius.circular(32),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 4,
                   ),
-                  width: 1,
-                ),
-                sigmaX: 20,
-                sigmaY: 20,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(widget.items.length, (index) {
-                    return _FrostedNavbarItemWidget(
-                      key: widget.items[index].key,
-                      item: widget.items[index],
-                      index: index,
-                      controller: widget.controller,
-                      onTabChanged: widget.onTabChanged,
-                    );
-                  }),
+                  border: Border.all(
+                    color: theme.colorScheme.outlineVariant.withValues(
+                      alpha: 0.5,
+                    ),
+                    width: 1,
+                  ),
+                  sigmaX: 20,
+                  sigmaY: 20,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: List.generate(widget.items.length, (index) {
+                      return _FrostedNavbarItemWidget(
+                        key: widget.items[index].key,
+                        item: widget.items[index],
+                        index: index,
+                        controller: widget.controller,
+                        onTabChanged: widget.onTabChanged,
+                      );
+                    }),
+                  ),
                 ),
               ),
-            ),
-            if (widget.action != null) ...[
-              const SizedBox(width: 8),
-              widget.action!,
+              if (widget.action != null) ...[
+                const SizedBox(width: 8),
+                widget.action!,
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -209,7 +216,7 @@ class _FrostedNavbarItemWidgetState extends State<_FrostedNavbarItemWidget>
                 width: double.infinity,
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
                 decoration: BoxDecoration(
                   color: isActive
                       ? activeColor.withValues(alpha: 0.15)

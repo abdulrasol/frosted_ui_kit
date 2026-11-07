@@ -5,27 +5,84 @@ import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/loading.dart';
 
 /// A base glassmorphic dialog widget.
+///
+/// The content is constrained and scrollable so long descriptions and the
+/// on-screen keyboard do not cause overflow on compact devices.
 class AppDialog extends StatelessWidget with Cards {
+  /// Creates a glassmorphic dialog shell.
   const AppDialog({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(24.0),
+    this.maxWidth = 520,
+    this.insetPadding = const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 24,
+    ),
+    this.surfaceOpacity = 0.88,
+    this.blurSigma = 12,
   });
 
+  /// Dialog content.
   final Widget child;
+
+  /// Inner content padding.
   final EdgeInsetsGeometry padding;
+
+  /// Maximum width used on tablets and desktop layouts.
+  final double maxWidth;
+
+  /// Minimum distance between the dialog and the viewport edges.
+  final EdgeInsets insetPadding;
+
+  /// Opacity of the dialog surface tint.
+  final double surfaceOpacity;
+
+  /// Backdrop blur sigma used by the dialog glass layer.
+  final double blurSigma;
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),
-      child: blurredCard(
-        context: context,
-        radius: 24,
-        padding: padding,
-        child: child,
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+    final theme = Theme.of(context);
+    final availableHeight =
+        MediaQuery.sizeOf(context).height -
+        viewInsets.bottom -
+        insetPadding.vertical;
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutCubic,
+      tween: Tween(begin: 0.96, end: 1),
+      builder: (context, scale, dialog) => Opacity(
+        opacity: ((scale - 0.96) / 0.04).clamp(0, 1),
+        child: Transform.scale(scale: scale, child: dialog),
+      ),
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        insetPadding: insetPadding,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxWidth,
+            maxHeight: availableHeight.clamp(
+              220,
+              MediaQuery.sizeOf(context).height * 0.84,
+            ),
+          ),
+          child: SingleChildScrollView(
+            child: blurredCard(
+              context: context,
+              radius: 24,
+              padding: padding,
+              sigmaX: blurSigma,
+              sigmaY: blurSigma,
+              color: theme.colorScheme.surface.withValues(
+                alpha: surfaceOpacity,
+              ),
+              child: child,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -46,6 +103,7 @@ class _InputDialogContent extends StatefulWidget {
     this.confirmTextColor,
     this.cancelButtonColor,
     this.cancelTextColor,
+    this.autofocus = false,
   });
 
   final String? title;
@@ -60,6 +118,7 @@ class _InputDialogContent extends StatefulWidget {
   final Color? confirmTextColor;
   final Color? cancelButtonColor;
   final Color? cancelTextColor;
+  final bool autofocus;
 
   @override
   State<_InputDialogContent> createState() => _InputDialogContentState();
@@ -113,6 +172,7 @@ class _InputDialogContentState extends State<_InputDialogContent>
             placeholder: widget.hintText,
             validator: widget.validator,
             type: AppTextFieldType.text,
+            autofocus: widget.autofocus,
           ),
           const SizedBox(height: 24),
           Row(
@@ -177,6 +237,7 @@ mixin Dialogs {
     Color? confirmTextColor,
     Color? cancelButtonColor,
     Color? cancelTextColor,
+    bool isDestructive = false,
   }) {
     final theme = Theme.of(context);
     final color = iconColor ?? theme.colorScheme.error;
@@ -225,7 +286,7 @@ mixin Dialogs {
                         return _dialogUtils.appButton(
                           context: btnContext,
                           title: cancelText,
-                          style: AppButtonStyle.text,
+                          style: AppButtonStyle.outlined,
                           backgroundColor: cancelButtonColor,
                           textStyle: cancelTextColor != null
                               ? TextStyle(color: cancelTextColor)
@@ -243,7 +304,9 @@ mixin Dialogs {
                           context: btnContext,
                           title: confirmText,
                           style: AppButtonStyle.colored,
-                          backgroundColor: confirmButtonColor ?? color,
+                          backgroundColor:
+                              confirmButtonColor ??
+                              (isDestructive ? theme.colorScheme.error : color),
                           textStyle: confirmTextColor != null
                               ? TextStyle(color: confirmTextColor)
                               : null,
@@ -357,6 +420,7 @@ mixin Dialogs {
     Color? confirmTextColor,
     Color? cancelButtonColor,
     Color? cancelTextColor,
+    bool autofocus = false,
   }) {
     return showDialog<String>(
       context: context,
@@ -377,6 +441,7 @@ mixin Dialogs {
             confirmTextColor: confirmTextColor,
             cancelButtonColor: cancelButtonColor,
             cancelTextColor: cancelTextColor,
+            autofocus: autofocus,
           ),
         );
       },

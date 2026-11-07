@@ -26,10 +26,10 @@ class PlaygroundBackground extends StatelessWidget {
                         Color(0xFF0F1E28), // Dark Cyan tint
                       ]
                     : const [
-                        Color(0xFFF9D423), // Warm yellow
-                        Color(0xFFFF4E50), // Vibrant Red/Pink
-                        Color(0xFF6dd5ed), // Sky Blue
-                        Color(0xFF2193b0), // Deep Blue
+                        Color(0xFFFFF8E7), // Soft cream
+                        Color(0xFFFFD6C2), // Warm peach
+                        Color(0xFFD9EAF7), // Powder blue
+                        Color(0xFFB8D8E8), // Muted cyan
                       ],
                 stops: const [0.0, 0.4, 0.7, 1.0],
               ),

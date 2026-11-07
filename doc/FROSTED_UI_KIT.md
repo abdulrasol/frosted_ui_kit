@@ -125,6 +125,34 @@ A comprehensive set of action buttons supporting 4 visual style variants (`AppBu
 - `AppButtonStyle.colored`: Solid primary accent filled button.
 - `AppButtonStyle.outlined`: Transparent button with primary border outline.
 - `AppButtonStyle.text`: Subtle text-only button without border or card fill.
+- `AppButtonStyle.waterDrop`: Lightweight liquid-highlight style for regular buttons and extended FABs.
+
+`FrostLoadingButton` keeps its width during loading by default, uses a compact
+24px indicator, and exposes configurable `loadingLabel`, `successLabel`, and
+`errorLabel` semantics. Set `collapseOnLoading: true` to opt into the older
+compact spinner layout.
+
+`CircleButton` now defaults to `CircleButtonStyle.waterDrop` and also supports
+the explicit `glass` and `solid` styles. The water-drop surface uses a small,
+performance-aware backdrop blur with a restrained highlight and rim. The old glass behavior remains
+available by setting `style: CircleButtonStyle.glass`.
+It uses lightweight gradients and highlights instead of a separate backdrop
+blur, making small icon buttons look like liquid droplets with lower GPU cost.
+The existing `glass` style remains the default.
+
+```dart
+circleButton(
+  context: context,
+  icon: Icons.settings,
+  style: CircleButtonStyle.waterDrop,
+  selected: true,
+  selectedColor: Colors.deepPurple,
+  selectedIconColor: Colors.white,
+  tooltip: 'Settings',
+  semanticLabel: 'Settings',
+  onPressed: openSettings,
+)
+```
 
 #### API & Key Parameters:
 | Parameter | Type | Default | Description |
@@ -317,6 +345,13 @@ Glassmorphic popup dialogs designed to alert the user, ask for confirmation, or 
 | `confirmTextColor` | `Color?` | `null` | Custom text color for the confirm button. |
 | `cancelButtonColor` | `Color?` | `null` | Custom background color for the cancel button. |
 | `cancelTextColor` | `Color?` | `null` | Custom text color for the cancel button. |
+| `isDestructive` | `bool` | `false` | Uses destructive styling for warning confirmation actions. |
+
+`AppDialog` now uses one clearer glass surface, a restrained blur, a
+fade/scale entrance animation, and a scrollable height constrained by the
+keyboard insets. Input dialogs move above the keyboard instead of being
+covered by it. The default cancel action is outlined while the primary action
+remains filled.
 
 #### Code Usage Example:
 ```dart
@@ -419,6 +454,11 @@ Screen scaffold wrapper ensuring consistent layout padding, safe areas, and a fl
 | `title` | `String?` | `null` | Title displayed inside the glass `FrostedAppBar`. |
 | `actions` | `List<Widget>?` | `null` | End-aligned action icons in `FrostedAppBar`. |
 | `isHideAppbar` | `bool` | `false` | Hides the top app bar when true. |
+| `hideAppBarOnScroll` | `bool` | `false` | Hides the default floating app bar while scrolling down and reveals it after at least 1 logical pixel of upward scrolling. |
+| `appBarScrollBehavior` | `AppBarScrollBehavior` | `none` | Selects `none`, `hideAll`, or `collapseTitle` behavior. |
+| `hideAfter` / `showAfter` | `double` | `16` / `8` | Hysteresis distances in logical pixels used to prevent flickering. |
+| `titleWidget` | `Widget?` | `null` | Custom title content for the default app bar. |
+| `showStatusBarGradient` | `bool` | `true` | Adds a subtle background gradient behind the system status-bar icons. |
 | `bottomNavigationBar` | `Widget?` | `null` | Optional bottom bar component. |
 
 #### API & Key Parameters (`FrostedNavigationButtomBar`):
@@ -467,6 +507,39 @@ class _MyScreenState extends State<MyScreen> {
     );
   }
 }
+```
+
+#### Scroll-to-hide app bar
+
+Set `appBarScrollBehavior: AppBarScrollBehavior.hideAll` when a screen should
+reclaim the top edge while the user scrolls down. The default floating
+`FrostedAppBar` hides after `hideAfter` logical pixels and returns after
+`showAfter` logical pixels. The different thresholds prevent flickering when
+the user's finger changes direction. It also remains visible when the scroll
+position reaches the top.
+
+The option is disabled by default and applies only to the default floating
+app bar. A custom `appbar` passed to `BaseWidget` continues to use the normal
+`Scaffold.appBar` behavior. The implementation changes state only when the
+visibility direction changes, keeps the scrollable child outside the animated
+app-bar subtree, and pauses app-bar animations while hidden. This avoids
+rebuilding the page content and limits extra work while the glass blur is
+moving.
+
+Use `AppBarScrollBehavior.collapseTitle` to keep the back button and actions
+available while fading out only the title. This is useful on detail pages
+where navigation actions should remain reachable. The legacy
+`hideAppBarOnScroll: true` option is still supported and maps to `hideAll`.
+
+```dart
+BaseWidget(
+  title: 'Messages',
+  appBarScrollBehavior: AppBarScrollBehavior.hideAll,
+  child: ListView.builder(
+    itemCount: 50,
+    itemBuilder: (context, index) => ListTile(title: Text('Message $index')),
+  ),
+)
 ```
 
 ---
