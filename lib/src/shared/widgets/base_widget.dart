@@ -62,9 +62,10 @@ class BaseWidget extends StatefulWidget {
 
   /// Whether to draw a subtle top gradient behind the system status bar.
   ///
-  /// The gradient uses the current scaffold background color and fades into
-  /// transparency below the status-bar and app-bar area. It improves the
-  /// contrast of system icons while content scrolls underneath the header.
+  /// In dark mode the gradient uses the scaffold background color. In light
+  /// mode it uses a restrained black tint, becoming darker toward the top and
+  /// fading to transparency below the header. This separates system icons
+  /// from content scrolling underneath without adding a milky light layer.
   final bool showStatusBarGradient;
 
   /// Optional floating action button displayed on the scaffold.
@@ -120,7 +121,8 @@ class _BaseWidgetState extends State<BaseWidget> {
         _downwardDistance = widget.hideAfter;
         _upwardDistance = 0;
       } else if (notification.direction == ScrollDirection.forward &&
-          !_isAppBarVisible) {
+          !_isAppBarVisible &&
+          notification.metrics.extentAfter > 0) {
         setState(() => _isAppBarVisible = true);
         _upwardDistance = widget.showAfter;
         _downwardDistance = 0;
@@ -135,7 +137,7 @@ class _BaseWidgetState extends State<BaseWidget> {
       if (scrollDelta > 0) {
         _downwardDistance += scrollDelta;
         _upwardDistance = 0;
-      } else if (scrollDelta < 0) {
+      } else if (scrollDelta < 0 && notification.metrics.extentAfter > 0) {
         _upwardDistance += scrollDelta.abs();
         _downwardDistance = 0;
       }
@@ -163,6 +165,19 @@ class _BaseWidgetState extends State<BaseWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final statusBarGradientColors = isDark
+        ? [
+            theme.scaffoldBackgroundColor.withValues(alpha: 0.92),
+            theme.scaffoldBackgroundColor.withValues(alpha: 0.52),
+            Colors.transparent,
+          ]
+        : [
+            Colors.black.withValues(alpha: 0.50),
+            Colors.black.withValues(alpha: 0.40),
+            Colors.transparent,
+          ];
     return Scaffold(
       extendBody: widget.bottomNavigationBar != null,
       appBar: widget.isHideAppbar ? null : widget.appbar,
@@ -190,19 +205,12 @@ class _BaseWidgetState extends State<BaseWidget> {
               height: MediaQuery.paddingOf(context).top + kToolbarHeight + 16,
               child: IgnorePointer(
                 child: DecoratedBox(
+                  key: const ValueKey('base-widget-status-bar-gradient'),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Theme.of(
-                          context,
-                        ).scaffoldBackgroundColor.withValues(alpha: 0.92),
-                        Theme.of(
-                          context,
-                        ).scaffoldBackgroundColor.withValues(alpha: 0.52),
-                        Colors.transparent,
-                      ],
+                      colors: statusBarGradientColors,
                       stops: const [0, 0.42, 1],
                     ),
                   ),

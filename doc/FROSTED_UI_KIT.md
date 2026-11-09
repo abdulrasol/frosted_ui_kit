@@ -1,5 +1,9 @@
 # ❄️ Frosted UI Kit Catalog & API Indexing
 
+For supported imports, compatibility aliases, and deprecation policy, see
+[API Stability and Deprecation](FROSTED_API_STABILITY.md).
+For the shared visual surface rules, see [Visual Consistency](VISUAL_CONSISTENCY.md).
+
 Welcome to the **`frosted_ui_kit`** Widget Catalog and Technical API Index. This document provides a complete visual reference, parameter guide, and code snippets for all components in the library.
 
 ---
@@ -118,7 +122,72 @@ class CardSampleWidget extends StatelessWidget with Cards {
 ---
 
 ### 3. 🔘 Action Buttons (`AppButton`, `CircleButton`, `AppFloatingActionButton` & `Buttons`)
-A comprehensive set of action buttons supporting 4 visual style variants (`AppButtonStyle`). It also includes `AppFloatingActionButton` which acts as a versatile FAB (icon only, text only, or extended icon + text).
+
+For a concise entry point use `FrostedButton.primary(label:, onPressed:)`,
+`FrostedButton.secondary(label:, onPressed:)`, and
+`FrostedIconButton(icon:, tooltip:, onPressed:)`. Constructors are const and
+need no BuildContext argument or mixin. Primary uses filled styling; secondary
+uses outlined styling. Null callbacks disable the button. `isLoading` blocks
+activation and displays progress; it does not automatically start a Future.
+Provide localized labels/tooltips from the host application. Optional icon,
+width, foreground/background colors and borderRadius allow common overrides.
+Icon actions support selection and an optional appearance override.
+
+The short API delegates to the existing widgets, so theme, keyboard interaction
+and performance controls use the same implementation. `AppButton`,
+`CircleButton` and their helpers remain supported without new deprecations.
+Advanced blur/border/shadow customization remains on those existing APIs.
+Buttons Catalog demonstrates the short API alongside the original controls.
+
+Circular buttons expose selected/enabled semantics and an accessible tap action.
+Their minimum layout target is 48 logical pixels. Disabled buttons do not
+animate on press, and reduced-motion settings suppress press scaling. Back
+helpers follow Directionality. Regression tests exercise keyboard activation,
+RTL, tooltips and disabled state. Light/dark geometry baselines are stored in
+`test/goldens`; Flutter's test font is used, so device typography still needs
+visual review. Run `flutter test` to compare baselines and review image changes
+before intentionally regenerating them with `--update-goldens`.
+A comprehensive set of action buttons supporting 5 visual style variants (`AppButtonStyle`). It also includes `AppFloatingActionButton` which acts as a versatile FAB (icon only, text only, or extended icon + text).
+
+Button meaning is independent from appearance. Use
+`FrostedActionRole.primary`, `secondary`, or `destructive` on `AppButton`, or
+the matching `FrostedButton` constructor. Both examples retain destructive
+error colors:
+
+```dart
+FrostedButton.destructive(label: 'Delete', onPressed: deleteItem)
+FrostedButton.destructive(
+  label: 'Delete',
+  style: AppButtonStyle.glass,
+  onPressed: deleteItem,
+)
+```
+
+Resolution order is: local color and border overrides, then the corresponding
+action colors in `FrostedThemeData`, then Material `ColorScheme`. Disabled
+content/surfaces use `onSurface`; focus, hover, and pressed overlays use the
+resolved role accent. Roles are also supported by icon buttons and FABs.
+Existing buttons default to the primary role.
+
+For a normal Future-based action, `FrostedAsyncButton` owns the state cycle and
+does not require a controller:
+
+```dart
+FrostedAsyncButton(
+  title: 'Save changes',
+  icon: Icons.save_outlined,
+  onPressed: () async => repository.save(),
+  onSuccess: showSavedMessage,
+  onError: (error, stackTrace) => logger.record(error, stackTrace),
+)
+```
+
+Activation is blocked synchronously while an operation is active. Success and
+error feedback reset after `feedbackDuration` (1.2 seconds by default), or can
+remain visible with `null`. Late results after unmount are consumed without UI
+callbacks or state updates. Errors are delivered to `onError`; no Dialog or
+SnackBar is opened automatically. `FrostLoadingButtonController` remains the
+advanced API for manually controlled workflows.
 
 #### Supported Style Variants (`AppButtonStyle`):
 - `AppButtonStyle.glass`: Translucent glassmorphic button with backdrop blur.
@@ -131,6 +200,14 @@ A comprehensive set of action buttons supporting 4 visual style variants (`AppBu
 24px indicator, and exposes configurable `loadingLabel`, `successLabel`, and
 `errorLabel` semantics. Set `collapseOnLoading: true` to opt into the older
 compact spinner layout.
+
+The owner disposes its controller after removing the button. Listeners detach
+when the controller changes or the button unmounts. Call `start()` synchronously
+inside `onPressed`: live state checks block repeat taps before a rebuild.
+Non-idle states reject taps while preserving feedback colors. The button does
+not cancel application Futures; check `mounted` and invalidate stale requests
+on Reset, as demonstrated in Loading Button Catalog. The loading-dialog catalog
+is a dismissible preview with no delayed pop of an underlying route.
 
 `CircleButton` now defaults to `CircleButtonStyle.waterDrop` and also supports
 the explicit `glass` and `solid` styles. The water-drop surface uses a small,
@@ -160,6 +237,7 @@ circleButton(
 | `title` | `String?` | `null` | Button label text string. |
 | `icon` | `IconData?` | `null` | Icon displayed beside title label. |
 | `style` | `AppButtonStyle` | `glass` | Visual style variant choice. |
+| `role` | `FrostedActionRole` | `primary` | Semantic action role and color family. |
 | `isLoading` | `bool` | `false` | Displays progress indicator when true. |
 | `isDisabled` | `bool` | `false` | Disables touch interactions and dims colors. |
 | `onPressed` | `VoidCallback?` | `null` | Tap callback handler. |
@@ -292,6 +370,9 @@ Translucent backdrop filter bottom sheet modal with drag handle indicator and au
 | `context` | `BuildContext` | *Required* | Build context for navigator. |
 | `child` | `Widget` | *Required* | Sheet content widget. |
 | `title` | `String?` | `null` | Optional header title string with close button. |
+| `header` | `Widget?` | `null` | Replaces the default title header. |
+| `actions` | `Widget?` | `null` | Footer pinned when space allows and scrollable on compact layouts. |
+| `maxHeightFactor` | `double` | `0.92` | Maximum fraction of usable keyboard-adjusted height. |
 | `isScrollControlled` | `bool` | `true` | Allows sheet to resize with keyboard. |
 
 #### Code Usage Example:
@@ -310,9 +391,9 @@ class SheetSampleWidget extends StatelessWidget with BottomSheets {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FrostedButton.primary(
+      label: 'Open Sheet',
       onPressed: () => _openSheet(context),
-      child: const Text('Open Sheet'),
     );
   }
 }
@@ -321,6 +402,31 @@ class SheetSampleWidget extends StatelessWidget with BottomSheets {
 ---
 
 ### 6. 💬 Glassmorphic Dialogs (`AppDialog` & `Dialogs`)
+
+Input dialogs submit through the same validation path from the confirmation
+button and keyboard Done action. Invalid input keeps the dialog open. Cancel
+returns null. `AppDialog.actions` provides an optional footer: on sufficient
+vertical space only the body scrolls, while very short viewports scroll the
+body and footer together. Keyboard insets are handled by Flutter's Dialog;
+callers should not add the keyboard height to insetPadding again.
+
+The dialog regression suite covers a short viewport above the keyboard,
+RTL with 2x text scaling, portrait/landscape viewport changes, and keyboard
+insets appearing/disappearing. Input tests verify invalid Done submission,
+valid Done and button submission, Cancel, and system back results. These are
+widget simulations; physical-device keyboard behavior still benefits from
+manual checks. The Input Dialog catalog includes a longer description for
+trying these scenarios interactively.
+
+Dialogs and bottom sheets share `FrostedAdaptiveSurfaceLayout`. Headers and
+actions remain visible on regular viewports, while short or keyboard-reduced
+layouts use one scroll view. `FrostedAdaptiveActions` stacks at narrow widths
+or accessibility text scale. Warning confirmations use
+`FrostedActionRole.destructive` when `isDestructive` is true. See
+`FROSTED_ADAPTIVE_MODALS.md` for compatibility and low-end-device behavior.
+See `FROSTED_PERFORMANCE.md` for the shared rendering policy, presets, and
+profile measurement protocol.
+
 Glassmorphic popup dialogs designed to alert the user, ask for confirmation, or prompt for text input.
 
 #### Available Mixin Methods:
@@ -336,8 +442,8 @@ Glassmorphic popup dialogs designed to alert the user, ask for confirmation, or 
 | `description` | `String?` | `null` | Optional description or body text. |
 | `icon` | `IconData?` | *Varies* | Optional top icon. Set to `null` to hide. |
 | `iconColor` | `Color?` | `error` | Theme color applied to the icon and its background. |
-| `confirmText` | `String` | *Varies* | Label for the positive/submit button. |
-| `cancelText` | `String` | `Cancel` | Label for the negative button (if available). |
+| `confirmText` | `String?` | localized | Optional positive/submit label override. |
+| `cancelText` | `String?` | localized | Optional negative label override. |
 | `validator` | `FormFieldValidator<String>?`| `null` | Validation logic for `showAppInputDialog`. |
 | `titleColor` | `Color?` | `null` | Custom color for the title text. |
 | `descriptionColor` | `Color?` | `null` | Custom color for the description text. |
@@ -358,7 +464,8 @@ remains filled.
 class DialogSampleWidget extends StatelessWidget with Dialogs {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return FrostedButton.primary(
+      label: 'Open Input Dialog',
       onPressed: () async {
         final result = await showAppInputDialog(
           context: context,
@@ -368,7 +475,6 @@ class DialogSampleWidget extends StatelessWidget with Dialogs {
           validator: (val) => val == null || val.isEmpty ? 'Required' : null,
         );
       },
-      child: const Text('Open Input Dialog'),
     );
   }
 }
@@ -458,7 +564,7 @@ Screen scaffold wrapper ensuring consistent layout padding, safe areas, and a fl
 | `appBarScrollBehavior` | `AppBarScrollBehavior` | `none` | Selects `none`, `hideAll`, or `collapseTitle` behavior. |
 | `hideAfter` / `showAfter` | `double` | `16` / `8` | Hysteresis distances in logical pixels used to prevent flickering. |
 | `titleWidget` | `Widget?` | `null` | Custom title content for the default app bar. |
-| `showStatusBarGradient` | `bool` | `true` | Adds a subtle background gradient behind the system status-bar icons. |
+| `showStatusBarGradient` | `bool` | `true` | Adds a theme-aware status-bar gradient: dark scaffold tint in dark mode and a subtle black-to-transparent tint in light mode. |
 | `bottomNavigationBar` | `Widget?` | `null` | Optional bottom bar component. |
 
 #### API & Key Parameters (`FrostedNavigationButtomBar`):
@@ -516,7 +622,9 @@ reclaim the top edge while the user scrolls down. The default floating
 `FrostedAppBar` hides after `hideAfter` logical pixels and returns after
 `showAfter` logical pixels. The different thresholds prevent flickering when
 the user's finger changes direction. It also remains visible when the scroll
-position reaches the top.
+position reaches the top. Reaching or bouncing at the bottom does not count as
+an upward reveal; the bar returns only after content actually moves upward away
+from the bottom edge.
 
 The option is disabled by default and applies only to the default floating
 app bar. A custom `appbar` passed to `BaseWidget` continues to use the normal

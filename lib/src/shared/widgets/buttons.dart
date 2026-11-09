@@ -1,8 +1,7 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
-import 'package:frosted_ui_kit/src/utils/frosted_performance.dart';
+import 'glass_backdrop.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// Defines visual style variants for [AppButton].
 enum AppButtonStyle {
@@ -20,6 +19,21 @@ enum AppButtonStyle {
 
   /// Lightweight liquid-glass style with a low-sigma, performance-aware blur.
   waterDrop,
+}
+
+/// Semantic meaning of an action, independent from its visual appearance.
+///
+/// Keep the same role when switching between [AppButtonStyle] values so color,
+/// focus feedback and accessibility meaning remain consistent.
+enum FrostedActionRole {
+  /// Main action in the current context.
+  primary,
+
+  /// Supporting or lower-emphasis action.
+  secondary,
+
+  /// Irreversible or dangerous action such as delete or remove.
+  destructive,
 }
 
 /// Visual treatments available for icon-only circular buttons.
@@ -52,6 +66,7 @@ class CircleButton extends StatelessWidget {
     this.boxShadow,
     this.clipBehavior = Clip.antiAlias,
     this.style = CircleButtonStyle.waterDrop,
+    this.role = FrostedActionRole.primary,
     this.selected = false,
     this.selectedColor,
     this.selectedIconColor,
@@ -98,6 +113,9 @@ class CircleButton extends StatelessWidget {
   /// Visual treatment used by the button.
   final CircleButtonStyle style;
 
+  /// Semantic role used to resolve icon and surface accent colors.
+  final FrostedActionRole role;
+
   /// Whether the button is currently selected.
   final bool selected;
 
@@ -122,15 +140,28 @@ class CircleButton extends StatelessWidget {
     }
 
     final Widget surface;
+    final tokens = FrostedThemeData.of(context);
+    final roleColors = role.resolveColors(context);
     final selectedIcon =
         selectedIconColor ??
-        (selected ? Theme.of(context).colorScheme.onPrimary : null);
+        (selected
+            ? Theme.of(context).colorScheme.onPrimary
+            : role == FrostedActionRole.primary
+            ? tokens.contentColor
+            : style == CircleButtonStyle.solid
+            ? roleColors.onAccent
+            : roleColors.accent);
     if (style == CircleButtonStyle.waterDrop) {
       final theme = Theme.of(context);
       final isDark = theme.brightness == Brightness.dark;
       final surfaceColor = selected && selectedColor != null
           ? selectedColor!
-          : (glassColor ?? theme.colorScheme.surfaceContainerHighest);
+          : (glassColor ??
+                (role == FrostedActionRole.primary
+                    ? null
+                    : roleColors.accent) ??
+                tokens.surfaceColor ??
+                theme.colorScheme.surfaceContainerHighest);
       surface = Container(
         height: effectiveSize,
         width: effectiveSize,
@@ -186,7 +217,7 @@ class CircleButton extends StatelessWidget {
           shape: BoxShape.circle,
           color: selected && selectedColor != null
               ? selectedColor
-              : (glassColor ?? Theme.of(context).colorScheme.primary),
+              : (glassColor ?? roleColors.accent),
           border:
               border ??
               (borderColor == null
@@ -231,9 +262,14 @@ class CircleButton extends StatelessWidget {
     final button = Semantics(
       button: true,
       enabled: onPressed != null,
+      selected: selected,
       label: semanticLabel,
+      onTap: onPressed,
       excludeSemantics: semanticLabel != null,
-      child: _PressScale(child: liquidSurface),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+        child: _PressScale(enabled: onPressed != null, child: liquidSurface),
+      ),
     );
     return tooltip == null ? button : Tooltip(message: tooltip!, child: button);
   }
@@ -263,24 +299,22 @@ class CircleButton extends StatelessWidget {
   }
 
   Widget _wrapWaterDrop(BuildContext context, Widget child) {
-    final performance = FrostedPerformance.of(context);
-    final blurred = performance.blurEnabled
-        ? BackdropFilter(
-            filter: ui.ImageFilter.blur(
-              sigmaX: 5 * performance.blurScale,
-              sigmaY: 5 * performance.blurScale,
-            ),
-            child: child,
-          )
-        : child;
-    return ClipOval(child: blurred);
+    final sigma = FrostedThemeData.of(context).glassBlur;
+    return GlassBackdrop(
+      sigmaX: sigma,
+      sigmaY: sigma,
+      shape: BoxShape.circle,
+      clipBehavior: Clip.antiAlias,
+      child: child,
+    );
   }
 }
 
 class _PressScale extends StatefulWidget {
-  const _PressScale({required this.child});
+  const _PressScale({required this.child, required this.enabled});
 
   final Widget child;
+  final bool enabled;
 
   @override
   State<_PressScale> createState() => _PressScaleState();
@@ -296,11 +330,16 @@ class _PressScaleState extends State<_PressScale> {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: (_) => _setPressed(true),
+      onPointerDown: (_) => _setPressed(widget.enabled),
       onPointerUp: (_) => _setPressed(false),
       onPointerCancel: (_) => _setPressed(false),
       child: AnimatedScale(
-        scale: _pressed ? 0.92 : 1,
+        scale:
+            _pressed &&
+                widget.enabled &&
+                !MediaQuery.disableAnimationsOf(context)
+            ? 0.92
+            : 1,
         duration: const Duration(milliseconds: 110),
         curve: Curves.easeOutCubic,
         child: widget.child,
@@ -332,6 +371,7 @@ class AppButton extends StatelessWidget {
     this.textStyle,
     this.iconColor,
     this.style = AppButtonStyle.glass,
+    this.role = FrostedActionRole.primary,
     this.backgroundColor,
     this.borderColor,
     this.border,
@@ -384,6 +424,9 @@ class AppButton extends StatelessWidget {
   /// Visual style variant (defaults to [AppButtonStyle.glass]).
   final AppButtonStyle style;
 
+  /// Semantic role used to resolve colors independently from [style].
+  final FrostedActionRole role;
+
   /// Custom background color override.
   final Color? backgroundColor;
 
@@ -409,27 +452,34 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final effectiveOnPressed = (isLoading || isDisabled) ? null : onPressed;
-    final BorderRadius effectiveRadius = borderRadius is BorderRadius
-        ? borderRadius as BorderRadius
-        : BorderRadius.circular(16);
+    final tokens = FrostedThemeData.of(context);
+    final effectiveRadius =
+        borderRadius?.resolve(Directionality.of(context)) ??
+        BorderRadius.circular(tokens.buttonRadius);
 
-    // Determine content color based on style variant and disabled state
-    final Color defaultContentColor;
-    switch (style) {
-      case AppButtonStyle.colored:
-        defaultContentColor = theme.colorScheme.onPrimary;
-        break;
-      case AppButtonStyle.glass:
-      case AppButtonStyle.outlined:
-      case AppButtonStyle.text:
-      case AppButtonStyle.waterDrop:
-        defaultContentColor = theme.colorScheme.primary;
-        break;
-    }
+    final roleColors = role.resolveColors(context);
+    final isFilled = style == AppButtonStyle.colored;
 
     final Color contentColor = isDisabled
         ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
-        : (iconColor ?? defaultContentColor);
+        : (iconColor ??
+              (role == FrostedActionRole.primary && tokens.contentColor != null
+                  ? tokens.contentColor!
+                  : null) ??
+              (isFilled ? roleColors.onAccent : roleColors.accent));
+    final overlayColor = WidgetStateProperty.resolveWith<Color?>((states) {
+      if (states.contains(WidgetState.disabled)) return Colors.transparent;
+      if (states.contains(WidgetState.focused)) {
+        return roleColors.accent.withValues(alpha: 0.16);
+      }
+      if (states.contains(WidgetState.pressed)) {
+        return roleColors.accent.withValues(alpha: 0.12);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return roleColors.accent.withValues(alpha: 0.08);
+      }
+      return null;
+    });
 
     final Widget innerContent = Center(
       child: isLoading
@@ -471,9 +521,12 @@ class AppButton extends StatelessWidget {
       final isDark = theme.brightness == Brightness.dark;
       final surfaceColor =
           backgroundColor ??
-          (isDark
-              ? theme.colorScheme.primary
-              : theme.colorScheme.surfaceContainerHighest);
+          (role == FrostedActionRole.primary
+              ? tokens.surfaceColor ??
+                    (isDark
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surfaceContainerHighest)
+              : roleColors.accent);
       final buttonSurface = Container(
         height: height,
         width: width,
@@ -516,6 +569,7 @@ class AppButton extends StatelessWidget {
           borderRadius: effectiveRadius,
           child: InkWell(
             onTap: effectiveOnPressed,
+            overlayColor: overlayColor,
             borderRadius: effectiveRadius,
             child: Padding(
               padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
@@ -524,20 +578,12 @@ class AppButton extends StatelessWidget {
           ),
         ),
       );
-      final performance = FrostedPerformance.of(context);
-      final glassSurface = performance.blurEnabled
-          ? BackdropFilter(
-              filter: ui.ImageFilter.blur(
-                sigmaX: 5 * performance.blurScale,
-                sigmaY: 5 * performance.blurScale,
-              ),
-              child: buttonSurface,
-            )
-          : buttonSurface;
-      return ClipRRect(
+      return GlassBackdrop(
+        sigmaX: tokens.glassBlur,
+        sigmaY: tokens.glassBlur,
         borderRadius: effectiveRadius,
         clipBehavior: clipBehavior,
-        child: glassSurface,
+        child: buttonSurface,
       );
     }
 
@@ -552,6 +598,7 @@ class AppButton extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: effectiveOnPressed,
+            overlayColor: overlayColor,
             borderRadius: effectiveRadius as BorderRadius?,
             child: content,
           ),
@@ -563,7 +610,7 @@ class AppButton extends StatelessWidget {
     if (style == AppButtonStyle.colored) {
       final fillBg = isDisabled
           ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
-          : (backgroundColor ?? theme.colorScheme.primary);
+          : (backgroundColor ?? roleColors.accent);
 
       return Container(
         height: height,
@@ -583,6 +630,7 @@ class AppButton extends StatelessWidget {
           borderRadius: effectiveRadius as BorderRadius?,
           child: InkWell(
             onTap: effectiveOnPressed,
+            overlayColor: overlayColor,
             borderRadius: effectiveRadius as BorderRadius?,
             child: Padding(
               padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
@@ -597,7 +645,7 @@ class AppButton extends StatelessWidget {
     if (style == AppButtonStyle.outlined) {
       final borderCol = isDisabled
           ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
-          : (borderColor ?? theme.colorScheme.primary);
+          : (borderColor ?? roleColors.accent);
 
       return Container(
         height: height,
@@ -615,6 +663,7 @@ class AppButton extends StatelessWidget {
           borderRadius: effectiveRadius as BorderRadius?,
           child: InkWell(
             onTap: effectiveOnPressed,
+            overlayColor: overlayColor,
             borderRadius: effectiveRadius as BorderRadius?,
             child: Padding(
               padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
@@ -635,7 +684,13 @@ class AppButton extends StatelessWidget {
       border:
           border ??
           (borderColor != null ? Border.all(color: borderColor!) : null),
-      color: backgroundColor,
+      // Preserve the original primary glass surface. Other roles receive a
+      // restrained tint so their meaning survives an appearance change.
+      color:
+          backgroundColor ??
+          (role == FrostedActionRole.primary
+              ? null
+              : roleColors.accent.withValues(alpha: 0.12)),
       sigmaX: sigmaX,
       sigmaY: sigmaY,
       boxShadow: boxShadow,
@@ -644,6 +699,7 @@ class AppButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: effectiveOnPressed,
+          overlayColor: overlayColor,
           borderRadius: effectiveRadius as BorderRadius?,
           child: Padding(
             padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
@@ -652,6 +708,43 @@ class AppButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Resolved accent pair for a [FrostedActionRole].
+@immutable
+class FrostedActionColors {
+  /// Creates a resolved action color pair.
+  const FrostedActionColors(this.accent, this.onAccent);
+
+  /// Accent used by fills, borders, text, and interaction feedback.
+  final Color accent;
+
+  /// Foreground placed on a solid [accent] surface.
+  final Color onAccent;
+}
+
+/// Theme-aware color resolution for [FrostedActionRole].
+extension FrostedActionRoleColors on FrostedActionRole {
+  /// Resolves Frosted role tokens first, then Material [ColorScheme] values.
+  FrostedActionColors resolveColors(BuildContext context) {
+    final theme = Theme.of(context);
+    final tokens = FrostedThemeData.of(context);
+    final scheme = theme.colorScheme;
+    return switch (this) {
+      FrostedActionRole.primary => FrostedActionColors(
+        tokens.primaryActionColor ?? scheme.primary,
+        tokens.onPrimaryActionColor ?? scheme.onPrimary,
+      ),
+      FrostedActionRole.secondary => FrostedActionColors(
+        tokens.secondaryActionColor ?? scheme.secondary,
+        tokens.onSecondaryActionColor ?? scheme.onSecondary,
+      ),
+      FrostedActionRole.destructive => FrostedActionColors(
+        tokens.destructiveActionColor ?? scheme.error,
+        tokens.onDestructiveActionColor ?? scheme.onError,
+      ),
+    };
   }
 }
 
@@ -676,6 +769,7 @@ mixin Buttons {
     String? tooltip,
     String? semanticLabel,
     CircleButtonStyle style = CircleButtonStyle.waterDrop,
+    FrostedActionRole role = FrostedActionRole.primary,
     bool selected = false,
     Color? selectedColor,
     Color? selectedIconColor,
@@ -697,6 +791,7 @@ mixin Buttons {
       tooltip: tooltip,
       semanticLabel: semanticLabel,
       style: style,
+      role: role,
       selected: selected,
       selectedColor: selectedColor,
       selectedIconColor: selectedIconColor,
@@ -722,6 +817,7 @@ mixin Buttons {
     String? tooltip,
     String? semanticLabel,
     CircleButtonStyle style = CircleButtonStyle.waterDrop,
+    FrostedActionRole role = FrostedActionRole.primary,
     bool selected = false,
     Color? selectedColor,
     Color? selectedIconColor,
@@ -743,6 +839,7 @@ mixin Buttons {
       tooltip: tooltip,
       semanticLabel: semanticLabel,
       style: style,
+      role: role,
       selected: selected,
       selectedColor: selectedColor,
       selectedIconColor: selectedIconColor,
@@ -767,6 +864,7 @@ mixin Buttons {
     TextStyle? textStyle,
     Color? iconColor,
     AppButtonStyle style = AppButtonStyle.glass,
+    FrostedActionRole role = FrostedActionRole.primary,
     Color? backgroundColor,
     Color? borderColor,
     BoxBorder? border,
@@ -790,6 +888,7 @@ mixin Buttons {
       textStyle: textStyle,
       iconColor: iconColor,
       style: style,
+      role: role,
       backgroundColor: backgroundColor,
       borderColor: borderColor,
       border: border,
@@ -809,6 +908,7 @@ mixin Buttons {
     IconData? icon,
     VoidCallback? onPressed,
     AppButtonStyle style = AppButtonStyle.glass,
+    FrostedActionRole role = FrostedActionRole.primary,
     double sigmaX = 10.0,
     double sigmaY = 10.0,
     Color? backgroundColor,
@@ -825,6 +925,7 @@ mixin Buttons {
       icon: icon,
       onPressed: onPressed,
       style: style,
+      role: role,
       sigmaX: sigmaX,
       sigmaY: sigmaY,
       backgroundColor: backgroundColor,
@@ -851,6 +952,9 @@ mixin Buttons {
   }) {
     return circleButton(
       context: context,
+      // Directional Material icons mirror themselves when placed in an RTL
+      // context. Keep the logical back icon here and let Flutter perform the
+      // single visual flip; choosing chevron_right manually would flip twice.
       icon: Icons.chevron_left_rounded,
       sigmaX: sigmaX,
       sigmaY: sigmaY,
@@ -907,6 +1011,7 @@ class AppFloatingActionButton extends StatelessWidget {
     this.icon,
     required this.onPressed,
     this.style = AppButtonStyle.glass,
+    this.role = FrostedActionRole.primary,
     this.sigmaX = 10.0,
     this.sigmaY = 10.0,
     this.backgroundColor,
@@ -933,6 +1038,9 @@ class AppFloatingActionButton extends StatelessWidget {
   /// The visual style of the FAB.
   final AppButtonStyle style;
 
+  /// Semantic action role, independent from [style].
+  final FrostedActionRole role;
+
   final double sigmaX;
   final double sigmaY;
   final Color? backgroundColor;
@@ -956,6 +1064,7 @@ class AppFloatingActionButton extends StatelessWidget {
         size: 56.0, // Standard FAB size
         sigmaX: sigmaX,
         sigmaY: sigmaY,
+        role: role,
         glassColor: style == AppButtonStyle.glass ? backgroundColor : null,
         borderColor:
             borderColor ??
@@ -974,6 +1083,7 @@ class AppFloatingActionButton extends StatelessWidget {
       title: title,
       icon: icon,
       style: style,
+      role: role,
       onPressed: onPressed,
       height: 56.0,
       sigmaX: sigmaX,

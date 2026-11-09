@@ -31,7 +31,7 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: context.appBarHeight),
-                  bluredCard(
+                  blurredCard(
                     context: context,
                     padding: const EdgeInsets.all(32),
                     sigmaX: _state.sigmaX,
@@ -42,11 +42,14 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                     child: const Text(
                       'This is a Glass Card\nNotice the background blur!',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),
-                  bluredCard(
+                  blurredCard(
                     context: context,
                     padding: const EdgeInsets.all(32),
                     sigmaX: _state.sigmaX,
@@ -57,7 +60,10 @@ class _CardsCatalogState extends State<CardsCatalog> with Cards, Buttons {
                     child: const Text(
                       'Circle',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

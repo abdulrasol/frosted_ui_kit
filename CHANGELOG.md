@@ -1,7 +1,45 @@
+## 2.0.0
+
+* **Breaking release**: Promoted the modern `Frosted UI Kit` API, theme
+  tokens, adaptive modal foundations, performance presets, and accessibility
+  improvements to the 2.0 stable line. Deprecated legacy names remain
+  available for compatibility and are documented in the migration guide.
+* **Branding**: Added the Frosted UI Kit glass-droplet logo and synchronized
+  package and example-app brand assets across Android, iOS, macOS, and web.
+* **API**: Added `FrostedThemeData`, `FrostedPerformance`, `FrostedButton`,
+  `FrostedIconButton`, `FrostedAsyncButton`, and the optional `auth.dart`
+  entry point for simpler adoption.
+* **Stepper**: Added optional `stepBuilder` support for numbers, icons,
+  images, Lottie, or any bounded custom widget, with completed/current/upcoming
+  step state and accessibility semantics.
+* **Modals**: Unified Dialog and BottomSheet adaptive layout for narrow
+  screens, large text, keyboard insets, and destructive actions.
+* **UI**: Added selected-state styling for list tiles and tabs, improved
+  glass surface consistency, and refined the light/dark visual system.
+* **Performance**: Added Android-friendly transparency fallbacks, shared
+  surface tokens, repaint isolation, and documented profile baselines for
+  Android and iOS.
+
+## Unreleased
+
+* **API stability**: Added correctly-spelled `FrostedNavigationBottomBar` and
+  deprecated the legacy `CricleButton`, `BluredCard`, and `Cards.bluredCard`
+  names without removing them. Existing behavior remains compatible.
+* **Tooling**: Added GitHub Actions CI for formatting, analysis, package and
+  example tests, and pub package validation.
+* **UI fix**: Aligned the default app-bar title surface with the shared
+  water-drop control treatment on Android without changing custom colors.
+
 ## 1.2.0
 
+* **Modals**: Unified Dialog and BottomSheet header/body/actions layout with responsive action stacking, keyboard-aware sheet sizing, localized default dialog actions, and destructive roles.
+* **Performance**: Modal surfaces keep one shared blur, honor `FrostedPerformance.lite`, and use hard-edge sheet clipping by default for lower-end devices.
+* **API**: Added `FrostedAsyncButton`, which owns Future loading, success, error, repeat-tap prevention, mounted checks, and optional error reporting without requiring a controller.
+* **API**: Added `FrostedActionRole` so primary, secondary, and destructive meaning is independent from `AppButtonStyle`. Added `FrostedButton.destructive` and action-role theme tokens; existing buttons remain primary by default.
 * **Feature**: Added `BaseWidget.hideAppBarOnScroll` and `appBarScrollBehavior` (`AppBarScrollBehavior.hideAll`, `AppBarScrollBehavior.collapseTitle`, and `AppBarScrollBehavior.none`) to allow the default floating `FrostedAppBar` to hide or collapse on downward scroll and reappear on upward scroll with smooth transitions and hysteresis control.
 * **Feature**: Added subtle status bar background gradient via `BaseWidget.showStatusBarGradient` to improve legibility of system status bar icons when content scrolls underneath.
+* **UI**: Refined the light status-bar gradient with a more visible dark tint toward the top instead of adding a pale scaffold-colored veil; dark-mode rendering is unchanged.
+* **Fix**: Prevented bottom-edge bounce and ballistic settling from revealing a scroll-hidden app bar; real upward content movement still reveals it.
 * **UI**: Introduced `CircleButtonStyle.waterDrop` as the default style for `CircleButton`, featuring a low-sigma liquid glass blur, animated press scaling, tooltips, and full accessibility semantics. Added support for `selected`, `selectedColor`, and `selectedIconColor`.
 * **UI**: Added `AppButtonStyle.waterDrop` styling option for `AppButton`.
 * **Fix**: Dialogs (`AppDialog`) are now fully keyboard-aware and scrollable with `SingleChildScrollView` constrained by viewport insets, preventing them from being obscured by on-screen keyboards. Added entrance scale/fade animation, `isDestructive` option on warning dialogs, and `autofocus` on input dialogs.

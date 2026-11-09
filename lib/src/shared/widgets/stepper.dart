@@ -10,6 +10,22 @@ enum FrostedStepperDirection {
   horizontal,
 }
 
+/// Visual state supplied to [FrostedStepper.stepBuilder].
+enum FrostedStepState {
+  /// The step has not been reached yet.
+  upcoming,
+
+  /// The currently selected step.
+  current,
+
+  /// The step has already been completed.
+  completed,
+}
+
+/// Builds optional content inside a step node.
+typedef FrostedStepBuilder =
+    Widget Function(BuildContext context, int index, FrostedStepState state);
+
 /// A controller for [FrostedStepper].
 /// Uses a ValueNotifier internally for lightweight state management.
 class FrostedStepperController extends ValueNotifier<int> {
@@ -69,6 +85,7 @@ class FrostedStepper extends StatelessWidget {
     this.gapBetweenStepAndTitle = 16,
     this.verticalLineHeight = 32,
     this.stepLineLength,
+    this.stepBuilder,
   });
 
   /// The controller for the stepper.
@@ -104,6 +121,13 @@ class FrostedStepper extends StatelessWidget {
   /// Fixed length for the connecting line in horizontal mode.
   /// If null, lines will expand to fill available horizontal space.
   final double? stepLineLength;
+
+  /// Optional builder for custom step-node content.
+  ///
+  /// The returned widget is constrained to the inner step area and wrapped in
+  /// [FittedBox] when needed, so icons, images, Lottie animations, and custom
+  /// widgets cannot escape [stepSize]. When omitted, the step number is used.
+  final FrostedStepBuilder? stepBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -158,28 +182,80 @@ class FrostedStepper extends StatelessWidget {
         inactiveColor ??
         theme.colorScheme.outlineVariant.withValues(alpha: 0.4);
     final isDoneOrActive = index <= currentIndex;
+    final isCurrent = index == currentIndex;
+    final stepState = isCurrent
+        ? FrostedStepState.current
+        : isDoneOrActive
+        ? FrostedStepState.completed
+        : FrostedStepState.upcoming;
+    final stepContent =
+        stepBuilder?.call(context, index, stepState) ??
+        Text((index + 1).toString());
 
-    final stepWidget = Container(
-      width: stepSize,
-      height: stepSize,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isDoneOrActive
-            ? activeColorToUse
-            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isDoneOrActive ? activeColorToUse : inactiveColorToUse,
-          width: 1.5,
-        ),
-      ),
-      child: Text(
-        (index + 1).toString(),
-        style: theme.textTheme.labelMedium?.copyWith(
+    final stepWidget = Semantics(
+      label: controller.stepsList?[index] ?? 'Step ${index + 1}',
+      selected: isCurrent,
+      value: isDoneOrActive ? 'Completed' : 'Upcoming',
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        width: stepSize,
+        height: stepSize,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: isDoneOrActive
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    activeColorToUse,
+                    activeColorToUse.withValues(alpha: 0.72),
+                  ],
+                )
+              : null,
           color: isDoneOrActive
-              ? (textColor ?? theme.colorScheme.onPrimary)
-              : theme.colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.bold,
+              ? null
+              : theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.3,
+                ),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isCurrent ? activeColorToUse : inactiveColorToUse,
+            width: isCurrent ? 2 : 1.5,
+          ),
+          boxShadow: isCurrent
+              ? [
+                  BoxShadow(
+                    color: activeColorToUse.withValues(alpha: 0.22),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all((stepSize * 0.18).clamp(4.0, 10.0)),
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: IconTheme.merge(
+              data: IconThemeData(
+                color: isDoneOrActive
+                    ? (textColor ?? theme.colorScheme.onPrimary)
+                    : theme.colorScheme.onSurfaceVariant,
+                size: stepSize * 0.48,
+              ),
+              child: DefaultTextStyle.merge(
+                style:
+                    theme.textTheme.labelMedium?.copyWith(
+                      color: isDoneOrActive
+                          ? (textColor ?? theme.colorScheme.onPrimary)
+                          : theme.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.bold,
+                    ) ??
+                    const TextStyle(fontWeight: FontWeight.bold),
+                child: stepContent,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -290,6 +366,7 @@ mixin Steppers {
     Color? inactiveColor,
     Color? textColor,
     double? stepLineLength,
+    FrostedStepBuilder? stepBuilder,
   }) {
     return FrostedStepper(
       key: key,
@@ -299,6 +376,7 @@ mixin Steppers {
       inactiveColor: inactiveColor,
       textColor: textColor,
       stepLineLength: stepLineLength,
+      stepBuilder: stepBuilder,
     );
   }
 }

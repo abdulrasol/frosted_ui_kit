@@ -1,0 +1,23 @@
+name: Trigger Documentation Demo Update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/**'
+      - 'example/**'
+      - 'doc/**'
+      - 'pubspec.yaml'
+  workflow_dispatch:
+
+jobs:
+  notify-docs-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch Event to Documentation Website
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.SUBULTECH_DEPLOY_PAT }}
+          repository: abdulrasol/abdulrasol.github.io
+          event-type: update-frosted-demo
+

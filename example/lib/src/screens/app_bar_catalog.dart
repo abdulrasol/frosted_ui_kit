@@ -42,7 +42,7 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
   }
 
   Widget _buildDemoCard(int index) {
-    return bluredCard(
+    return blurredCard(
       context: context,
       sigmaX: _state.sigmaX,
       sigmaY: _state.sigmaY,
@@ -54,7 +54,10 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
         children: [
           CircleAvatar(
             backgroundColor: Colors.white.withValues(alpha: 0.2),
-            child: Text('${index + 1}', style: const TextStyle(color: Colors.white)),
+            child: Text(
+              '${index + 1}',
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
           const SizedBox(width: 14),
           const Expanded(
@@ -63,10 +66,16 @@ class _AppBarCatalogState extends State<AppBarCatalog> with Buttons, Cards {
               children: [
                 Text(
                   'Scrollable glass card',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 4),
-                Text('Scroll down to hide the app bar, then scroll up to reveal it.', style: TextStyle(color: Colors.white70)),
+                Text(
+                  'Scroll down to hide the app bar, then scroll up to reveal it.',
+                  style: TextStyle(color: Colors.white70),
+                ),
               ],
             ),
           ),

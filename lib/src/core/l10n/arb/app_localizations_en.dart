@@ -133,4 +133,35 @@ class FrostedAppLocalizationsEn extends FrostedAppLocalizations {
 
   @override
   String get submit => 'Submit';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get asyncSaveProfile => 'Save profile automatically';
+
+  @override
+  String get asyncProfileSaved => 'Profile saved';
+
+  @override
+  String get asyncRetryRequest => 'Retry request';
+
+  @override
+  String get asyncExampleRequestRejected => 'Example request rejected';
+
+  @override
+  String get asyncTapAgainToRetry => 'Tap again to retry';
+
+  @override
+  String get manualControllerApi => 'Manual Controller API';
+
+  @override
+  String get manualControllerDescription =>
+      'Use the controller only when application code must drive every state explicitly.';
 }

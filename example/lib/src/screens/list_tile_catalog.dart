@@ -13,6 +13,7 @@ class ListTileCatalog extends StatefulWidget {
 
 class _ListTileCatalogState extends State<ListTileCatalog> {
   PlaygroundState _state = const PlaygroundState();
+  bool _notificationsEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +26,21 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
 
           Positioned.fill(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: context.topPadding + 16, horizontal: context.horizontalPadding),
+              padding: EdgeInsets.symmetric(
+                vertical: context.topPadding + 16,
+                horizontal: context.horizontalPadding,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   FrostedListSection(
                     header: const Text(
                       'Settings',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
                     ),
                     sigmaX: _state.sigmaX,
                     sigmaY: _state.sigmaY,
@@ -44,6 +52,7 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
                         leading: const Icon(Icons.wifi),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {},
+                        selected: true,
                       ),
                       FrostedListTile(
                         title: const Text('Bluetooth'),
@@ -64,17 +73,36 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
                         title: const Text('Notifications'),
                         leading: Container(
                           padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(8)),
-                          child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.notifications,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
-                        trailing: Switch(value: true, onChanged: (val) {}),
+                        selected: _notificationsEnabled,
+                        trailing: Switch(
+                          value: _notificationsEnabled,
+                          onChanged: (value) =>
+                              setState(() => _notificationsEnabled = value),
+                        ),
                       ),
                       FrostedListTile(
                         title: const Text('Sounds'),
                         leading: Container(
                           padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(color: Colors.pinkAccent, borderRadius: BorderRadius.circular(8)),
-                          child: const Icon(Icons.volume_up, color: Colors.white, size: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.pinkAccent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(
+                            Icons.volume_up,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {},
@@ -90,7 +118,11 @@ class _ListTileCatalogState extends State<ListTileCatalog> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: PlaygroundControls(state: _state, showBorderRadius: false, onChanged: (s) => setState(() => _state = s)),
+            child: PlaygroundControls(
+              state: _state,
+              showBorderRadius: false,
+              onChanged: (s) => setState(() => _state = s),
+            ),
           ),
         ],
       ),

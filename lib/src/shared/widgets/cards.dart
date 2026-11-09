@@ -1,7 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'glass_backdrop.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_performance.dart';
 import 'package:frosted_ui_kit/src/utils/app_themes.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// A reusable glassmorphic container card with backdrop blur, customizable dimensions,
 /// border highlights, background tint, and shadow support.
@@ -19,8 +20,8 @@ class BlurredCard extends StatelessWidget {
     this.margin,
     this.padding,
     this.border,
-    this.sigmaX = 5.0, // Reduced default value for better performance
-    this.sigmaY = 5.0,
+    this.sigmaX,
+    this.sigmaY,
     this.color,
     this.boxShadow,
     this.shape = BoxShape.rectangle,
@@ -54,10 +55,10 @@ class BlurredCard extends StatelessWidget {
   final BoxBorder? border;
 
   /// Horizontal backdrop blur intensity.
-  final double sigmaX;
+  final double? sigmaX;
 
   /// Vertical backdrop blur intensity.
-  final double sigmaY;
+  final double? sigmaY;
 
   /// Custom translucent background color tint (defaults to primary color with 0.1 alpha).
   final Color? color;
@@ -78,20 +79,32 @@ class BlurredCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = FrostedThemeData.of(context);
+    final performance = FrostedPerformance.of(context);
+    final blurX = sigmaX ?? tokens.glassBlur;
+    final blurY = sigmaY ?? tokens.glassBlur;
 
     // Auto-detect platform for performance optimization if disableBlur is not explicitly set
     final shouldDisableBlur =
-        disableBlur ?? (theme.platform == TargetPlatform.android);
+        !performance.blurEnabled ||
+        performance.blurScale == 0 ||
+        (disableBlur ?? (theme.platform == TargetPlatform.android));
 
     // If blur is disabled, we need a solid-like background to maintain readability and luxury feel (like Telegram/X)
     final defaultColor =
         color ??
+        tokens.surfaceColor ??
         (shouldDisableBlur
-            ? theme.colorScheme.surface.withValues(alpha: 0.85)
+            ? theme.colorScheme.surface.withValues(
+                alpha: performance.blurEnabled
+                    ? 0.85
+                    : performance.fallbackOpacity,
+              )
             : theme.primaryColor.withValues(alpha: 0.1));
     final effectiveBorderRadius = shape == BoxShape.circle
         ? null
-        : (borderRadius ?? BorderRadius.circular(radius ?? 50));
+        : (borderRadius ??
+              BorderRadius.circular(radius ?? tokens.surfaceRadius));
 
     final containerWidget = Container(
       height: height,
@@ -108,34 +121,20 @@ class BlurredCard extends StatelessWidget {
       child: child,
     );
 
-    // Fastest option: without blur (relies solely on transparency, similar to Telegram's Android UI)
-    if (shouldDisableBlur || (sigmaX == 0 && sigmaY == 0)) {
-      return containerWidget;
-    }
-
-    // With blur (high-performance Android and iOS)
-    if (shape == BoxShape.circle) {
-      return ClipOval(
-        clipBehavior: clipBehavior,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
-          child: containerWidget,
-        ),
-      );
-    }
-
-    return ClipRRect(
+    return GlassBackdrop(
+      enabled: !shouldDisableBlur,
+      sigmaX: blurX,
+      sigmaY: blurY,
+      shape: shape,
       borderRadius: effectiveBorderRadius ?? BorderRadius.zero,
       clipBehavior: clipBehavior,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
-        child: containerWidget,
-      ),
+      child: containerWidget,
     );
   }
 }
 
 /// Legacy alias for [BlurredCard] to maintain backwards compatibility.
+@Deprecated('Use BlurredCard instead. This alias remains for compatibility.')
 typedef BluredCard = BlurredCard;
 
 /// A mixin providing utility methods for constructing glassmorphic card widgets.
@@ -152,8 +151,8 @@ mixin Cards {
     EdgeInsetsGeometry? margin,
     EdgeInsetsGeometry? padding,
     BoxBorder? border,
-    double sigmaX = 5.0,
-    double sigmaY = 5.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? color,
     List<BoxShadow>? boxShadow,
     BoxShape shape = BoxShape.rectangle,
@@ -181,6 +180,7 @@ mixin Cards {
   }
 
   /// Legacy alias for [blurredCard].
+  @Deprecated('Use blurredCard instead. This method remains for compatibility.')
   Widget bluredCard({
     Key? key,
     required BuildContext context,
@@ -192,8 +192,8 @@ mixin Cards {
     EdgeInsetsGeometry? margin,
     EdgeInsetsGeometry? padding,
     BoxBorder? border,
-    double sigmaX = 5.0,
-    double sigmaY = 5.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? color,
     List<BoxShadow>? boxShadow,
     BoxShape shape = BoxShape.rectangle,

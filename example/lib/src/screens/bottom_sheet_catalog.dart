@@ -11,7 +11,8 @@ class BottomSheetCatalog extends StatefulWidget {
   State<BottomSheetCatalog> createState() => _BottomSheetCatalogState();
 }
 
-class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomSheets, Buttons, Cards {
+class _BottomSheetCatalogState extends State<BottomSheetCatalog>
+    with BottomSheets, Buttons, Cards {
   PlaygroundState _state = const PlaygroundState();
 
   @override
@@ -26,7 +27,10 @@ class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomShee
 
           Positioned.fill(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: context.topPadding + 16, horizontal: 16),
+              padding: EdgeInsets.symmetric(
+                vertical: context.topPadding + 16,
+                horizontal: 16,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -40,6 +44,13 @@ class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomShee
                         sigmaY: _state.sigmaY,
                         glassColor: _state.glassColor,
                         border: _state.border,
+                        actions: appButton(
+                          context: context,
+                          title: 'Close',
+                          style: AppButtonStyle.outlined,
+                          role: FrostedActionRole.secondary,
+                          onPressed: () => Navigator.pop(context),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(24.0),
                           child: Column(
@@ -47,13 +58,17 @@ class _BottomSheetCatalogState extends State<BottomSheetCatalog> with BottomShee
                             children: [
                               const Text(
                                 'Glassmorphic Bottom Sheet',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 16),
-                              const Text('This bottom sheet is using the playground properties for its blur and tint effect!', textAlign: TextAlign.center),
-                              const SizedBox(height: 32),
-                              appButton(context: context, title: 'Close', style: AppButtonStyle.glass, onPressed: () => Navigator.pop(context)),
+                              const Text(
+                                'This bottom sheet is using the playground properties for its blur and tint effect!',
+                                textAlign: TextAlign.center,
+                              ),
                             ],
                           ),
                         ),

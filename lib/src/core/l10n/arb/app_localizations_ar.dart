@@ -132,4 +132,35 @@ class FrostedAppLocalizationsAr extends FrostedAppLocalizations {
 
   @override
   String get submit => 'إرسال';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get ok => 'حسناً';
+
+  @override
+  String get asyncSaveProfile => 'حفظ الملف الشخصي تلقائياً';
+
+  @override
+  String get asyncProfileSaved => 'تم حفظ الملف الشخصي';
+
+  @override
+  String get asyncRetryRequest => 'إعادة محاولة الطلب';
+
+  @override
+  String get asyncExampleRequestRejected => 'تم رفض الطلب التجريبي';
+
+  @override
+  String get asyncTapAgainToRetry => 'اضغط مجدداً لإعادة المحاولة';
+
+  @override
+  String get manualControllerApi => 'واجهة التحكم اليدوي';
+
+  @override
+  String get manualControllerDescription =>
+      'استخدم وحدة التحكم فقط عندما يحتاج التطبيق إلى إدارة كل حالة بشكل صريح.';
 }

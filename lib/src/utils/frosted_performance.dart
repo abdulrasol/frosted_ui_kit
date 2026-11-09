@@ -146,6 +146,17 @@ class FrostedPerformance extends InheritedWidget {
     blurEnabled: false,
   );
 
+  /// Android-oriented preset for scrolling-heavy screens.
+  ///
+  /// Keeps translucent surfaces, borders, layout, and semantics while
+  /// removing the backdrop readback that is commonly the dominant raster cost
+  /// on mid-range Android GPUs. It is separate from [balanced] for backwards
+  /// compatibility.
+  static const FrostedPerformanceData android = FrostedPerformanceData(
+    blurEnabled: false,
+    fallbackOpacity: 0.84,
+  );
+
   /// Returns the nearest [FrostedPerformanceData], or [defaults] when none is
   /// present. Establishes a dependency so descendants rebuild on change.
   static FrostedPerformanceData of(BuildContext context) {

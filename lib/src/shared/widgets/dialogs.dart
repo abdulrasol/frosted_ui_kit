@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/adaptive_surface_layout.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/inputs.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/loading.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// A base glassmorphic dialog widget.
 ///
@@ -13,18 +16,27 @@ class AppDialog extends StatelessWidget with Cards {
   const AppDialog({
     super.key,
     required this.child,
+    this.header,
+    this.actions,
     this.padding = const EdgeInsets.all(24.0),
     this.maxWidth = 520,
     this.insetPadding = const EdgeInsets.symmetric(
       horizontal: 16,
       vertical: 24,
     ),
-    this.surfaceOpacity = 0.88,
-    this.blurSigma = 12,
+    this.surfaceOpacity,
+    this.blurSigma,
   });
 
   /// Dialog content.
   final Widget child;
+
+  /// Optional header kept visible above the scrolling body when space allows.
+  final Widget? header;
+
+  /// Optional footer kept visible when there is enough vertical space.
+  /// On very short viewports it scrolls together with the body.
+  final Widget? actions;
 
   /// Inner content padding.
   final EdgeInsetsGeometry padding;
@@ -36,21 +48,24 @@ class AppDialog extends StatelessWidget with Cards {
   final EdgeInsets insetPadding;
 
   /// Opacity of the dialog surface tint.
-  final double surfaceOpacity;
+  final double? surfaceOpacity;
 
   /// Backdrop blur sigma used by the dialog glass layer.
-  final double blurSigma;
+  final double? blurSigma;
 
   @override
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.viewInsetsOf(context);
     final theme = Theme.of(context);
+    final tokens = FrostedThemeData.of(context);
     final availableHeight =
         MediaQuery.sizeOf(context).height -
         viewInsets.bottom -
         insetPadding.vertical;
     return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 200),
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : tokens.motionDuration,
       curve: Curves.easeOutCubic,
       tween: Tween(begin: 0.96, end: 1),
       builder: (context, scale, dialog) => Opacity(
@@ -69,17 +84,20 @@ class AppDialog extends StatelessWidget with Cards {
               MediaQuery.sizeOf(context).height * 0.84,
             ),
           ),
-          child: SingleChildScrollView(
-            child: blurredCard(
-              context: context,
-              radius: 24,
-              padding: padding,
-              sigmaX: blurSigma,
-              sigmaY: blurSigma,
-              color: theme.colorScheme.surface.withValues(
-                alpha: surfaceOpacity,
-              ),
-              child: child,
+          child: blurredCard(
+            context: context,
+            radius: tokens.dialogRadius,
+            padding: padding,
+            sigmaX: blurSigma ?? tokens.dialogBlur,
+            sigmaY: blurSigma ?? tokens.dialogBlur,
+            color: (tokens.surfaceColor ?? theme.colorScheme.surface)
+                .withValues(alpha: surfaceOpacity ?? tokens.dialogOpacity),
+            child: FrostedAdaptiveSurfaceLayout(
+              header: header,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              body: child,
+              actions: actions,
+              spacing: tokens.spacing,
             ),
           ),
         ),
@@ -128,6 +146,14 @@ class _InputDialogContentState extends State<_InputDialogContent>
     with Buttons, Inputs {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _submitted = false;
+
+  void _submit() {
+    if (_submitted || !(_formKey.currentState?.validate() ?? false)) return;
+    _submitted = true;
+    FocusScope.of(context).unfocus();
+    Navigator.of(context).pop(_controller.text);
+  }
 
   @override
   void dispose() {
@@ -141,74 +167,68 @@ class _InputDialogContentState extends State<_InputDialogContent>
 
     return Form(
       key: _formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (widget.title != null) ...[
-            Text(
-              widget.title!,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: widget.titleColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (widget.description != null) const SizedBox(height: 8),
-          ],
-          if (widget.description != null)
-            Text(
-              widget.description!,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color:
-                    widget.descriptionColor ??
-                    theme.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          const SizedBox(height: 24),
-          textField(
+      child: AppDialog(
+        actions: FrostedAdaptiveActions(
+          secondary: appButton(
             context: context,
-            controller: _controller,
-            placeholder: widget.hintText,
-            validator: widget.validator,
-            type: AppTextFieldType.text,
-            autofocus: widget.autofocus,
+            title: widget.cancelText,
+            style: AppButtonStyle.outlined,
+            role: FrostedActionRole.secondary,
+            backgroundColor: widget.cancelButtonColor,
+            textStyle: widget.cancelTextColor != null
+                ? TextStyle(color: widget.cancelTextColor)
+                : null,
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: appButton(
-                  context: context,
-                  title: widget.cancelText,
-                  style: AppButtonStyle.text,
-                  backgroundColor: widget.cancelButtonColor,
-                  textStyle: widget.cancelTextColor != null
-                      ? TextStyle(color: widget.cancelTextColor)
-                      : null,
-                  onPressed: () => Navigator.of(context).pop(),
+          primary: appButton(
+            context: context,
+            title: widget.confirmText,
+            style: AppButtonStyle.colored,
+            role: FrostedActionRole.primary,
+            backgroundColor: widget.confirmButtonColor,
+            textStyle: widget.confirmTextColor != null
+                ? TextStyle(color: widget.confirmTextColor)
+                : null,
+            onPressed: _submit,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.title != null) ...[
+              Text(
+                widget.title!,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: widget.titleColor,
                 ),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: appButton(
-                  context: context,
-                  title: widget.confirmText,
-                  style: AppButtonStyle.colored,
-                  backgroundColor: widget.confirmButtonColor,
-                  textStyle: widget.confirmTextColor != null
-                      ? TextStyle(color: widget.confirmTextColor)
-                      : null,
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? true) {
-                      Navigator.of(context).pop(_controller.text);
-                    }
-                  },
-                ),
-              ),
+              if (widget.description != null) const SizedBox(height: 8),
             ],
-          ),
-        ],
+            if (widget.description != null)
+              Text(
+                widget.description!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color:
+                      widget.descriptionColor ??
+                      theme.colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            const SizedBox(height: 24),
+            textField(
+              context: context,
+              controller: _controller,
+              placeholder: widget.hintText,
+              validator: widget.validator,
+              type: AppTextFieldType.text,
+              autofocus: widget.autofocus,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -227,8 +247,8 @@ mixin Dialogs {
     required BuildContext context,
     required String title,
     required String description,
-    String confirmText = 'Confirm',
-    String cancelText = 'Cancel',
+    String? confirmText,
+    String? cancelText,
     IconData? icon = Icons.warning_rounded,
     Color? iconColor,
     Color? titleColor,
@@ -245,9 +265,12 @@ mixin Dialogs {
     return showDialog<bool>(
       context: context,
       builder: (context) {
+        final l10n = FrostedAppLocalizations.of(context);
+        final resolvedConfirmText = confirmText ?? l10n?.confirm ?? 'Confirm';
+        final resolvedCancelText = cancelText ?? l10n?.cancel ?? 'Cancel';
         return AppDialog(
           key: key,
-          child: Column(
+          header: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
@@ -259,7 +282,7 @@ mixin Dialogs {
                   ),
                   child: Icon(icon, color: color, size: 32),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: FrostedThemeData.of(context).spacing),
               ],
               Text(
                 title,
@@ -269,55 +292,40 @@ mixin Dialogs {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: descriptionColor ?? theme.colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: Builder(
-                      builder: (btnContext) {
-                        return _dialogUtils.appButton(
-                          context: btnContext,
-                          title: cancelText,
-                          style: AppButtonStyle.outlined,
-                          backgroundColor: cancelButtonColor,
-                          textStyle: cancelTextColor != null
-                              ? TextStyle(color: cancelTextColor)
-                              : null,
-                          onPressed: () => Navigator.of(context).pop(false),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Builder(
-                      builder: (btnContext) {
-                        return _dialogUtils.appButton(
-                          context: btnContext,
-                          title: confirmText,
-                          style: AppButtonStyle.colored,
-                          backgroundColor:
-                              confirmButtonColor ??
-                              (isDestructive ? theme.colorScheme.error : color),
-                          textStyle: confirmTextColor != null
-                              ? TextStyle(color: confirmTextColor)
-                              : null,
-                          onPressed: () => Navigator.of(context).pop(true),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ],
+          ),
+          actions: FrostedAdaptiveActions(
+            secondary: _dialogUtils.appButton(
+              context: context,
+              title: resolvedCancelText,
+              style: AppButtonStyle.outlined,
+              role: FrostedActionRole.secondary,
+              backgroundColor: cancelButtonColor,
+              textStyle: cancelTextColor != null
+                  ? TextStyle(color: cancelTextColor)
+                  : null,
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            primary: _dialogUtils.appButton(
+              context: context,
+              title: resolvedConfirmText,
+              style: AppButtonStyle.colored,
+              role: isDestructive
+                  ? FrostedActionRole.destructive
+                  : FrostedActionRole.primary,
+              backgroundColor: confirmButtonColor,
+              textStyle: confirmTextColor != null
+                  ? TextStyle(color: confirmTextColor)
+                  : null,
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ),
+          child: Text(
+            description,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: descriptionColor ?? theme.colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
           ),
         );
       },
@@ -331,7 +339,7 @@ mixin Dialogs {
     required BuildContext context,
     String? title,
     String? description,
-    String confirmText = 'OK',
+    String? confirmText,
     IconData? icon = Icons.error_outline_rounded,
     Color? iconColor,
     Color? titleColor,
@@ -345,9 +353,11 @@ mixin Dialogs {
     return showDialog<void>(
       context: context,
       builder: (context) {
+        final l10n = FrostedAppLocalizations.of(context);
+        final resolvedConfirmText = confirmText ?? l10n?.ok ?? 'OK';
         return AppDialog(
           key: key,
-          child: Column(
+          header: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
@@ -361,7 +371,7 @@ mixin Dialogs {
                 ),
                 const SizedBox(height: 16),
               ],
-              if (title != null) ...[
+              if (title != null)
                 Text(
                   title,
                   style: theme.textTheme.titleLarge?.copyWith(
@@ -370,10 +380,22 @@ mixin Dialogs {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                if (description != null) const SizedBox(height: 8),
-              ],
-              if (description != null)
-                Text(
+            ],
+          ),
+          actions: _dialogUtils.appButton(
+            context: context,
+            title: resolvedConfirmText,
+            style: AppButtonStyle.colored,
+            role: FrostedActionRole.destructive,
+            backgroundColor: confirmButtonColor,
+            textStyle: confirmTextColor != null
+                ? TextStyle(color: confirmTextColor)
+                : null,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          child: description == null
+              ? const SizedBox.shrink()
+              : Text(
                   description,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color:
@@ -381,23 +403,6 @@ mixin Dialogs {
                   ),
                   textAlign: TextAlign.center,
                 ),
-              const SizedBox(height: 24),
-              Builder(
-                builder: (btnContext) {
-                  return _dialogUtils.appButton(
-                    context: btnContext,
-                    title: confirmText,
-                    style: AppButtonStyle.colored,
-                    backgroundColor: confirmButtonColor ?? color,
-                    textStyle: confirmTextColor != null
-                        ? TextStyle(color: confirmTextColor)
-                        : null,
-                    onPressed: () => Navigator.of(context).pop(),
-                  );
-                },
-              ),
-            ],
-          ),
         );
       },
     );
@@ -411,8 +416,8 @@ mixin Dialogs {
     String? title,
     String? description,
     String hintText = '',
-    String confirmText = 'Submit',
-    String cancelText = 'Cancel',
+    String? confirmText,
+    String? cancelText,
     FormFieldValidator<String>? validator,
     Color? titleColor,
     Color? descriptionColor,
@@ -422,27 +427,25 @@ mixin Dialogs {
     Color? cancelTextColor,
     bool autofocus = false,
   }) {
+    final l10n = FrostedAppLocalizations.of(context);
     return showDialog<String>(
       context: context,
       builder: (context) {
-        return AppDialog(
+        return _InputDialogContent(
           key: key,
-          child: _InputDialogContent(
-            key: key,
-            title: title,
-            description: description,
-            hintText: hintText,
-            confirmText: confirmText,
-            cancelText: cancelText,
-            validator: validator,
-            titleColor: titleColor,
-            descriptionColor: descriptionColor,
-            confirmButtonColor: confirmButtonColor,
-            confirmTextColor: confirmTextColor,
-            cancelButtonColor: cancelButtonColor,
-            cancelTextColor: cancelTextColor,
-            autofocus: autofocus,
-          ),
+          title: title,
+          description: description,
+          hintText: hintText,
+          confirmText: confirmText ?? l10n?.submit ?? 'Submit',
+          cancelText: cancelText ?? l10n?.cancel ?? 'Cancel',
+          validator: validator,
+          titleColor: titleColor,
+          descriptionColor: descriptionColor,
+          confirmButtonColor: confirmButtonColor,
+          confirmTextColor: confirmTextColor,
+          cancelButtonColor: cancelButtonColor,
+          cancelTextColor: cancelTextColor,
+          autofocus: autofocus,
         );
       },
     );
@@ -482,24 +485,13 @@ mixin Dialogs {
           ],
         );
 
-        Widget dialogContent;
-        if (message == null) {
-          dialogContent = Center(
-            child: Material(
-              type: MaterialType.transparency,
-              child: _dialogUtils.blurredCard(
-                context: context,
-                radius: 24,
-                padding: const EdgeInsets.all(24),
-                child: content,
-              ),
-            ),
-          );
-        } else {
-          dialogContent = AppDialog(child: content);
-        }
-
-        return PopScope(canPop: barrierDismissible, child: dialogContent);
+        return PopScope(
+          canPop: barrierDismissible,
+          child: AppDialog(
+            maxWidth: message == null ? 160 : 520,
+            child: content,
+          ),
+        );
       },
     );
   }

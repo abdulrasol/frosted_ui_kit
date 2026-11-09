@@ -14,6 +14,8 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
     with Buttons {
   final FrostLoadingButtonController _controller =
       FrostLoadingButtonController();
+  int _requestGeneration = 0;
+  int _automaticAttempt = 0;
 
   @override
   void dispose() {
@@ -22,8 +24,14 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
   }
 
   void _simulateNetworkRequest() async {
+    final generation = ++_requestGeneration;
     _controller.start();
     await Future.delayed(const Duration(seconds: 2));
+    if (!mounted ||
+        generation != _requestGeneration ||
+        _controller.value != FrostLoadingButtonState.loading) {
+      return;
+    }
 
     // Simulate a random success or failure
     final isSuccess = DateTime.now().second % 2 == 0;
@@ -37,6 +45,7 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = FrostedAppLocalizations.of(context)!;
     return BaseWidget(
       title: 'Loading Button Catalog',
       child: Stack(
@@ -61,6 +70,49 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
                   'A button that animates between idle, loading (Lottie), success, and error states.',
                 ),
                 const SizedBox(height: 32),
+
+                FrostedAsyncButton(
+                  title: l10n.asyncSaveProfile,
+                  icon: Icons.save_outlined,
+                  style: AppButtonStyle.waterDrop,
+                  onPressed: () async {
+                    await Future<void>.delayed(const Duration(seconds: 1));
+                  },
+                  onSuccess: () => ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.asyncProfileSaved)),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                FrostedAsyncButton(
+                  title: l10n.asyncRetryRequest,
+                  icon: Icons.refresh_rounded,
+                  style: AppButtonStyle.outlined,
+                  onPressed: () async {
+                    await Future<void>.delayed(const Duration(seconds: 1));
+                    _automaticAttempt++;
+                    if (_automaticAttempt.isOdd) {
+                      throw FormatException(l10n.asyncExampleRequestRejected);
+                    }
+                  },
+                  onError: (error, stackTrace) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('$error — ${l10n.asyncTapAgainToRetry}'),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 40),
+
+                Text(
+                  l10n.manualControllerApi,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(l10n.manualControllerDescription),
+                const SizedBox(height: 24),
 
                 // The main state button
                 Center(
@@ -120,7 +172,10 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
                       style: AppButtonStyle.waterDrop,
                       width: 140,
                       backgroundColor: Colors.orange,
-                      onPressed: () => _controller.reset(),
+                      onPressed: () {
+                        _requestGeneration++;
+                        _controller.reset();
+                      },
                     ),
                   ],
                 ),

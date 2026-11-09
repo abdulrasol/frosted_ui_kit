@@ -35,11 +35,65 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  FrostedButton.primary(
+                    label: 'Save changes',
+                    icon: Icons.save_outlined,
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Changes saved')),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const FrostedButton.secondary(
+                    label: 'Unavailable action',
+                    onPressed: null,
+                  ),
+                  const SizedBox(height: 12),
+                  FrostedIconButton(
+                    icon: Icons.info_outline,
+                    tooltip: 'Button details',
+                    onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Primary, secondary and icon actions use the shared Frosted theme',
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Role stays destructive across appearances',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FrostedButton.destructive(
+                          label: 'Delete filled',
+                          icon: Icons.delete_outline,
+                          onPressed: () {},
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FrostedButton.destructive(
+                          label: 'Delete glass',
+                          icon: Icons.delete_outline,
+                          style: AppButtonStyle.glass,
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   const Text(
                     'AppButton Styles',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   const SizedBox(height: 16),
+
+                  _buildStyleMatrix(context),
+                  const SizedBox(height: 24),
 
                   appButton(
                     context: context,
@@ -255,6 +309,91 @@ class _ButtonsCatalogState extends State<ButtonsCatalog> with Buttons, Cards {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildStyleMatrix(BuildContext context) {
+    final styles = <({String label, AppButtonStyle style})>[
+      (label: 'Glass', style: AppButtonStyle.glass),
+      (label: 'Colored', style: AppButtonStyle.colored),
+      (label: 'Outlined', style: AppButtonStyle.outlined),
+      (label: 'Text', style: AppButtonStyle.text),
+      (label: 'Water Drop', style: AppButtonStyle.waterDrop),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'Complete style and state matrix',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 10),
+        ...styles.map(
+          (entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: appButton(
+              context: context,
+              title: entry.label,
+              style: entry.style,
+              onPressed: () {},
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: appButton(
+                context: context,
+                title: 'Loading',
+                style: AppButtonStyle.colored,
+                isLoading: true,
+                onPressed: () {},
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: appButton(
+                context: context,
+                title: 'Disabled',
+                style: AppButtonStyle.outlined,
+                isDisabled: true,
+                onPressed: () {},
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        appButton(
+          context: context,
+          title: 'Delete (destructive glass)',
+          style: AppButtonStyle.glass,
+          role: FrostedActionRole.destructive,
+          icon: Icons.delete_outline,
+          onPressed: () {},
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 12,
+          children: [
+            circleButton(
+              context: context,
+              icon: Icons.favorite,
+              selected: true,
+              tooltip: 'Selected favorite',
+              semanticLabel: 'Selected favorite',
+              onPressed: () {},
+            ),
+            circleButton(
+              context: context,
+              icon: Icons.favorite_border,
+              tooltip: 'Disabled favorite',
+              semanticLabel: 'Disabled favorite',
+              onPressed: null,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -13,7 +13,11 @@ import 'package:frosted_ui_kit/src/shared/widgets/tabs.dart';
 class AuthScreen extends StatelessWidget {
   /// Optional pre-configured [AuthController] instance.
   final AuthController? controller;
+
+  /// Called after a successful login flow.
   final VoidCallback? onLoginSuccess;
+
+  /// Called after a successful registration flow.
   final VoidCallback? onRegisterSuccess;
 
   /// Feature flags to enable/disable specific auth flows.
@@ -22,11 +26,19 @@ class AuthScreen extends StatelessWidget {
   final bool showResetTokenButton;
   final bool showVerifyTokenButton;
 
-  /// Optional custom button overrides
+  /// Optional custom login button override.
   final Widget? customLoginButton;
+
+  /// Optional custom registration button override.
   final Widget? customRegisterButton;
+
+  /// Optional custom password-reset request button override.
   final Widget? customForgotPasswordButton;
+
+  /// Optional custom password-reset confirmation button override.
   final Widget? customResetTokenButton;
+
+  /// Optional custom email-verification button override.
   final Widget? customVerifyTokenButton;
 
   const AuthScreen({
@@ -47,30 +59,21 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // AuthView manages its own state and reads current mode from its controller,
-    // but we can't easily sync the BaseWidget title without listening.
-    // For simplicity, we just use a static title or wrap it in a listener.
-    return ListenableBuilder(
-      listenable:
-          controller ??
-          AuthController.create(), // If we need to listen, but AuthView creates its own if null.
-      // Actually, better to just let AuthView handle it. Let's just pass title 'Authentication'
-      builder: (context, _) => BaseWidget(
-        title: 'Authentication',
-        child: AuthView(
-          controller: controller,
-          onLoginSuccess: onLoginSuccess,
-          onRegisterSuccess: onRegisterSuccess,
-          showRegisterButton: showRegisterButton,
-          showForgotPasswordButton: showForgotPasswordButton,
-          showResetTokenButton: showResetTokenButton,
-          showVerifyTokenButton: showVerifyTokenButton,
-          customLoginButton: customLoginButton,
-          customRegisterButton: customRegisterButton,
-          customForgotPasswordButton: customForgotPasswordButton,
-          customResetTokenButton: customResetTokenButton,
-          customVerifyTokenButton: customVerifyTokenButton,
-        ),
+    return BaseWidget(
+      title: 'Authentication',
+      child: AuthView(
+        controller: controller,
+        onLoginSuccess: onLoginSuccess,
+        onRegisterSuccess: onRegisterSuccess,
+        showRegisterButton: showRegisterButton,
+        showForgotPasswordButton: showForgotPasswordButton,
+        showResetTokenButton: showResetTokenButton,
+        showVerifyTokenButton: showVerifyTokenButton,
+        customLoginButton: customLoginButton,
+        customRegisterButton: customRegisterButton,
+        customForgotPasswordButton: customForgotPasswordButton,
+        customResetTokenButton: customResetTokenButton,
+        customVerifyTokenButton: customVerifyTokenButton,
       ),
     );
   }
@@ -78,21 +81,43 @@ class AuthScreen extends StatelessWidget {
 
 /// The embeddable view containing the sliding tabs and auth forms.
 class AuthView extends StatefulWidget with Tabs {
+  /// Optional controller. When omitted, a disposable demo controller is used.
   final AuthController? controller;
+
+  /// Called after a successful login flow.
   final VoidCallback? onLoginSuccess;
+
+  /// Called after a successful registration flow.
   final VoidCallback? onRegisterSuccess;
+
+  /// Whether the register tab and related action are visible.
   final bool showRegisterButton;
+
+  /// Whether the forgot-password action is visible.
   final bool showForgotPasswordButton;
+
+  /// Whether the reset-token action is visible.
   final bool showResetTokenButton;
+
+  /// Whether the verification-token action is visible.
   final bool showVerifyTokenButton;
 
-  /// Optional custom button overrides
+  /// Optional custom login button override.
   final Widget? customLoginButton;
+
+  /// Optional custom registration button override.
   final Widget? customRegisterButton;
+
+  /// Optional custom password-reset request button override.
   final Widget? customForgotPasswordButton;
+
+  /// Optional custom password-reset confirmation button override.
   final Widget? customResetTokenButton;
+
+  /// Optional custom email-verification button override.
   final Widget? customVerifyTokenButton;
 
+  /// Creates an embeddable authentication view.
   AuthView({
     super.key,
     this.controller,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// A reusable glassmorphic sliding tabs widget with press and smooth animated slide indicators (RTL aware).
 class AppSlidingTabs extends StatelessWidget with Cards {
@@ -15,8 +16,8 @@ class AppSlidingTabs extends StatelessWidget with Cards {
     this.borderRadius,
     this.activeTextStyle,
     this.inactiveTextStyle,
-    this.sigmaX = 10.0,
-    this.sigmaY = 10.0,
+    this.sigmaX,
+    this.sigmaY,
     this.glassColor,
     this.border,
     this.boxShadow,
@@ -51,10 +52,10 @@ class AppSlidingTabs extends StatelessWidget with Cards {
   final TextStyle? inactiveTextStyle;
 
   /// Horizontal backdrop blur intensity (defaults to 10.0).
-  final double sigmaX;
+  final double? sigmaX;
 
   /// Vertical backdrop blur intensity (defaults to 10.0).
-  final double sigmaY;
+  final double? sigmaY;
 
   /// Custom translucent background color tint.
   final Color? glassColor;
@@ -71,7 +72,9 @@ class AppSlidingTabs extends StatelessWidget with Cards {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveRadius = borderRadius ?? BorderRadius.circular(16);
+    final tokens = FrostedThemeData.of(context);
+    final effectiveRadius =
+        borderRadius ?? BorderRadius.circular(tokens.buttonRadius);
     final count = tabs.length;
 
     if (count == 0) return const SizedBox.shrink();
@@ -85,14 +88,14 @@ class AppSlidingTabs extends StatelessWidget with Cards {
         : 0.0;
     final double alignX = isRtl ? -rawAlignX : rawAlignX;
 
-    return bluredCard(
+    return blurredCard(
       context: context,
       height: height,
       margin: margin,
       padding: padding ?? const EdgeInsets.all(4),
       borderRadius: effectiveRadius,
-      sigmaX: sigmaX,
-      sigmaY: sigmaY,
+      sigmaX: sigmaX ?? tokens.tabsBlur,
+      sigmaY: sigmaY ?? tokens.tabsBlur,
       color: glassColor,
       border: border,
       boxShadow: boxShadow,
@@ -101,20 +104,30 @@ class AppSlidingTabs extends StatelessWidget with Cards {
         children: [
           // Smooth Animated Sliding Indicator Pill
           AnimatedAlign(
-            duration: const Duration(milliseconds: 250),
+            duration: Duration(
+              microseconds: tokens.motionDuration.inMicroseconds * 5 ~/ 4,
+            ),
             curve: Curves.easeOutCubic,
             alignment: Alignment(alignX, 0.0),
             child: FractionallySizedBox(
               widthFactor: 1.0 / count,
               heightFactor: 1.0,
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.primary.withValues(alpha: 0.82),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.18),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                      blurRadius: 8,
+                      color: theme.colorScheme.primary.withValues(alpha: 0.24),
+                      blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -128,29 +141,36 @@ class AppSlidingTabs extends StatelessWidget with Cards {
             children: List.generate(count, (index) {
               final isSelected = index == selectedIndex;
               return Expanded(
-                child: InkWell(
+                child: Semantics(
+                  button: true,
+                  selected: isSelected,
+                  label: tabs[index],
                   onTap: () => onTabChanged(index),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Center(
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 200),
-                      style:
-                          (isSelected
-                              ? (activeTextStyle ??
-                                    theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.onPrimary,
-                                    ))
-                              : (inactiveTextStyle ??
-                                    theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                    ))) ??
-                          const TextStyle(),
-                      child: Text(
-                        tabs[index],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                  child: InkWell(
+                    onTap: () => onTabChanged(index),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Center(
+                      child: AnimatedDefaultTextStyle(
+                        duration: tokens.motionDuration,
+                        style:
+                            (isSelected
+                                ? (activeTextStyle ??
+                                      theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.onPrimary,
+                                      ))
+                                : (inactiveTextStyle ??
+                                      theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            theme.colorScheme.onSurfaceVariant,
+                                      ))) ??
+                            const TextStyle(),
+                        child: Text(
+                          tabs[index],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ),
@@ -179,8 +199,8 @@ mixin Tabs {
     BorderRadiusGeometry? borderRadius,
     TextStyle? activeTextStyle,
     TextStyle? inactiveTextStyle,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? glassColor,
     BoxBorder? border,
     List<BoxShadow>? boxShadow,

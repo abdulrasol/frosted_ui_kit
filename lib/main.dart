@@ -3,6 +3,10 @@ import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
 import 'package:frosted_ui_kit/src/features/home/persentation/screen/home.dart';
 import 'package:frosted_ui_kit/src/utils/app_themes.dart';
 
+/// Legacy package-local smoke-test application.
+///
+/// The supported interactive showcase lives in `example/`. This entry point
+/// remains for existing package tests and is not exported by the public API.
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MainApp());

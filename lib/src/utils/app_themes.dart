@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'frosted_theme.dart';
 
 /// Centralized application theme configuration class.
 class AppThemes {
@@ -9,6 +10,7 @@ class AppThemes {
 
   /// Standard translucent border color used across glassmorphic cards and buttons.
   static Color borderColor(BuildContext context) =>
+      FrostedThemeData.of(context).borderColor ??
       Theme.of(context).colorScheme.secondary.withValues(alpha: .2);
 
   /// Standard translucent border style used across glassmorphic cards and buttons.

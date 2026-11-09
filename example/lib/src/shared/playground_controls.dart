@@ -76,7 +76,7 @@ class _PlaygroundControlsState extends State<PlaygroundControls> with Cards {
 
   @override
   Widget build(BuildContext context) {
-    return bluredCard(
+    return blurredCard(
       context: context,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: EdgeInsets.only(

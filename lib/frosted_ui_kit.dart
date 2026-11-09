@@ -2,12 +2,18 @@
 /// with Telegram modern Android UI fluidity.
 library;
 
+export 'src/utils/frosted_theme.dart';
+export 'src/utils/frosted_performance.dart';
+
 // Shared Glassmorphic UI Widgets
 export 'src/shared/widgets/app_bar.dart';
+export 'src/shared/widgets/adaptive_surface_layout.dart';
+export 'src/shared/widgets/async_button.dart';
 export 'src/shared/widgets/base_widget.dart';
 export 'src/shared/widgets/bottom_sheet.dart';
 export 'src/shared/widgets/navigation_bar.dart';
 export 'src/shared/widgets/buttons.dart';
+export 'src/shared/widgets/frosted_button.dart';
 export 'src/shared/widgets/cards.dart';
 export 'src/shared/widgets/loading.dart';
 export 'src/shared/widgets/loading_button.dart';

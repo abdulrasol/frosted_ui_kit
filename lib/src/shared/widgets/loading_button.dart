@@ -49,6 +49,7 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
     required this.onPressed,
     this.icon,
     this.style = AppButtonStyle.colored,
+    this.role = FrostedActionRole.primary,
     this.backgroundColor,
     this.successColor,
     this.errorColor,
@@ -83,6 +84,9 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
 
   /// The style variant of the button.
   final AppButtonStyle style;
+
+  /// Semantic action role, independent from [style].
+  final FrostedActionRole role;
 
   /// Custom background color for the idle state.
   final Color? backgroundColor;
@@ -121,7 +125,7 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
   final IconData errorIcon;
 
   /// Whether the button should stretch to full width in idle/success/error states.
-  /// If true, the loading state collapses to a square spinner.
+  /// Loading retains this width unless [collapseOnLoading] is enabled.
   final bool isFullWidth;
 
   /// Whether loading collapses the button to a square spinner.
@@ -173,7 +177,11 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
             Widget content;
             switch (state) {
               case FrostLoadingButtonState.idle:
-                final Color defaultContentColor = theme.colorScheme.onPrimary;
+                final roleColors = role.resolveColors(context);
+                final Color defaultContentColor =
+                    style == AppButtonStyle.colored
+                    ? roleColors.onAccent
+                    : roleColors.accent;
                 final Color contentColor = isDisabled
                     ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
                     : (iconColor ?? defaultContentColor);
@@ -239,6 +247,14 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
                   state == FrostLoadingButtonState.idle && onPressed != null,
               liveRegion: true,
               label: statusLabel,
+              excludeSemantics: true,
+              onTap: isDisabled
+                  ? null
+                  : () {
+                      if (controller.value == FrostLoadingButtonState.idle) {
+                        onPressed?.call();
+                      }
+                    },
               child: AnimatedSize(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
@@ -247,9 +263,21 @@ class FrostLoadingButton extends StatelessWidget with Buttons {
                   title: null, // Title handled in custom content
                   icon: null, // Icon handled in custom content
                   style: style,
+                  role: role,
                   backgroundColor: currentBgColor,
-                  isDisabled: isDisabled,
-                  onPressed: onPressed,
+                  isDisabled:
+                      state == FrostLoadingButtonState.idle &&
+                      onPressed == null,
+                  onPressed: isDisabled
+                      ? null
+                      : () {
+                          // Read the live value: a second tap can arrive before
+                          // ValueListenableBuilder has rebuilt after start().
+                          if (controller.value ==
+                              FrostLoadingButtonState.idle) {
+                            onPressed?.call();
+                          }
+                        },
                   height: height,
                   width:
                       state == FrostLoadingButtonState.loading &&

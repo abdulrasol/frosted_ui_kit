@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// Controller for managing the active state of [FrostedNavigationButtomBar].
 class FrostedNavbarController extends ValueNotifier<int> {
@@ -12,6 +13,12 @@ class FrostedNavbarController extends ValueNotifier<int> {
   /// Sets the currently selected index.
   set selectedIndex(int newIndex) => value = newIndex;
 }
+
+/// A correctly-spelled alias for [FrostedNavigationButtomBar].
+///
+/// Use this name for new code. The original misspelled class remains public for
+/// source compatibility and is intentionally not removed in the 1.x line.
+typedef FrostedNavigationBottomBar = FrostedNavigationButtomBar;
 
 /// A glassmorphic bottom navigation bar that wraps a row of [FrostedNavbarItem]s.
 class FrostedNavigationButtomBar extends StatefulWidget {
@@ -46,6 +53,7 @@ class _FrostedNavigationButtomBarState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = FrostedThemeData.of(context);
 
     return SafeArea(
       top: false,
@@ -58,19 +66,19 @@ class _FrostedNavigationButtomBarState
               Expanded(
                 child: BlurredCard(
                   key: widget.key,
-                  borderRadius: BorderRadius.circular(32),
+                  borderRadius: BorderRadius.circular(tokens.buttonRadius * 2),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 6,
                     vertical: 4,
                   ),
                   border: Border.all(
-                    color: theme.colorScheme.outlineVariant.withValues(
-                      alpha: 0.5,
-                    ),
+                    color:
+                        tokens.borderColor ??
+                        theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
                     width: 1,
                   ),
-                  sigmaX: 20,
-                  sigmaY: 20,
+                  sigmaX: tokens.navigationBlur,
+                  sigmaY: tokens.navigationBlur,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

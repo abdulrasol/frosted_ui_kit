@@ -1,95 +1,201 @@
 import 'package:flutter/material.dart';
-import 'package:frosted_ui_kit/frosted_ui_kit.dart';
+import 'package:frosted_ui_kit/src/extensions/context.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/adaptive_surface_layout.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
+import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
-/// A standardized glassmorphic bottom sheet container widget built on [BlurredCard].
+/// A responsive glass bottom-sheet surface with shared header/body/actions layout.
+///
+/// The body scrolls independently on regular viewports. On very short
+/// viewports, including those reduced by the keyboard, all regions remain
+/// reachable through one scroll view. The glass surface uses [BlurredCard], so
+/// global performance settings are honored without another blur layer.
 class AppBottomSheet extends StatelessWidget {
-  /// Creates an [AppBottomSheet] with customizable glass effects, title, and content.
+  /// Creates an [AppBottomSheet] with customizable glass and layout options.
   const AppBottomSheet({
     super.key,
     required this.child,
     this.title,
+    this.header,
+    this.actions,
+    this.showCloseButton = true,
+    this.showDragHandle = true,
+    this.closeTooltip,
     this.padding,
     this.margin,
     this.borderRadius,
     this.height,
-    this.sigmaX = 15.0,
-    this.sigmaY = 15.0,
+    this.maxHeightFactor = 0.92,
+    this.sigmaX,
+    this.sigmaY,
     this.glassColor,
     this.border,
     this.boxShadow,
-    this.clipBehavior = Clip.antiAlias,
-  });
+    this.clipBehavior = Clip.hardEdge,
+  }) : assert(maxHeightFactor > 0 && maxHeightFactor <= 1);
 
-  /// The child content widget displayed inside the bottom sheet.
+  /// Main scrollable bottom-sheet content.
   final Widget child;
 
-  /// Optional header title string.
+  /// Optional localized title used by the default header.
   final String? title;
 
-  /// Inner padding for the bottom sheet container.
+  /// Optional custom header replacing the default title row.
+  final Widget? header;
+
+  /// Optional action footer pinned when vertical space allows.
+  final Widget? actions;
+
+  /// Whether the default title header includes a close button.
+  final bool showCloseButton;
+
+  /// Whether a visual drag handle is displayed.
+  final bool showDragHandle;
+
+  /// Optional localized close-button tooltip.
+  /// Null uses [MaterialLocalizations.closeButtonTooltip].
+  final String? closeTooltip;
+
+  /// Inner padding for the bottom-sheet surface.
   final EdgeInsetsGeometry? padding;
 
-  /// Outer margin surrounding the bottom sheet container.
+  /// Outer margin surrounding the sheet.
   final EdgeInsetsGeometry? margin;
 
-  /// Custom border radius geometry.
+  /// Custom surface radius.
   final BorderRadiusGeometry? borderRadius;
 
-  /// Optional height for the bottom sheet.
+  /// Optional requested height, clamped by the available viewport.
   final double? height;
 
-  /// Horizontal backdrop blur intensity (defaults to 15.0).
-  final double sigmaX;
+  /// Maximum fraction of screen height occupied by the surface.
+  final double maxHeightFactor;
 
-  /// Vertical backdrop blur intensity (defaults to 15.0).
-  final double sigmaY;
+  /// Horizontal backdrop blur override.
+  final double? sigmaX;
 
-  /// Optional translucent background color tint.
+  /// Vertical backdrop blur override.
+  final double? sigmaY;
+
+  /// Optional translucent surface tint.
   final Color? glassColor;
 
-  /// Optional custom border decoration override.
+  /// Optional border override.
   final BoxBorder? border;
 
-  /// Optional list of box shadows applied to the card container.
+  /// Optional surface shadows.
   final List<BoxShadow>? boxShadow;
 
-  /// Content clipping behavior (defaults to [Clip.antiAlias]).
+  /// Surface clipping behavior.
   final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = FrostedThemeData.of(context);
+    final viewInsets = MediaQuery.viewInsetsOf(context);
+    final mediaPadding = MediaQuery.paddingOf(context);
+    final usableHeight =
+        MediaQuery.sizeOf(context).height -
+        viewInsets.bottom -
+        mediaPadding.bottom;
+    final maxHeight =
+        usableHeight.clamp(0.0, double.infinity) * maxHeightFactor;
+    final requestedHeight = height?.clamp(0.0, maxHeight).toDouble();
     final effectiveRadius =
-        borderRadius ?? const BorderRadius.vertical(top: Radius.circular(28));
+        borderRadius ??
+        BorderRadius.vertical(top: Radius.circular(tokens.dialogRadius + 4));
     final defaultColor =
-        glassColor ?? theme.colorScheme.surface.withValues(alpha: 0.85);
+        (glassColor ?? tokens.surfaceColor ?? theme.colorScheme.surface)
+            .withValues(alpha: glassColor?.a ?? 0.72);
+    final effectiveHeader = _buildHeader(context, theme, tokens);
 
-    return BlurredCard(
-      height: height,
-      margin: margin,
-      padding:
-          padding ??
-          EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: context.horizontalPadding,
+    return AnimatedPadding(
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : tokens.motionDuration,
+      curve: Curves.easeOutCubic,
+      padding: EdgeInsets.only(bottom: viewInsets.bottom),
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: BlurredCard(
+            height: requestedHeight,
+            margin: margin,
+            padding:
+                padding ??
+                EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: context.horizontalPadding,
+                ),
+            borderRadius: effectiveRadius,
+            sigmaX: sigmaX ?? tokens.sheetBlur,
+            sigmaY: sigmaY ?? tokens.sheetBlur,
+            color: defaultColor,
+            border: border,
+            boxShadow: boxShadow,
+            clipBehavior: clipBehavior,
+            child: FrostedAdaptiveSurfaceLayout(
+              header: effectiveHeader,
+              body: child,
+              actions: actions,
+              spacing: tokens.spacing,
+            ),
           ),
-      borderRadius: effectiveRadius,
-      sigmaX: sigmaX,
-      sigmaY: sigmaY,
-      color: defaultColor,
-      border: border,
-      boxShadow: boxShadow,
-      clipBehavior: clipBehavior,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Top drag handle indicator
+        ),
+      ),
+    );
+  }
+
+  Widget? _buildHeader(
+    BuildContext context,
+    ThemeData theme,
+    FrostedThemeData tokens,
+  ) {
+    final defaultHeader = title == null
+        ? null
+        : Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title!,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (showCloseButton) ...[
+                SizedBox(width: tokens.spacing / 2),
+                CircleButton(
+                  icon: Icons.close_rounded,
+                  size: 48,
+                  style: CircleButtonStyle.glass,
+                  role: FrostedActionRole.secondary,
+                  tooltip:
+                      closeTooltip ??
+                      MaterialLocalizations.of(context).closeButtonTooltip,
+                  semanticLabel:
+                      closeTooltip ??
+                      MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ],
+          );
+    final contentHeader = header ?? defaultHeader;
+    if (!showDragHandle && contentHeader == null) return null;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (showDragHandle) ...[
           Center(
             child: Container(
               width: 40,
               height: 4,
-              margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: theme.colorScheme.onSurfaceVariant.withValues(
                   alpha: 0.4,
@@ -98,40 +204,27 @@ class AppBottomSheet extends StatelessWidget {
               ),
             ),
           ),
-          if (title != null) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title!,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close_rounded),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-          ],
-          Flexible(child: SingleChildScrollView(child: child)),
-          SizedBox(height: MediaQuery.viewInsetsOf(context).bottom),
+          if (contentHeader != null) SizedBox(height: tokens.spacing),
         ],
-      ),
+        ?contentHeader,
+      ],
     );
   }
 }
 
-/// A mixin providing utility methods for displaying standardized bottom sheets.
+/// Utilities for displaying standardized responsive bottom sheets.
 mixin BottomSheets {
-  /// Displays a standardized [AppBottomSheet] modal built on [BlurredCard].
+  /// Displays an [AppBottomSheet] using one shared glass surface.
   Future<T?> showAppBottomSheet<T>({
     required BuildContext context,
     Key? key,
     required Widget child,
     String? title,
+    Widget? header,
+    Widget? actions,
+    bool showCloseButton = true,
+    bool showDragHandle = true,
+    String? closeTooltip,
     bool isScrollControlled = true,
     bool enableDrag = true,
     bool isDismissible = true,
@@ -139,36 +232,42 @@ mixin BottomSheets {
     EdgeInsetsGeometry? margin,
     BorderRadiusGeometry? borderRadius,
     double? height,
-    double sigmaX = 15.0,
-    double sigmaY = 15.0,
+    double maxHeightFactor = 0.92,
+    double? sigmaX,
+    double? sigmaY,
     Color? glassColor,
     BoxBorder? border,
     List<BoxShadow>? boxShadow,
-    Clip clipBehavior = Clip.antiAlias,
+    Clip clipBehavior = Clip.hardEdge,
   }) {
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: isScrollControlled,
+      useSafeArea: false,
       enableDrag: enableDrag,
       isDismissible: isDismissible,
       backgroundColor: Colors.transparent,
-      builder: (context) {
-        return AppBottomSheet(
-          key: key,
-          title: title,
-          padding: padding,
-          margin: margin,
-          borderRadius: borderRadius,
-          height: height,
-          sigmaX: sigmaX,
-          sigmaY: sigmaY,
-          glassColor: glassColor,
-          border: border,
-          boxShadow: boxShadow,
-          clipBehavior: clipBehavior,
-          child: child,
-        );
-      },
+      builder: (context) => AppBottomSheet(
+        key: key,
+        title: title,
+        header: header,
+        actions: actions,
+        showCloseButton: showCloseButton,
+        showDragHandle: showDragHandle,
+        closeTooltip: closeTooltip,
+        padding: padding,
+        margin: margin,
+        borderRadius: borderRadius,
+        height: height,
+        maxHeightFactor: maxHeightFactor,
+        sigmaX: sigmaX,
+        sigmaY: sigmaY,
+        glassColor: glassColor,
+        border: border,
+        boxShadow: boxShadow,
+        clipBehavior: clipBehavior,
+        child: child,
+      ),
     );
   }
 }

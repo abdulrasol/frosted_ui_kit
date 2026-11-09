@@ -40,5 +40,15 @@
   "pleaseEnterName": "يرجى إدخال الاسم",
   "pleaseEnterResetToken": "يرجى إدخال رمز الإعادة",
   "pleaseEnterVerificationToken": "يرجى إدخال رمز التحقق",
-  "submit": "إرسال"
+  "submit": "إرسال",
+  "confirm": "تأكيد",
+  "cancel": "إلغاء",
+  "ok": "حسناً",
+  "asyncSaveProfile": "حفظ الملف الشخصي تلقائياً",
+  "asyncProfileSaved": "تم حفظ الملف الشخصي",
+  "asyncRetryRequest": "إعادة محاولة الطلب",
+  "asyncExampleRequestRejected": "تم رفض الطلب التجريبي",
+  "asyncTapAgainToRetry": "اضغط مجدداً لإعادة المحاولة",
+  "manualControllerApi": "واجهة التحكم اليدوي",
+  "manualControllerDescription": "استخدم وحدة التحكم فقط عندما يحتاج التطبيق إلى إدارة كل حالة بشكل صريح."
 }

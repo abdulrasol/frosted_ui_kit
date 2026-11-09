@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 import 'package:frosted_ui_kit/src/utils/app_themes.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// Pre-configured input field types for common form scenarios in `frosted_ui_kit`.
 enum AppTextFieldType {
@@ -67,8 +68,8 @@ class AppTextField extends StatefulWidget {
     this.placeholderStyle,
     this.labelStyle,
     this.errorStyle,
-    this.sigmaX = 10.0,
-    this.sigmaY = 10.0,
+    this.sigmaX,
+    this.sigmaY,
     this.borderColor,
     this.border,
     this.boxShadow,
@@ -97,8 +98,8 @@ class AppTextField extends StatefulWidget {
     VoidCallback? onEditingComplete,
     String? errorText,
     FormFieldValidator<String>? validator,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? fillColor,
     Color? borderColor,
     BoxBorder? border,
@@ -157,8 +158,8 @@ class AppTextField extends StatefulWidget {
     VoidCallback? onEditingComplete,
     String? errorText,
     FormFieldValidator<String>? validator,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? fillColor,
     Color? borderColor,
     BoxBorder? border,
@@ -217,8 +218,8 @@ class AppTextField extends StatefulWidget {
     VoidCallback? onEditingComplete,
     String? errorText,
     FormFieldValidator<String>? validator,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? fillColor,
     Color? borderColor,
     BoxBorder? border,
@@ -357,10 +358,10 @@ class AppTextField extends StatefulWidget {
   final TextStyle? errorStyle;
 
   /// Horizontal backdrop blur intensity (defaults to 10.0).
-  final double sigmaX;
+  final double? sigmaX;
 
   /// Vertical backdrop blur intensity (defaults to 10.0).
-  final double sigmaY;
+  final double? sigmaY;
 
   /// Custom border color override.
   final Color? borderColor;
@@ -480,7 +481,8 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final effectiveBorderRadius =
-        widget.borderRadius ?? BorderRadius.circular(16);
+        widget.borderRadius ??
+        BorderRadius.circular(FrostedThemeData.of(context).buttonRadius);
     final defaultFillColor =
         widget.fillColor ??
         theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3);
@@ -579,8 +581,10 @@ class _AppTextFieldState extends State<AppTextField> {
                 ? BlurredCard(
                     borderRadius: effectiveBorderRadius,
                     color: defaultFillColor,
-                    sigmaX: widget.sigmaX,
-                    sigmaY: widget.sigmaY,
+                    sigmaX:
+                        widget.sigmaX ?? FrostedThemeData.of(context).inputBlur,
+                    sigmaY:
+                        widget.sigmaY ?? FrostedThemeData.of(context).inputBlur,
                     border:
                         widget.border ??
                         Border.all(color: activeBorderColor, width: 1),
@@ -657,8 +661,8 @@ mixin Inputs {
     TextStyle? placeholderStyle,
     TextStyle? labelStyle,
     TextStyle? errorStyle,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? borderColor,
     BoxBorder? border,
     List<BoxShadow>? boxShadow,
@@ -719,8 +723,8 @@ mixin Inputs {
     TextEditingController? controller,
     FormFieldValidator<String>? validator,
     ValueChanged<String>? onChanged,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? fillColor,
     Color? borderColor,
     BoxBorder? border,
@@ -754,8 +758,8 @@ mixin Inputs {
     TextEditingController? controller,
     FormFieldValidator<String>? validator,
     ValueChanged<String>? onChanged,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? fillColor,
     Color? borderColor,
     BoxBorder? border,
@@ -789,8 +793,8 @@ mixin Inputs {
     TextEditingController? controller,
     FormFieldValidator<String>? validator,
     ValueChanged<String>? onChanged,
-    double sigmaX = 10.0,
-    double sigmaY = 10.0,
+    double? sigmaX,
+    double? sigmaY,
     Color? fillColor,
     Color? borderColor,
     BoxBorder? border,

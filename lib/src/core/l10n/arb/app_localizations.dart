@@ -346,6 +346,66 @@ abstract class FrostedAppLocalizations {
   /// In en, this message translates to:
   /// **'Submit'**
   String get submit;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @asyncSaveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save profile automatically'**
+  String get asyncSaveProfile;
+
+  /// No description provided for @asyncProfileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get asyncProfileSaved;
+
+  /// No description provided for @asyncRetryRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry request'**
+  String get asyncRetryRequest;
+
+  /// No description provided for @asyncExampleRequestRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Example request rejected'**
+  String get asyncExampleRequestRejected;
+
+  /// No description provided for @asyncTapAgainToRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap again to retry'**
+  String get asyncTapAgainToRetry;
+
+  /// No description provided for @manualControllerApi.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Controller API'**
+  String get manualControllerApi;
+
+  /// No description provided for @manualControllerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the controller only when application code must drive every state explicitly.'**
+  String get manualControllerDescription;
 }
 
 class _FrostedAppLocalizationsDelegate

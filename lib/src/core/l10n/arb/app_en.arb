@@ -40,5 +40,15 @@
   "pleaseEnterName": "Please enter your name",
   "pleaseEnterResetToken": "Please enter your reset token",
   "pleaseEnterVerificationToken": "Please enter your verification token",
-  "submit": "Submit"
+  "submit": "Submit",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "asyncSaveProfile": "Save profile automatically",
+  "asyncProfileSaved": "Profile saved",
+  "asyncRetryRequest": "Retry request",
+  "asyncExampleRequestRejected": "Example request rejected",
+  "asyncTapAgainToRetry": "Tap again to retry",
+  "manualControllerApi": "Manual Controller API",
+  "manualControllerDescription": "Use the controller only when application code must drive every state explicitly."
 }

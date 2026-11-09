@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// A glassmorphic list section that groups multiple [FrostedListTile]s together.
 class FrostedListSection extends StatelessWidget {
@@ -100,6 +101,10 @@ class FrostedListTile extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     this.leadingSize = 40.0,
     this.backgroundColor,
+    this.selected = false,
+    this.selectedColor,
+    this.selectedIconColor,
+    this.enabled = true,
   });
 
   /// The primary content of the list tile.
@@ -129,9 +134,29 @@ class FrostedListTile extends StatelessWidget {
   /// Background color of the tile (overrides section background if needed).
   final Color? backgroundColor;
 
+  /// Whether this tile represents the currently selected item.
+  final bool selected;
+
+  /// Optional fill used for the selected tile state.
+  final Color? selectedColor;
+
+  /// Optional foreground color for the leading icon when selected.
+  final Color? selectedIconColor;
+
+  /// Whether the tile accepts taps and exposes enabled semantics.
+  final bool enabled;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = FrostedThemeData.of(context);
+    final accent = selectedColor ?? theme.colorScheme.primary;
+    final foreground = selected
+        ? (selectedIconColor ?? theme.colorScheme.onPrimary)
+        : theme.colorScheme.onSurface;
+    final tileColor =
+        backgroundColor ??
+        (selected ? accent.withValues(alpha: 0.14) : Colors.transparent);
 
     Widget content = Padding(
       padding: padding,
@@ -141,7 +166,24 @@ class FrostedListTile extends StatelessWidget {
             SizedBox(
               width: leadingSize,
               height: leadingSize,
-              child: Center(child: leading),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: selected
+                      ? accent.withValues(alpha: 0.22)
+                      : theme.colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.34,
+                        ),
+                  borderRadius: BorderRadius.circular(tokens.buttonRadius),
+                  border: Border.all(
+                    color: (selected ? accent : theme.colorScheme.outline)
+                        .withValues(alpha: selected ? 0.42 : 0.16),
+                  ),
+                ),
+                child: IconTheme.merge(
+                  data: IconThemeData(color: foreground),
+                  child: Center(child: leading),
+                ),
+              ),
             ),
             const SizedBox(width: 16),
           ],
@@ -151,7 +193,11 @@ class FrostedListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 DefaultTextStyle(
-                  style: theme.textTheme.bodyLarge ?? const TextStyle(),
+                  style: (theme.textTheme.bodyLarge ?? const TextStyle())
+                      .copyWith(
+                        color: foreground,
+                        fontWeight: selected ? FontWeight.w700 : null,
+                      ),
                   child: title,
                 ),
                 if (subtitle != null) ...[
@@ -159,9 +205,7 @@ class FrostedListTile extends StatelessWidget {
                   DefaultTextStyle(
                     style:
                         theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withValues(
-                            alpha: 0.7,
-                          ),
+                          color: foreground.withValues(alpha: 0.70),
                         ) ??
                         const TextStyle(),
                     child: subtitle!,
@@ -175,9 +219,7 @@ class FrostedListTile extends StatelessWidget {
             DefaultTextStyle(
               style:
                   theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withValues(
-                      alpha: 0.7,
-                    ),
+                    color: foreground.withValues(alpha: 0.70),
                   ) ??
                   const TextStyle(),
               child: additionalInfo!,
@@ -188,19 +230,28 @@ class FrostedListTile extends StatelessWidget {
       ),
     );
 
-    if (backgroundColor != null) {
-      content = ColoredBox(color: backgroundColor!, child: content);
-    }
-
-    if (onTap != null) {
-      return InkWell(
-        onTap: onTap,
-        splashColor: theme.primaryColor.withValues(alpha: 0.1),
-        highlightColor: theme.primaryColor.withValues(alpha: 0.05),
-        child: content,
-      );
-    }
-
-    return content;
+    return Semantics(
+      button: onTap != null,
+      enabled: enabled,
+      selected: selected,
+      child: AnimatedContainer(
+        duration: tokens.motionDuration,
+        curve: Curves.easeOutCubic,
+        decoration: BoxDecoration(
+          color: tileColor,
+          borderRadius: BorderRadius.circular(tokens.buttonRadius),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: enabled ? onTap : null,
+            borderRadius: BorderRadius.circular(tokens.buttonRadius),
+            splashColor: accent.withValues(alpha: 0.14),
+            highlightColor: accent.withValues(alpha: 0.08),
+            child: content,
+          ),
+        ),
+      ),
+    );
   }
 }

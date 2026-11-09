@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
+import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
 /// Controls how the default app bar reacts to body scrolling.
 enum AppBarScrollBehavior {
@@ -27,8 +28,8 @@ class FrostedAppBar extends StatelessWidget
     this.actions,
     this.backAction,
     this.titleCollapsed = false,
-    this.sigmaX = 6.0,
-    this.sigmaY = 6.0,
+    this.sigmaX,
+    this.sigmaY,
     this.glassColor,
     this.border,
     this.borderRadius,
@@ -58,10 +59,10 @@ class FrostedAppBar extends StatelessWidget
   final List<Widget>? actions;
 
   /// Horizontal backdrop blur intensity (defaults to 6.0).
-  final double sigmaX;
+  final double? sigmaX;
 
   /// Vertical backdrop blur intensity (defaults to 6.0).
-  final double sigmaY;
+  final double? sigmaY;
 
   /// Custom translucent background color tint.
   final Color? glassColor;
@@ -86,6 +87,10 @@ class FrostedAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final defaultTitleColor = theme.brightness == Brightness.dark
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.white.withValues(alpha: 0.20);
     final canPop = Navigator.of(context).canPop();
     return SafeArea(
       top: true,
@@ -129,16 +134,23 @@ class FrostedAppBar extends StatelessWidget
                             duration: const Duration(milliseconds: 180),
                             child: ExcludeSemantics(
                               excluding: titleCollapsed,
-                              child: bluredCard(
+                              child: blurredCard(
                                 padding:
                                     padding ??
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 margin: margin,
                                 borderRadius: borderRadius,
                                 border: border,
-                                sigmaX: sigmaX,
-                                sigmaY: sigmaY,
-                                color: glassColor,
+                                sigmaX:
+                                    sigmaX ??
+                                    FrostedThemeData.of(context).appBarBlur,
+                                sigmaY:
+                                    sigmaY ??
+                                    FrostedThemeData.of(context).appBarBlur,
+                                // Keep the title surface visually aligned with
+                                // water-drop controls on Android, where the
+                                // card fallback intentionally skips blur.
+                                color: glassColor ?? defaultTitleColor,
                                 boxShadow: boxShadow,
                                 height: 48,
                                 context: context,

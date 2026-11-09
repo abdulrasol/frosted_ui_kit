@@ -63,7 +63,13 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
                     final result = await showAppInputDialog(
                       context: context,
                       title: 'Rename Project',
-                      description: 'Enter a new name for your project.',
+                      description:
+                          'Enter a new name for your project. '
+                          'The name must contain at least three characters. '
+                          'Try opening the keyboard, rotating the device, or '
+                          'increasing text size. The content scrolls when '
+                          'space is limited, and Done validates the name '
+                          'just like the confirmation button.',
                       hintText: 'Project Name',
                       autofocus: true,
                       validator: (value) {
@@ -116,19 +122,14 @@ class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {
 
                   backgroundColor: Colors.teal,
                   onPressed: () async {
-                    // Show the loading dialog without awaiting it
-                    showAppLoadingDialog(
+                    // This dismissible preview owns no delayed pop: closing
+                    // it cannot accidentally pop the underlying page later.
+                    await showAppLoadingDialog(
                       context: context,
                       barrierDismissible: true,
                       message: 'Authenticating...',
                       color: Colors.teal,
                     );
-                    // Simulate a network request
-                    await Future.delayed(const Duration(seconds: 50));
-                    // Close the dialog if still mounted
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                    }
                   },
                 ),
               ],
