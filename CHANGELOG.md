@@ -1,3 +1,9 @@
+## 2.0.2
+
+* Migrated Material component imports to `package:material_ui` to ensure seamless compatibility with Flutter 3.47+ and resolve deprecated member warnings.
+* Updated `FrostedAppLocalizations` to properly integrate with `material_ui` and `cupertino_ui` localization delegates across supported locales (Arabic and English).
+* Refined example catalog test and runtime dependencies for consistent localization support.
+
 ## 2.0.1
 
 * Fixed app-bar flicker during top overscroll by honoring movement thresholds

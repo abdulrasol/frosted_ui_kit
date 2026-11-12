@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Immutable, resolved performance configuration for every glass surface in
 /// `frosted_ui_kit`.

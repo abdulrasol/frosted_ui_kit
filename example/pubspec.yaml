@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ">=1.0.8 <3.0.0"
   flutter_localizations:
     sdk: flutter
+  material_ui: ^1.11.0
 
 dev_dependencies:
   flutter_test:

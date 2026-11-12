@@ -1,6 +1,6 @@
 import 'screens/stepper_catalog.dart';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 import 'screens/app_bar_catalog.dart';

@@ -1,5 +1,5 @@
 import 'package:example_app/src/shared/playground_background.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 class DialogsCatalog extends StatelessWidget with Dialogs, Buttons {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
 import 'package:frosted_ui_kit/src/features/auth/data/models/register_request_model.dart';
 import 'package:frosted_ui_kit/src/features/auth/presentation/controllers/auth_controller.dart';

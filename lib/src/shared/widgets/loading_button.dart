@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/loading.dart';
 

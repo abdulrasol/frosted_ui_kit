@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/src/core/l10n/arb/app_localizations.dart';
 import 'package:frosted_ui_kit/src/features/home/persentation/screen/home.dart';
 import 'package:frosted_ui_kit/src/utils/app_themes.dart';
@@ -22,9 +22,12 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       theme: AppThemes.theme,
-      localizationsDelegates: FrostedAppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        ...FrostedAppLocalizations.localizationsDelegates,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
       supportedLocales: FrostedAppLocalizations.supportedLocales,
-      locale: Locale('ar'),
+      locale: const Locale('ar'),
       home: const Home(),
     );
   }

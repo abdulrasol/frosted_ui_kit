@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 import 'src/catalog_home_screen.dart';
@@ -41,7 +40,6 @@ class MySandboxAppState extends State<MySandboxApp> {
   void toggleTheme() {
     setState(() {
       _themeMode = _themeMode == ThemeMode.dark
-      
           ? ThemeMode.light
           : ThemeMode.dark;
     });
@@ -67,12 +65,10 @@ class MySandboxAppState extends State<MySandboxApp> {
         debugShowCheckedModeBanner: false,
         themeMode: _themeMode,
         localizationsDelegates: const [
-          FrostedAppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
+          ...FrostedAppLocalizations.localizationsDelegates,
+          ...GlobalMaterialLocalizations.delegates,
         ],
-        supportedLocales: const [Locale('en', ''), Locale('ar', '')],
+        supportedLocales: FrostedAppLocalizations.supportedLocales,
         locale: _rightToLeft ? const Locale('ar', '') : const Locale('en', ''),
         builder: (context, child) {
           final mediaQuery = MediaQuery.of(context);

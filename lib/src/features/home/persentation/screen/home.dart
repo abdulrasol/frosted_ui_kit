@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/src/features/auth/presentation/screen/auth_screen.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/base_widget.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/buttons.dart';

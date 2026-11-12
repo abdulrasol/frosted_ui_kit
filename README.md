@@ -154,7 +154,7 @@ or accessibility-scaled action labels automatically. See
 Here is a full playground application demonstrating how to initialize and use the `frosted_ui_kit` components:
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'src/catalog_home_screen.dart';
 
 void main() {

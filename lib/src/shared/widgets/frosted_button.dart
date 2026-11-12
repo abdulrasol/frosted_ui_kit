@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'buttons.dart';
 
 /// A concise button API backed by [AppButton] and the shared Frosted theme.

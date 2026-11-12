@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/src/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:frosted_ui_kit/src/features/auth/data/models/register_request_model.dart';
 import 'package:frosted_ui_kit/src/features/auth/data/repositories/auth_repository_impl.dart';

@@ -1,5 +1,5 @@
 import 'dart:ui' show lerpDouble;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Immutable design tokens shared by Frosted widgets.
 ///

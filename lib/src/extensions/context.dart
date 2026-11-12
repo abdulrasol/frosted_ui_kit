@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Extension methods on [BuildContext] for screen dimensions, padding, and localization.
 extension FrostedContextExtension on BuildContext {

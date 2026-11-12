@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 import 'package:frosted_ui_kit/src/utils/app_themes.dart';

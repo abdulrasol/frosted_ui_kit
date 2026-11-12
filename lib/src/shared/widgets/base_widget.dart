@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 /// A foundational screen wrapper widget providing a consistent layout structure.

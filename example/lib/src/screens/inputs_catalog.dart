@@ -1,5 +1,5 @@
 import 'package:example_app/src/shared/playground_background.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 import '../shared/playground_controls.dart';
@@ -11,7 +11,8 @@ class InputsCatalog extends StatefulWidget {
   State<InputsCatalog> createState() => _InputsCatalogState();
 }
 
-class _InputsCatalogState extends State<InputsCatalog> with Inputs, Buttons, Cards {
+class _InputsCatalogState extends State<InputsCatalog>
+    with Inputs, Buttons, Cards {
   PlaygroundState _state = const PlaygroundState();
 
   @override
@@ -32,13 +33,31 @@ class _InputsCatalogState extends State<InputsCatalog> with Inputs, Buttons, Car
               children: [
                 SizedBox(height: context.topPadding + 10),
 
-                emailField(context: context, sigmaX: _state.sigmaX, sigmaY: _state.sigmaY, fillColor: _state.glassColor, border: _state.border),
+                emailField(
+                  context: context,
+                  sigmaX: _state.sigmaX,
+                  sigmaY: _state.sigmaY,
+                  fillColor: _state.glassColor,
+                  border: _state.border,
+                ),
                 const SizedBox(height: 16),
 
-                passwordField(context: context, sigmaX: _state.sigmaX, sigmaY: _state.sigmaY, fillColor: _state.glassColor, border: _state.border),
+                passwordField(
+                  context: context,
+                  sigmaX: _state.sigmaX,
+                  sigmaY: _state.sigmaY,
+                  fillColor: _state.glassColor,
+                  border: _state.border,
+                ),
                 const SizedBox(height: 16),
 
-                nameField(context: context, sigmaX: _state.sigmaX, sigmaY: _state.sigmaY, fillColor: _state.glassColor, border: _state.border),
+                nameField(
+                  context: context,
+                  sigmaX: _state.sigmaX,
+                  sigmaY: _state.sigmaY,
+                  fillColor: _state.glassColor,
+                  border: _state.border,
+                ),
                 const SizedBox(height: 16),
 
                 textField(

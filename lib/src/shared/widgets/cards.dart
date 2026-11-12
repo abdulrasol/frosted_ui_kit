@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'glass_backdrop.dart';
 import 'package:frosted_ui_kit/src/utils/frosted_performance.dart';
 import 'package:frosted_ui_kit/src/utils/app_themes.dart';

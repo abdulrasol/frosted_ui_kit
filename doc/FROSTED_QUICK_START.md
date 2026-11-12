@@ -28,7 +28,7 @@ Place this file in `lib/main.dart`. It is self-contained and does not import
 anything from the package's internal `example` application:
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 void main() => runApp(const QuickStartApp());

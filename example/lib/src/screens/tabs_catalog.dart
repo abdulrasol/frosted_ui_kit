@@ -1,5 +1,5 @@
 import 'package:example_app/src/shared/playground_background.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 import '../shared/playground_controls.dart';
@@ -42,7 +42,10 @@ class _TabsCatalogState extends State<TabsCatalog> with Tabs, Buttons, Cards {
           const Positioned.fill(child: PlaygroundBackground()),
           Positioned.fill(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: context.topPadding + 10, horizontal: 16),
+              padding: EdgeInsets.symmetric(
+                vertical: context.topPadding + 10,
+                horizontal: 16,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

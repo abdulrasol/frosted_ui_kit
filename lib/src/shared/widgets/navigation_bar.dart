@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/src/shared/widgets/cards.dart';
 import 'package:frosted_ui_kit/src/utils/frosted_theme.dart';
 
