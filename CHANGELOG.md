@@ -1,3 +1,8 @@
+## 2.0.3
+
+* Migrated Cupertino component imports to `package:cupertino_ui` to ensure seamless compatibility with Flutter 3.50+ on CI runners.
+* Integrated `material_ui` and `cupertino_ui` localization delegates directly into `FrostedAppLocalizations` to eliminate deprecation warnings on Flutter 3.50+.
+
 ## 2.0.2
 
 * Migrated Material component imports to `package:material_ui` to ensure seamless compatibility with Flutter 3.47+ and resolve deprecated member warnings.

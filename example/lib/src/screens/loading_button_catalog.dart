@@ -1,5 +1,4 @@
 import 'package:example_app/src/shared/playground_background.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -119,7 +118,7 @@ class _LoadingButtonCatalogState extends State<LoadingButtonCatalog>
                   child: FrostLoadingButton(
                     controller: _controller,
                     title: 'Submit Order',
-                    icon: CupertinoIcons.cart_fill,
+                    icon: Icons.shopping_cart,
                     style: AppButtonStyle.waterDrop,
                     onPressed: _simulateNetworkRequest,
                   ),
