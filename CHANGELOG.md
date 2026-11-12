@@ -1,3 +1,13 @@
+## 2.0.1
+
+* Fixed app-bar flicker during top overscroll by honoring movement thresholds
+  and ignoring direction-only, nested and horizontal scroll notifications.
+* Unified glass rendering-mode precedence across cards and water-drop controls;
+  explicit Full/Balanced now enable Android blur. Local performance scopes are
+  captured by dialog and bottom-sheet routes.
+* Expanded `cupertino_icons` compatibility to `>=1.0.8 <3.0.0`, including 2.0.0,
+  without forcing existing consumers to upgrade immediately.
+
 ## 2.0.0
 
 * **Breaking release**: Promoted the modern `Frosted UI Kit` API, theme
@@ -19,8 +29,6 @@
 * **Performance**: Added Android-friendly transparency fallbacks, shared
   surface tokens, repaint isolation, and documented profile baselines for
   Android and iOS.
-
-## Unreleased
 
 * **API stability**: Added correctly-spelled `FrostedNavigationBottomBar` and
   deprecated the legacy `CricleButton`, `BluredCard`, and `Cards.bluredCard`

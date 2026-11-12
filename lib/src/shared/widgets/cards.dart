@@ -73,7 +73,8 @@ class BlurredCard extends StatelessWidget {
   final Clip clipBehavior;
 
   /// If true, completely disables the BackdropFilter and relies only on the background color's opacity.
-  /// If null, it will automatically disable blur on Android for better performance, and keep it enabled on iOS.
+  /// If null, follows the explicit performance scope, or disables blur on Android
+  /// when no scope is provided. Global disabled settings always take precedence.
   final bool? disableBlur;
 
   @override
@@ -84,11 +85,10 @@ class BlurredCard extends StatelessWidget {
     final blurX = sigmaX ?? tokens.glassBlur;
     final blurY = sigmaY ?? tokens.glassBlur;
 
-    // Auto-detect platform for performance optimization if disableBlur is not explicitly set
-    final shouldDisableBlur =
-        !performance.blurEnabled ||
-        performance.blurScale == 0 ||
-        (disableBlur ?? (theme.platform == TargetPlatform.android));
+    final shouldDisableBlur = !FrostedPerformance.shouldBlur(
+      context,
+      disableBlur: disableBlur,
+    );
 
     // If blur is disabled, we need a solid-like background to maintain readability and luxury feel (like Telegram/X)
     final defaultColor =

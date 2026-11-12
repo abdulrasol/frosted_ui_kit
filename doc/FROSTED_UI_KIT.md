@@ -773,3 +773,10 @@ This applies to all components including:
 - Mixin generators (`appButton`, `textField`, `showAppBottomSheet`, `showAppWarningDialog`, `blurredCard`, `appSlidingTabs`, `appStepper`, etc.)
 - Direct widget instantiations (`AppButton`, `AppTextField`, `BaseWidget`, etc.)
 - Bottom Sheets and Dialogs via their mixin launchers.
+
+## Rendering modes and scroll stability
+
+All glass components follow the same explicit Full, Balanced and Lite policy,
+including Android cards, water-drop controls, app bars, navigation bars and
+modal surfaces. See [Shared glass rendering](GLASS_SURFACES.md) for precedence,
+route inheritance, tint limitations and scroll-driven header behavior.

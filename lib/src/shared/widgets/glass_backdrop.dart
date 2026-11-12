@@ -15,7 +15,7 @@ class GlassBackdrop extends StatelessWidget {
     required this.child,
     required this.sigmaX,
     required this.sigmaY,
-    this.enabled = true,
+    this.enabled,
     this.shape = BoxShape.rectangle,
     this.borderRadius = BorderRadius.zero,
     this.clipBehavior = Clip.hardEdge,
@@ -31,7 +31,7 @@ class GlassBackdrop extends StatelessWidget {
   final double sigmaY;
 
   /// Local blur opt-out; global performance settings still take precedence.
-  final bool enabled;
+  final bool? enabled;
 
   /// Bounds shape.
   final BoxShape shape;
@@ -48,7 +48,10 @@ class GlassBackdrop extends StatelessWidget {
     final ancestor = context.dependOnInheritedWidgetOfExactType<_GlassScope>();
     final x = sigmaX * settings.blurScale;
     final y = sigmaY * settings.blurScale;
-    if (!enabled ||
+    if (!FrostedPerformance.shouldBlur(
+          context,
+          disableBlur: enabled == null ? null : !enabled!,
+        ) ||
         !settings.blurEnabled ||
         (x == 0 && y == 0) ||
         ancestor != null) {

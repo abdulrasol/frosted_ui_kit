@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
 /// A foundational screen wrapper widget providing a consistent layout structure.
@@ -39,8 +38,8 @@ class BaseWidget extends StatefulWidget {
   /// Whether the default floating app bar hides while the body scrolls down.
   ///
   /// When enabled, the app bar is hidden after a downward scroll notification
-  /// of at least one logical pixel and is shown again after an upward scroll
-  /// notification of at least one logical pixel. The option is disabled by
+  /// exceeding [hideAfter] and is shown again after upward movement
+  /// exceeding [showAfter]. Boundary overscroll is ignored. The option is disabled by
   /// default to preserve the normal [BaseWidget] behavior.
   ///
   /// This behavior applies to the default floating [FrostedAppBar]. A custom
@@ -103,31 +102,29 @@ class _BaseWidgetState extends State<BaseWidget> {
       : AppBarScrollBehavior.none;
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification.metrics.pixels <= 0 && !_isAppBarVisible) {
-      setState(() => _isAppBarVisible = true);
+    if (_scrollBehavior == AppBarScrollBehavior.none ||
+        notification.depth != 0 ||
+        notification.metrics.axis != Axis.vertical) {
+      return false;
+    }
+    final metrics = notification.metrics;
+    // Keep the header visible throughout top overscroll and its rebound.
+    if (metrics.pixels <= metrics.minScrollExtent + widget.showAfter) {
+      if (!_isAppBarVisible) setState(() => _isAppBarVisible = true);
       _downwardDistance = 0;
       _upwardDistance = 0;
       return false;
     }
-
-    // Some platforms emit user-direction notifications without a usable
-    // scroll delta. Use the direction as a reliable fallback so the app bar
-    // still responds to real finger/trackpad scrolling.
-    if (_scrollBehavior != AppBarScrollBehavior.none &&
-        notification is UserScrollNotification) {
-      if (notification.direction == ScrollDirection.reverse &&
-          _isAppBarVisible) {
-        setState(() => _isAppBarVisible = false);
-        _downwardDistance = widget.hideAfter;
-        _upwardDistance = 0;
-      } else if (notification.direction == ScrollDirection.forward &&
-          !_isAppBarVisible &&
-          notification.metrics.extentAfter > 0) {
-        setState(() => _isAppBarVisible = true);
-        _upwardDistance = widget.showAfter;
-        _downwardDistance = 0;
-      }
+    // Boundary bounce is not an intentional change of scroll direction.
+    if (metrics.outOfRange || notification is OverscrollNotification) {
+      _downwardDistance = 0;
+      _upwardDistance = 0;
       return false;
+    }
+    if (notification is ScrollStartNotification ||
+        notification is ScrollEndNotification) {
+      _downwardDistance = 0;
+      _upwardDistance = 0;
     }
 
     final scrollDelta = notification is ScrollUpdateNotification
@@ -154,7 +151,7 @@ class _BaseWidgetState extends State<BaseWidget> {
   @override
   void didUpdateWidget(covariant BaseWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!widget.hideAppBarOnScroll && !_isAppBarVisible) {
+    if (_scrollBehavior == AppBarScrollBehavior.none && !_isAppBarVisible) {
       _isAppBarVisible = true;
     }
     if (oldWidget.appBarScrollBehavior != widget.appBarScrollBehavior) {

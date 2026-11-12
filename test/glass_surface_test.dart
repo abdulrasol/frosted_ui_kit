@@ -53,6 +53,7 @@ void main() {
       );
       await tester.pumpWidget(
         MaterialApp(
+          theme: ThemeData(platform: TargetPlatform.iOS),
           home: Scaffold(
             body: Row(
               children: [

@@ -34,10 +34,12 @@ Every shared glass surface must:
 5. Avoid nested filters through the shared `GlassBackdrop` scope.
 6. Keep clipping bounded to the surface shape.
 
-On Android, `BlurredCard` also defaults to the lightweight alpha fallback unless
-the caller explicitly opts into blur with `disableBlur: false`. Explicit widget
-properties remain available for advanced cases, but the root performance policy
-always has the final ability to disable the filter.
+Without a performance scope, all glass surfaces default to the lightweight alpha
+fallback on Android. An explicit Full or Balanced scope enables blur on Android
+as well as iOS. `BlurredCard.disableBlur: true` opts an individual card out;
+`disableBlur: false` opts it in when no scope exists. Global disabled blur and
+zero scale always win. See [Shared glass rendering](GLASS_SURFACES.md) for modal
+route capture and component coverage.
 
 ## Choosing a mode at runtime
 

@@ -99,7 +99,7 @@ class FrostedPerformanceData {
 ///
 /// When no [FrostedPerformance] is present in the tree, [defaults] is used and
 /// all components behave exactly as they did before this widget existed.
-class FrostedPerformance extends InheritedWidget {
+class FrostedPerformance extends InheritedTheme {
   /// Creates a performance scope from individual values.
   FrostedPerformance({
     super.key,
@@ -132,7 +132,7 @@ class FrostedPerformance extends InheritedWidget {
   /// Full designed blur. Recommended for flagship devices and desktop.
   static const FrostedPerformanceData full = FrostedPerformanceData();
 
-  /// Half-strength blur. Keeps the glass look at roughly half the GPU cost.
+  /// Half-strength blur. Scales blur sigma by half; actual rendering cost depends on the scene.
   /// Recommended default for mid-range Android hardware.
   static const FrostedPerformanceData balanced = FrostedPerformanceData(
     blurScale: 0.5,
@@ -166,6 +166,20 @@ class FrostedPerformance extends InheritedWidget {
         defaults;
   }
 
+  /// Resolves blur consistently for all glass components.
+  ///
+  /// An explicit performance scope overrides the automatic Android fallback.
+  /// A local opt-out and global disabled/zero-scale settings always win.
+  static bool shouldBlur(BuildContext context, {bool? disableBlur}) {
+    final explicit = maybeOf(context);
+    final settings = explicit ?? defaults;
+    return settings.blurEnabled &&
+        settings.blurScale > 0 &&
+        !(disableBlur ??
+            (explicit == null &&
+                Theme.of(context).platform == TargetPlatform.android));
+  }
+
   /// Returns the nearest [FrostedPerformanceData], or `null` when none is
   /// present in the tree.
   static FrostedPerformanceData? maybeOf(BuildContext context) {
@@ -173,6 +187,11 @@ class FrostedPerformance extends InheritedWidget {
         .dependOnInheritedWidgetOfExactType<FrostedPerformance>()
         ?.data;
   }
+
+  /// Preserves a local rendering mode when Flutter captures themes for a route.
+  @override
+  Widget wrap(BuildContext context, Widget child) =>
+      FrostedPerformance.fromData(data: data, child: child);
 
   @override
   bool updateShouldNotify(FrostedPerformance oldWidget) =>

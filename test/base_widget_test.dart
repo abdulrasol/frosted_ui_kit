@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 
@@ -49,6 +50,85 @@ void main() {
     );
   }
 
+  testWidgets(
+    'top bounce and direction notifications never flicker the header',
+    (tester) async {
+      late BuildContext scrollContext;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BaseWidget(
+            hideAppBarOnScroll: true,
+            child: Builder(
+              builder: (context) {
+                scrollContext = context;
+                return const SizedBox.expand();
+              },
+            ),
+          ),
+        ),
+      );
+      FixedScrollMetrics metrics(double pixels) => FixedScrollMetrics(
+        minScrollExtent: 0,
+        maxScrollExtent: 1000,
+        pixels: pixels,
+        viewportDimension: 400,
+        axisDirection: AxisDirection.down,
+        devicePixelRatio: 1,
+      );
+      double opacity() => tester
+          .widget<AnimatedOpacity>(find.byType(AnimatedOpacity).first)
+          .opacity;
+      for (final position in [0.0, -10.0, -30.0, -5.0, 0.0, 3.0, 0.0]) {
+        UserScrollNotification(
+          metrics: metrics(position),
+          context: scrollContext,
+          direction: ScrollDirection.reverse,
+        ).dispatch(scrollContext);
+        ScrollUpdateNotification(
+          metrics: metrics(position),
+          context: scrollContext,
+          scrollDelta: 30,
+        ).dispatch(scrollContext);
+        await tester.pump();
+        expect(opacity(), 1);
+      }
+      // A direction alone is insufficient; actual in-range movement is required.
+      UserScrollNotification(
+        metrics: metrics(100),
+        context: scrollContext,
+        direction: ScrollDirection.reverse,
+      ).dispatch(scrollContext);
+      ScrollUpdateNotification(
+        metrics: metrics(100),
+        context: scrollContext,
+        scrollDelta: 10,
+      ).dispatch(scrollContext);
+      await tester.pump();
+      expect(opacity(), 1);
+      ScrollUpdateNotification(
+        metrics: metrics(110),
+        context: scrollContext,
+        scrollDelta: 10,
+      ).dispatch(scrollContext);
+      await tester.pump();
+      expect(opacity(), 0);
+      ScrollUpdateNotification(
+        metrics: metrics(1005),
+        context: scrollContext,
+        scrollDelta: -40,
+      ).dispatch(scrollContext);
+      await tester.pump();
+      expect(opacity(), 0);
+      ScrollUpdateNotification(
+        metrics: metrics(0),
+        context: scrollContext,
+        scrollDelta: -10,
+      ).dispatch(scrollContext);
+      await tester.pump();
+      expect(opacity(), 1);
+    },
+  );
+
   group('BaseWidget app bar scroll behavior', () {
     testWidgets('keeps the app bar visible by default', (tester) async {
       await tester.pumpWidget(buildScreen());
@@ -73,7 +153,7 @@ void main() {
       );
       expect(hiddenOpacity.opacity, 0);
 
-      await tester.drag(find.byType(ListView), const Offset(0, 10));
+      await tester.drag(find.byType(ListView), const Offset(0, 50));
       await tester.pump();
       final visibleOpacity = tester.widget<AnimatedOpacity>(
         find.byType(AnimatedOpacity).first,
@@ -131,7 +211,7 @@ void main() {
       );
       expect(hiddenOpacity.opacity, 0);
 
-      await tester.drag(find.byType(ListView), const Offset(0, 20));
+      await tester.drag(find.byType(ListView), const Offset(0, 50));
       await tester.pump();
       final visibleOpacity = tester.widget<AnimatedOpacity>(
         find.byType(AnimatedOpacity).first,

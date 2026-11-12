@@ -7,6 +7,7 @@ import 'package:frosted_ui_kit/frosted_ui_kit.dart';
 void main() {
   Widget host(Widget child) {
     return MaterialApp(
+      theme: ThemeData(platform: TargetPlatform.iOS),
       home: Scaffold(body: Center(child: child)),
     );
   }
